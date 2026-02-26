@@ -6,15 +6,13 @@ import AppSidebar from "@/components/Sidebar";
 const DashboardLayout = () => {
   return (
     <SidebarProvider className="overflow-hidden">
-      <div className="flex">
-        <AppSidebar />
+      <AppSidebar />
 
-        <div className="flex-1">
-          <Navbar />
-          <main className="flex-1 overflow-y-auto p-6 mt-14">
-            <Outlet />
-          </main>
-        </div>
+      <div className="flex-1">
+        <Navbar />
+        <main className="p-6">
+          <Outlet />
+        </main>
       </div>
     </SidebarProvider>
   );

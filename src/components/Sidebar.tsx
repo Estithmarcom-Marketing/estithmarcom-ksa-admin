@@ -67,15 +67,15 @@ const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" tooltip="مستخدم">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-bold text-zinc-950 shrink-0">
+              <div className="w-8 h-8 rounded-full bg-main text-white flex items-center justify-center text-xs font-bold shrink-0">
                 م
               </div>
-              <div className="overflow-hidden">
+              <div className="overflow-hidden text-start">
                 <p className="text-sm font-medium truncate leading-tight">
-                  Alex Kim
+                  محمود كامل
                 </p>
                 <p className="text-xs text-zinc-500 truncate leading-tight">
-                  alex@company.io
+                  mahmoudkamel26300@gmail.com
                 </p>
               </div>
             </SidebarMenuButton>
