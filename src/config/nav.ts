@@ -1,3 +1,4 @@
+import type { NavGroup } from "@/lib/types/navigation";
 import {
   LayoutDashboard,
   Wrench,
@@ -8,18 +9,6 @@ import {
   Globe,
   PhoneCall,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
-export type NavItem = {
-  label: string;
-  path: string;
-  icon: LucideIcon;
-};
-
-export type NavGroup = {
-  label: "الرئيسية" | "التواصل" | "الإعدادات";
-  items: NavItem[];
-};
 
 export const NAV_GROUPS: NavGroup[] = [
   {
