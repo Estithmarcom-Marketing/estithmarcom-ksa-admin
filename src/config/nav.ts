@@ -3,7 +3,6 @@ import {
   Wrench,
   BookOpen,
   User,
-  LogOut,
   Scale,
   Users,
   Globe,
@@ -18,7 +17,7 @@ export type NavItem = {
 };
 
 export type NavGroup = {
-  label: string;
+  label: "الرئيسية" | "التواصل" | "الإعدادات";
   items: NavItem[];
 };
 
@@ -48,7 +47,6 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: "معلومات الموقع", path: "/dashboard/settings", icon: Globe },
       { label: "الملف الشخصي", path: "/dashboard/profile", icon: User },
-      { label: "تسجيل خروج", path: "/logout", icon: LogOut },
     ],
   },
 ];

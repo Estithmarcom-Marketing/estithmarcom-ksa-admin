@@ -1,6 +1,6 @@
 const Overview = () => (
   <div className="">
-    <h2 className="text-2xl font-bold">Overview</h2>
+    <h2 className="text-2xl font-bold">نظرة عامة</h2>
     <p className="text-sm"></p>
   </div>
 );

@@ -12,7 +12,8 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS } from "@/config/nav";
-import logo from "@/assets/logo2.webp"
+import logo from "@/assets/logo2.webp";
+import { LogOut } from "lucide-react";
 
 const AppSidebar = () => {
   return (
@@ -57,6 +58,18 @@ const AppSidebar = () => {
                   </NavLink>
                 </SidebarMenuItem>
               ))}
+              {group.label === "الإعدادات"  &&<SidebarMenuItem>
+                <SidebarMenuButton
+                  tooltip={"تسجيل خروج"}
+                  className={"text-red-600 hover:text-red-600"}
+                >
+                  <LogOut
+                    size={18}
+                    strokeWidth={1.8}
+                  />
+                  <span>تسجيل خروج</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>}
             </SidebarMenu>
           </SidebarGroup>
         ))}
