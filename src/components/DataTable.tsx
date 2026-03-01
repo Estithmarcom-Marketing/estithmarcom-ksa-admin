@@ -172,7 +172,7 @@ export function DataTable<TData extends object>({
       </div>
 
       <Table>
-        <TableHeader className="bg-main-light">
+        <TableHeader>
           {table.getHeaderGroups().map((hg) => (
             <TableRow key={hg.id}>
               {hg.headers.map((header) => (
@@ -193,7 +193,7 @@ export function DataTable<TData extends object>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className={`${row.id as any % 2 !== 0 ? "bg-muted/50" : ""}`}
+                className={`${row.id as any % 2 === 0 ? "bg-muted/50" : ""}`}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
