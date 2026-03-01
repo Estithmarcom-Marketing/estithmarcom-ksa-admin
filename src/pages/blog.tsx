@@ -1,3 +1,4 @@
+import BlogForm from "@/components/blog-form";
 import { DataTable } from "@/components/DataTable";
 import SpecialHeader from "@/components/SpecialHeader";
 import type { BlogType } from "@/lib/types/blog";
@@ -90,11 +91,11 @@ const Blog = () => {
       <DataTable<BlogType>
         columns={serviceColumns}
         data={blogsData}
-        entityLabel="خدمة"
+        entityLabel="مدونة"
         onAdd={handleAdd}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        // formContent={<ServiceForm />}  ← plug in your form later
+        formContent={<BlogForm />}
       />
     </div>
   );

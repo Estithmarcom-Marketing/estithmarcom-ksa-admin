@@ -18,13 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -36,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import type { DataTableProps } from "@/lib/types/table";
 import { textTruncate } from "@/helper/text-truncate";
+import { ResponsiveModal } from "./responsive-model";
 
 export function DataTable<TData extends object>({
   columns = [],
@@ -100,7 +94,10 @@ export function DataTable<TData extends object>({
       header: "الإجراءات",
       cell: ({ row }) => (
         <div className="flex gap-4">
-          <button className="text-blue-600" onClick={() => setEditTarget(row.original)}>
+          <button
+            className="text-blue-600"
+            onClick={() => setEditTarget(row.original)}
+          >
             <Pencil className="h-4 w-4" />
           </button>
           <button
@@ -144,6 +141,23 @@ export function DataTable<TData extends object>({
     if (editTarget) onEdit?.(editTarget);
     setEditTarget(null);
   };
+
+  /** Shared form body used in both Add and Edit modals */
+  const FormBody = ({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) => (
+    <>
+      <div className="space-y-4 py-2">
+        {formContent ?? (
+          <p className="text-sm text-muted-foreground">حقول النموذج هنا…</p>
+        )}
+      </div>
+      <div className="flex justify-end gap-2 pt-2">
+        <Button variant="outline" onClick={onCancel}>
+          إلغاء
+        </Button>
+        <Button onClick={onConfirm}>حفظ</Button>
+      </div>
+    </>
+  );
 
   return (
     <div className="space-y-4 overflow-hidden" dir="rtl">
@@ -221,45 +235,31 @@ export function DataTable<TData extends object>({
         محدد
       </div>
 
-      <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
-        <DialogContent dir="rtl">
-          <DialogHeader>
-            <DialogTitle>إضافة {entityLabel}</DialogTitle>
-            <DialogDescription className="sr-only">إضافة</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            {formContent ?? (
-              <p className="text-sm text-muted-foreground">حقول النموذج هنا…</p>
-            )}
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
-              إلغاء
-            </Button>
-            <Button onClick={() => { onAdd?.(); setAddDialogOpen(false); }}>حفظ</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Add Modal */}
+      <ResponsiveModal
+        open={addDialogOpen}
+        onOpenChange={setAddDialogOpen}
+        title={`إضافة ${entityLabel}`}
+        description="إضافة"
+      >
+        <FormBody
+          onConfirm={() => { onAdd?.(); setAddDialogOpen(false); }}
+          onCancel={() => setAddDialogOpen(false)}
+        />
+      </ResponsiveModal>
 
-      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
-        <DialogContent dir="rtl">
-          <DialogHeader>
-            <DialogTitle>تعديل {entityLabel}</DialogTitle>
-            <DialogDescription className="sr-only">تعديل</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            {formContent ?? (
-              <p className="text-sm text-muted-foreground">حقول النموذج هنا…</p>
-            )}
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="outline" onClick={() => setEditTarget(null)}>
-              إلغاء
-            </Button>
-            <Button onClick={handleConfirmEdit}>حفظ</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Edit Modal */}
+      <ResponsiveModal
+        open={!!editTarget}
+        onOpenChange={(open) => !open && setEditTarget(null)}
+        title={`تعديل ${entityLabel}`}
+        description="تعديل"
+      >
+        <FormBody
+          onConfirm={handleConfirmEdit}
+          onCancel={() => setEditTarget(null)}
+        />
+      </ResponsiveModal>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent dir="rtl">

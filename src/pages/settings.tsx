@@ -13,17 +13,17 @@ const Settings = () => {
 
         <form className="space-y-6" dir="rtl">
           <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="name-ar">اسم الموقع (عربي)</Label>
               <Input id="name-ar" placeholder="مثال: ميثاق" />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="name-en">اسم الموقع (انجليزي)</Label>
               <Input id="name-en" placeholder="Ex: Mithaq" dir="ltr" />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="phone">رقم الهاتف</Label>
               <Input
                 id="phone"
@@ -33,7 +33,7 @@ const Settings = () => {
               />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input
                 id="email"
@@ -43,7 +43,7 @@ const Settings = () => {
               />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="address">العنوان</Label>
               <Input id="address" placeholder="أدخل العنوان الكامل" />
             </div>
@@ -60,7 +60,7 @@ const Settings = () => {
 
         <form className="space-y-6" dir="rtl">
           <div className="grid grid-cols-2 gap-x-4 gap-y-6">
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="instagram">انستقرام</Label>
               <Input
                 id="instagram"
@@ -69,7 +69,7 @@ const Settings = () => {
               />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="tiktok">تيك توك</Label>
               <Input
                 id="tiktok"
@@ -78,7 +78,7 @@ const Settings = () => {
               />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="snapchat">سناب شات</Label>
               <Input
                 id="snapchat"
@@ -87,7 +87,7 @@ const Settings = () => {
               />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="facebook">فيسبوك</Label>
               <Input
                 id="facebook"
@@ -96,7 +96,7 @@ const Settings = () => {
               />
             </div>
 
-            <div>
+            <div className="col-span-2 sm:col-span-1">
               <Label htmlFor="twitter">تويتر / X</Label>
               <Input
                 id="twitter"
