@@ -1,7 +1,6 @@
 import { useLocation } from "react-router-dom";
 import { Bell } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 
 const PAGE_TITLES: Record<string, { title: string; description: string }> = {
   overview:  { title: "نظرة عامة",  description: "Welcome back, Alex" },
@@ -12,6 +11,7 @@ const PAGE_TITLES: Record<string, { title: string; description: string }> = {
   messages:  { title: "رسائل التواصل",  description: "تصفح رسائل التواصل" },
   settings: { title: "معلومات الموقع", description: "تحديث إعدادات الموقع" },
   profile:  { title: "الملف الشخصي",  description: "تعديل الملف الشخصي" },
+  comments:  { title: "التعليقات",  description: "تصفح تعليقات المدونة" },
 };
 
 const Navbar = () => {
@@ -36,19 +36,17 @@ const Navbar = () => {
       </div>
 
       {/* End side */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-5">
 
         {/* Notifications */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative h-8 w-8"
+        <button
+          className="relative"
         >
-          <Bell size={16} />
-          <div className="absolute -top-0.5 -end-0.5 h-4 w-4 p-0 flex items-center justify-center text-[7px] bg-main text-white border-0 rounded-full">
+          <Bell size={20} />
+          <div className="absolute -top-[10px] -end-[10px] h-4 w-4 p-0 flex items-center justify-center text-[7px] bg-main text-white border-0 rounded-full">
             1
           </div>
-        </Button>
+        </button>
 
         <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white bg-main cursor-pointer hover:opacity-90 transition-opacity">
           مك

@@ -8,6 +8,7 @@ import Requests from "./pages/requests";
 import ContactMessages from "./pages/contact-messages";
 import Profile from "./pages/profile";
 import Settings from "./pages/settings";
+import Comments from "./pages/comments";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="requests" element={<Requests />} />
           <Route path="messages" element={<ContactMessages />} />
+          <Route path="comments" element={<Comments />} />
         </Route>
       </Routes>
     </BrowserRouter>

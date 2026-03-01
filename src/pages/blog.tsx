@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/DataTable";
+import SpecialHeader from "@/components/SpecialHeader";
 import type { BlogType } from "@/lib/types/blog";
 import type { ColumnConfig } from "@/lib/types/table";
 
@@ -67,7 +68,7 @@ export const blogsData: blogType[] = [
   },
 ];
 
-const Services = () => {
+const Blog = () => {
   const handleAdd = () => {
     console.log("add triggered");
   };
@@ -83,7 +84,7 @@ const Services = () => {
   return (
     <div className="space-y-6" dir="rtl">
       <div>
-        <h2 className="text-2xl font-bold">الخدمات</h2>
+        <SpecialHeader title="المدونة"/>
       </div>
 
       <DataTable<BlogType>
@@ -99,4 +100,4 @@ const Services = () => {
   );
 };
 
-export default Services;
+export default Blog;

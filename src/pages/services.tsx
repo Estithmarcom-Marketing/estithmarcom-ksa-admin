@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/DataTable";
+import SpecialHeader from "@/components/SpecialHeader";
 import type { ServiceType } from "@/lib/types/services";
 import type { ColumnConfig } from "@/lib/types/table";
 
@@ -31,7 +32,7 @@ const Services = () => {
   return (
     <div className="space-y-6" dir="rtl">
       <div>
-        <h2 className="text-2xl font-bold">الخدمات</h2>
+        <SpecialHeader title="الخدمات"/>
       </div>
 
       <DataTable<ServiceType>

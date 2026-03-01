@@ -1,6 +1,8 @@
+import SpecialHeader from "@/components/SpecialHeader";
+
 const Requests = () => (
   <div className="">
-    <h2 className="text-2xl font-bold">الطلبات</h2>
+    <SpecialHeader title="الطلبات"/>
     <p className="text-sm"></p>
   </div>
 );

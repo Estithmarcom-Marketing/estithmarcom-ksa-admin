@@ -1,6 +1,8 @@
+import SpecialHeader from "@/components/SpecialHeader";
+
 const Overview = () => (
   <div className="">
-    <h2 className="text-2xl font-bold">نظرة عامة</h2>
+    <SpecialHeader title="نظرة عامة"/>
     <p className="text-sm"></p>
   </div>
 );

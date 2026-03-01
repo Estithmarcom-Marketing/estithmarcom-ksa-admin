@@ -1,6 +1,8 @@
+import SpecialHeader from "@/components/SpecialHeader";
+
 const Team = () => (
   <div className="">
-    <h2 className="text-2xl font-bold">الفريق</h2>
+    <SpecialHeader title="الفريق"/>
     <p className="text-sm"></p>
   </div>
 );

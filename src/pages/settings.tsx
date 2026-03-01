@@ -1,12 +1,13 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import SpecialHeader from "@/components/SpecialHeader";
 
 const Settings = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">معلومات الموقع</h2>
+        <SpecialHeader title="معلومات الموقع"/>
       </div>
 
       <form className="space-y-6" dir="rtl">

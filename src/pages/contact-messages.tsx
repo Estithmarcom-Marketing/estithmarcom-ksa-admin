@@ -1,6 +1,8 @@
+import SpecialHeader from "@/components/SpecialHeader";
+
 const ContactMessages = () => (
   <div className="">
-    <h2 className="text-2xl font-bold">رسائل التواصل</h2>
+    <SpecialHeader title="رسائل التواصل"/>
     <p className="text-sm"></p>
   </div>
 );

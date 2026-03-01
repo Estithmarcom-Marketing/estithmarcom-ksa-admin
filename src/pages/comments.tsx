@@ -1,12 +1,12 @@
 import SpecialHeader from "@/components/SpecialHeader";
 
-const Profile = () => {
+const Comments = () => {
   return (
     <div className="">
-    <SpecialHeader title="الملف الشخصي"/>
+    <SpecialHeader title="التعليقات"/>
     <p className="text-sm"></p>
   </div>
   );
 };
 
-export default Profile;
+export default Comments;
