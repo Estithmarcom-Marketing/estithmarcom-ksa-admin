@@ -8,6 +8,7 @@ import {
   Users,
   Globe,
   PhoneCall,
+  MessageCircle,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -21,6 +22,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
       { label: "المدونة", path: "/dashboard/blog", icon: BookOpen },
+      { label: "التعليقات", path: "/dashboard/comments", icon: MessageCircle },
       { label: "الفريق", path: "/dashboard/team", icon: Users },
     ],
   },
