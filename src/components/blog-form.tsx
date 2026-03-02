@@ -1,43 +1,36 @@
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 
 export default function BlogForm() {
   return (
     <form className="space-y-6" dir="rtl">
       <div className="grid grid-cols-2 gap-x-4 gap-y-6">
         <div className="col-span-2 sm:col-span-1">
-          <Label htmlFor="name-ar">اسم الموقع (عربي)</Label>
+          <Label htmlFor="name-ar">العنوان (عربي)</Label>
           <Input id="name-ar" placeholder="مثال: ميثاق" />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <Label htmlFor="name-en">اسم الموقع (انجليزي)</Label>
+          <Label htmlFor="name-en">العنوان (انجليزي)</Label>
           <Input id="name-en" placeholder="Ex: Mithaq" dir="ltr" />
         </div>
 
-        <div className="col-span-2 sm:col-span-1">
-          <Label htmlFor="phone">رقم الهاتف</Label>
-          <Input
-            id="phone"
-            type="tel"
-            placeholder="+966 XXX XXX XXX"
-            dir="ltr"
+        <div className="col-span-2">
+          <Label htmlFor="desc-ar">وصف (عربي)</Label>
+          <Textarea
+            id="desc-ar"
+            placeholder="الوصف بالعربي"
           />
         </div>
 
-        <div className="col-span-2 sm:col-span-1">
-          <Label htmlFor="email">البريد الإلكتروني</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="example@mithaq.com"
+        <div className="col-span-2">
+          <Label htmlFor="desc-en">وصف (انجليزي)</Label>
+          <Textarea
+            id="desc-en"
+            placeholder="English Description"
             dir="ltr"
           />
-        </div>
-
-        <div className="col-span-2 sm:col-span-1">
-          <Label htmlFor="address">العنوان</Label>
-          <Input id="address" placeholder="أدخل العنوان الكامل" />
         </div>
       </div>
 

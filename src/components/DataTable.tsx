@@ -5,7 +5,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Trash2, Pencil, Plus } from "lucide-react";
+import { Trash2, Pencil, Plus, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -30,6 +30,7 @@ import {
 import type { DataTableProps } from "@/lib/types/table";
 import { textTruncate } from "@/helper/text-truncate";
 import { ResponsiveModal } from "./responsive-model";
+import { ViewBody } from "./ViewBody";
 
 export function DataTable<TData extends object>({
   columns = [],
@@ -43,6 +44,7 @@ export function DataTable<TData extends object>({
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TData | null>(null);
+  const [viewTarget, setViewTarget] = useState<TData | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TData[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
@@ -95,17 +97,26 @@ export function DataTable<TData extends object>({
       cell: ({ row }) => (
         <div className="flex gap-4">
           <button
-            className="text-blue-600"
+            className="text-main hover:text-main-darker cursor-pointer"
+            onClick={() => setViewTarget(row.original)}
+            title="عرض"
+          >
+            <Eye className="h-4 w-4" />
+          </button>
+          <button
+            className="text-blue-600 hover:text-blue-700 cursor-pointer"
             onClick={() => setEditTarget(row.original)}
+            title="تعديل"
           >
             <Pencil className="h-4 w-4" />
           </button>
           <button
-            className="text-destructive hover:text-destructive"
+            className="text-destructive hover:text-destructive cursor-pointer"
             onClick={() => {
               setDeleteTarget([row.original]);
               setDeleteDialogOpen(true);
             }}
+            title="حذف"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -142,7 +153,6 @@ export function DataTable<TData extends object>({
     setEditTarget(null);
   };
 
-  /** Shared form body used in both Add and Edit modals */
   const FormBody = ({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) => (
     <>
       <div className="space-y-4 py-2">
@@ -259,6 +269,25 @@ export function DataTable<TData extends object>({
           onConfirm={handleConfirmEdit}
           onCancel={() => setEditTarget(null)}
         />
+      </ResponsiveModal>
+
+      {/* View Modal */}
+      <ResponsiveModal
+        open={!!viewTarget}
+        onOpenChange={(open) => !open && setViewTarget(null)}
+        title={`عرض ${entityLabel}`}
+        description="تفاصيل العنصر"
+      >
+        {viewTarget && (
+          <div className="space-y-4">
+            <ViewBody item={viewTarget} columns={columns} />
+            <div className="flex justify-end pt-2">
+              <Button variant="outline" onClick={() => setViewTarget(null)}>
+                إغلاق
+              </Button>
+            </div>
+          </div>
+        )}
       </ResponsiveModal>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>

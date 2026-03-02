@@ -36,7 +36,7 @@ export function ResponsiveModal({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent dir="rtl">
+        <DrawerContent dir="rtl" className="overflow-y-auto">
           <DrawerHeader className="text-right">
             <DrawerTitle>{title}</DrawerTitle>
             {description && (
@@ -53,7 +53,7 @@ export function ResponsiveModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent dir="rtl">
+      <DialogContent className="max-h-[80vh] overflow-y-auto" dir="rtl">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description && (
