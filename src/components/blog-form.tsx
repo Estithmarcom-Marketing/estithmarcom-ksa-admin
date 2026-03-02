@@ -1,8 +1,9 @@
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import { Button } from "./ui/button";
 
-export default function BlogForm() {
+export default function BlogForm({ showActions = false }: { showActions?: boolean }) {
   return (
     <form className="space-y-6" dir="rtl">
       <div className="grid grid-cols-2 gap-x-4 gap-y-6">
@@ -18,22 +19,20 @@ export default function BlogForm() {
 
         <div className="col-span-2">
           <Label htmlFor="desc-ar">وصف (عربي)</Label>
-          <Textarea
-            id="desc-ar"
-            placeholder="الوصف بالعربي"
-          />
+          <Textarea id="desc-ar" placeholder="الوصف بالعربي" />
         </div>
 
         <div className="col-span-2">
           <Label htmlFor="desc-en">وصف (انجليزي)</Label>
-          <Textarea
-            id="desc-en"
-            placeholder="English Description"
-            dir="ltr"
-          />
+          <Textarea id="desc-en" placeholder="English Description" dir="ltr" />
         </div>
       </div>
 
+      {showActions && (
+        <div>
+          <Button type="submit">حفظ</Button>
+        </div>
+      )}
     </form>
   );
 }

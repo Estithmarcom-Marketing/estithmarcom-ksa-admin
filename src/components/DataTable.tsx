@@ -43,7 +43,7 @@ export function DataTable<TData extends object>({
   onDelete,
   popup = true,
 }: DataTableProps<TData> & { popup?: boolean }) {
-  const navigate = useNavigate();
+  const nav = useNavigate();
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TData | null>(null);
@@ -60,7 +60,7 @@ export function DataTable<TData extends object>({
     if (popup) {
       setAddDialogOpen(true);
     } else {
-      navigate(`new`);
+      nav(`new`);
     }
   };
 
@@ -68,7 +68,7 @@ export function DataTable<TData extends object>({
     if (popup) {
       setEditTarget(row);
     } else {
-      navigate(`edit/${getRowId(row)}`);
+      nav(`edit/${getRowId(row)}`);
     }
   };
 
@@ -76,7 +76,7 @@ export function DataTable<TData extends object>({
     if (popup) {
       setViewTarget(row);
     } else {
-      navigate(`read/${getRowId(row)}`);
+      nav(`read/${getRowId(row)}`);
     }
   };
 
