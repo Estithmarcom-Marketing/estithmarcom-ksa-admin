@@ -11,12 +11,14 @@ import Settings from "./pages/settings";
 import Comments from "./pages/comments";
 import EditBlog from "./pages/blog/edit-blog";
 import AddBlog from "./pages/blog/add-blog";
+import Login from "./pages/login/login";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard/overview" replace />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Navigate to="overview" replace />} />
           <Route path="overview" element={<Overview />} />
