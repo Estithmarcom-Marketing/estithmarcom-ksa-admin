@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   flexRender,
   getCoreRowModel,
@@ -40,13 +41,44 @@ export function DataTable<TData extends object>({
   onAdd,
   onEdit,
   onDelete,
-}: DataTableProps<TData>) {
+  popup = true,
+}: DataTableProps<TData> & { popup?: boolean }) {
+  const navigate = useNavigate();
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TData | null>(null);
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TData[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const getRowId = (row: TData): string => {
+    const r = row as Record<string, unknown>;
+    return String(r["id"] ?? r["_id"] ?? "");
+  };
+
+  const handleAdd = () => {
+    if (popup) {
+      setAddDialogOpen(true);
+    } else {
+      navigate(`new`);
+    }
+  };
+
+  const handleEdit = (row: TData) => {
+    if (popup) {
+      setEditTarget(row);
+    } else {
+      navigate(`edit/${getRowId(row)}`);
+    }
+  };
+
+  const handleView = (row: TData) => {
+    if (popup) {
+      setViewTarget(row);
+    } else {
+      navigate(`read/${getRowId(row)}`);
+    }
+  };
 
   const tanstackColumns: ColumnDef<TData>[] = [
     {
@@ -98,14 +130,14 @@ export function DataTable<TData extends object>({
         <div className="flex gap-4">
           <button
             className="text-main hover:text-main-darker cursor-pointer"
-            onClick={() => setViewTarget(row.original)}
+            onClick={() => handleView(row.original)}
             title="عرض"
           >
             <Eye className="h-4 w-4" />
           </button>
           <button
             className="text-blue-600 hover:text-blue-700 cursor-pointer"
-            onClick={() => setEditTarget(row.original)}
+            onClick={() => handleEdit(row.original)}
             title="تعديل"
           >
             <Pencil className="h-4 w-4" />
@@ -153,7 +185,13 @@ export function DataTable<TData extends object>({
     setEditTarget(null);
   };
 
-  const FormBody = ({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) => (
+  const FormBody = ({
+    onConfirm,
+    onCancel,
+  }: {
+    onConfirm: () => void;
+    onCancel: () => void;
+  }) => (
     <>
       <div className="space-y-4 py-2">
         {formContent ?? (
@@ -187,7 +225,7 @@ export function DataTable<TData extends object>({
         </div>
         <Button
           size="sm"
-          onClick={() => setAddDialogOpen(true)}
+          onClick={handleAdd}
           className="gap-1 flex items-center"
         >
           <Plus className="h-4 w-4" />
@@ -246,50 +284,60 @@ export function DataTable<TData extends object>({
       </div>
 
       {/* Add Modal */}
-      <ResponsiveModal
-        open={addDialogOpen}
-        onOpenChange={setAddDialogOpen}
-        title={`إضافة ${entityLabel}`}
-        description="إضافة"
-      >
-        <FormBody
-          onConfirm={() => { onAdd?.(); setAddDialogOpen(false); }}
-          onCancel={() => setAddDialogOpen(false)}
-        />
-      </ResponsiveModal>
+      {popup && (
+        <ResponsiveModal
+          open={addDialogOpen}
+          onOpenChange={setAddDialogOpen}
+          title={`إضافة ${entityLabel}`}
+          description="إضافة"
+        >
+          <FormBody
+            onConfirm={() => {
+              onAdd?.();
+              setAddDialogOpen(false);
+            }}
+            onCancel={() => setAddDialogOpen(false)}
+          />
+        </ResponsiveModal>
+      )}
 
       {/* Edit Modal */}
-      <ResponsiveModal
-        open={!!editTarget}
-        onOpenChange={(open) => !open && setEditTarget(null)}
-        title={`تعديل ${entityLabel}`}
-        description="تعديل"
-      >
-        <FormBody
-          onConfirm={handleConfirmEdit}
-          onCancel={() => setEditTarget(null)}
-        />
-      </ResponsiveModal>
+      {popup && (
+        <ResponsiveModal
+          open={!!editTarget}
+          onOpenChange={(open) => !open && setEditTarget(null)}
+          title={`تعديل ${entityLabel}`}
+          description="تعديل"
+        >
+          <FormBody
+            onConfirm={handleConfirmEdit}
+            onCancel={() => setEditTarget(null)}
+          />
+        </ResponsiveModal>
+      )}
 
       {/* View Modal */}
-      <ResponsiveModal
-        open={!!viewTarget}
-        onOpenChange={(open) => !open && setViewTarget(null)}
-        title={`عرض ${entityLabel}`}
-        description="تفاصيل العنصر"
-      >
-        {viewTarget && (
-          <div className="space-y-4">
-            <ViewBody item={viewTarget} columns={columns} />
-            <div className="flex justify-end pt-2">
-              <Button variant="outline" onClick={() => setViewTarget(null)}>
-                إغلاق
-              </Button>
+      {popup && (
+        <ResponsiveModal
+          open={!!viewTarget}
+          onOpenChange={(open) => !open && setViewTarget(null)}
+          title={`عرض ${entityLabel}`}
+          description="تفاصيل العنصر"
+        >
+          {viewTarget && (
+            <div className="space-y-4">
+              <ViewBody item={viewTarget} columns={columns} />
+              <div className="flex justify-end pt-2">
+                <Button variant="outline" onClick={() => setViewTarget(null)}>
+                  إغلاق
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
-      </ResponsiveModal>
+          )}
+        </ResponsiveModal>
+      )}
 
+      {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent dir="rtl">
           <AlertDialogHeader>

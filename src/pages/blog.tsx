@@ -96,6 +96,7 @@ const Blog = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         formContent={<BlogForm />}
+        popup={false}
       />
     </div>
   );

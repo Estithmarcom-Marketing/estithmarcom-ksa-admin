@@ -8,6 +8,7 @@ export interface DataTableProps<TData extends object> {
   data: TData[];
   entityLabel?: string;
   formContent?: React.ReactNode;
+  popup?: boolean
   onAdd?: () => void;
   onEdit?: (row: TData) => void;
   onDelete?: (rows: TData[]) => void;
