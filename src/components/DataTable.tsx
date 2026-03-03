@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import {
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
+  type SortingState,
 } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Trash2, Pencil, Plus, Eye } from "lucide-react";
+import { Trash2, Pencil, Plus, Eye, ChevronsUpDown, ChevronUp, ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -45,6 +47,7 @@ export function DataTable<TData extends object>({
 }: DataTableProps<TData> & { popup?: boolean }) {
   const nav = useNavigate();
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TData | null>(null);
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
@@ -107,7 +110,9 @@ export function DataTable<TData extends object>({
     ...columns.map(
       (col, idx): ColumnDef<TData> => ({
         id: col.key,
+        accessorKey: col.key,
         header: col.name,
+        enableSorting: idx !== 0,
         cell: ({ row, table }) => {
           if (idx === 0) {
             return (
@@ -126,6 +131,7 @@ export function DataTable<TData extends object>({
     {
       id: "actions",
       header: "الإجراءات",
+      enableSorting: false,
       cell: ({ row }) => (
         <div className="flex gap-4">
           <button
@@ -161,8 +167,10 @@ export function DataTable<TData extends object>({
     data,
     columns: tanstackColumns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onRowSelectionChange: setRowSelection,
-    state: { rowSelection },
+    onSortingChange: setSorting,
+    state: { rowSelection, sorting },
   });
 
   const selectedRows = table
@@ -237,25 +245,41 @@ export function DataTable<TData extends object>({
         <TableHeader>
           {table.getHeaderGroups().map((hg) => (
             <TableRow key={hg.id}>
-              {hg.headers.map((header) => (
-                <TableHead key={header.id} className="text-right px-4!">
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                </TableHead>
-              ))}
+              {hg.headers.map((header) => {
+                const canSort = header.column.getCanSort();
+                const sorted = header.column.getIsSorted();
+
+                return (
+                  <TableHead key={header.id} className="text-right bg-main-light px-4!">
+                    {header.isPlaceholder ? null : canSort ? (
+                      <button
+                        className="flex items-center gap-1 cursor-pointer select-none"
+                        onClick={header.column.getToggleSortingHandler()}
+                      >
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {sorted === "asc" ? (
+                          <ChevronUp className="h-3.5 w-3.5" />
+                        ) : sorted === "desc" ? (
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        ) : (
+                          <ChevronsUpDown className="h-3.5 w-3.5" />
+                        )}
+                      </button>
+                    ) : (
+                      flexRender(header.column.columnDef.header, header.getContext())
+                    )}
+                  </TableHead>
+                );
+              })}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
-                className={`${row.id as any % 2 === 0 ? "bg-muted/50" : ""}`}
+                className={`${index % 2 === 0 ? "bg-muted/50" : ""}`}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
