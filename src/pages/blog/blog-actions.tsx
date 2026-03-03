@@ -2,6 +2,7 @@ import BlogForm from "@/components/blog-form";
 import SpecialHeader from "@/components/SpecialHeader";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ReadBlog from "./read-blog";
 
 export default function EditBlog() {
   const nav = useNavigate();
@@ -14,13 +15,13 @@ export default function EditBlog() {
   }, [action, nav]);
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="space-y-6">
       <div>
         <SpecialHeader title={action === "edit" ? "تعديل مدونة" : "قراءة تفاصيل مدونة"} />
       </div>
       <div>
         {action === "edit" && <BlogForm showActions />}
-        {action === "read" && <BlogForm />}
+        {action === "read" && <ReadBlog />}
       </div>
     </div>
   );

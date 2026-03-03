@@ -9,7 +9,7 @@ import {
 
 export default function BlogForm({ showActions = false }: { showActions?: boolean }) {
   return (
-    <form className="space-y-6" dir="rtl">
+    <form className="space-y-6">
       <div className="grid grid-cols-2 gap-x-4 gap-y-6">
         <div className="col-span-2 sm:col-span-1">
           <Field data-invalid={false}>

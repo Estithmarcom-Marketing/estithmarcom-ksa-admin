@@ -9,7 +9,7 @@ import ContactMessages from "./pages/contact-messages";
 import Profile from "./pages/profile";
 import Settings from "./pages/settings";
 import Comments from "./pages/comments";
-import EditBlog from "./pages/blog/edit-blog";
+import EditBlog from "./pages/blog/blog-actions";
 import AddBlog from "./pages/blog/add-blog";
 import Login from "./pages/login/login";
 
