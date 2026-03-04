@@ -43,14 +43,12 @@ export function DataTable<TData extends object>({
   data,
   entityLabel = "عنصر",
   formContent,
-  onAdd,
+  editContent,
   isLoading,
-  onEdit,
   onDelete,
   popup = true,
   allowedActions = ["Add", "Remove", "Edit", "Read"],
 }: DataTableProps<TData>) {
-
   const nav = useNavigate();
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -107,7 +105,6 @@ export function DataTable<TData extends object>({
       enableSorting: false,
       enableHiding: false,
     },
-
     ...columns.map(
       (col, idx): ColumnDef<TData> => ({
         id: col.key,
@@ -116,18 +113,15 @@ export function DataTable<TData extends object>({
         enableSorting: idx !== 0,
         cell: ({ row, table }) => {
           if (idx === 0) {
-            return (
-              table.getSortedRowModel().rows.findIndex((r) => r.id === row.id) + 1
-            );
+            return table.getSortedRowModel().rows.findIndex((r) => r.id === row.id) + 1;
           }
           const value = (row.original as Record<string, unknown>)[col.key];
           return value !== undefined && value !== null
             ? textTruncate(String(value), 30)
             : "—";
         },
-      }),
+      })
     ),
-
     ...(hasAnyRowAction
       ? [
           {
@@ -198,33 +192,11 @@ export function DataTable<TData extends object>({
     table.resetRowSelection();
   };
 
-  const handleConfirmEdit = () => {
-    if (editTarget) onEdit?.(editTarget);
-    setEditTarget(null);
-  };
-
-  // total visible columns count for colSpan
   const totalCols = tanstackColumns.length;
 
-  const FormBody = ({
-    onConfirm,
-    onCancel,
-  }: {
-    onConfirm: () => void;
-    onCancel: () => void;
-  }) => (
-    <>
-      <div className="space-y-4 py-2">
-        {formContent ?? (
-          <p className="text-sm text-muted-foreground">حقول النموذج هنا…</p>
-        )}
-      </div>
-      <div className="flex justify-end gap-2 pt-2">
-        <Button variant="outline" onClick={onCancel}>إلغاء</Button>
-        <Button onClick={onConfirm}>حفظ</Button>
-      </div>
-    </>
-  );
+  // Resolve formContent — supports both ReactNode and render function
+  const resolveFormContent = (onClose: () => void) =>
+    typeof formContent === "function" ? formContent(onClose) : formContent;
 
   return (
     <div className="space-y-4 overflow-hidden" dir="rtl">
@@ -287,7 +259,6 @@ export function DataTable<TData extends object>({
 
         <TableBody>
           {isLoading ? (
-            // ── Skeleton rows ──────────────────────────────────────
             Array.from({ length: SKELETON_ROWS }).map((_, rowIdx) => (
               <TableRow key={`skeleton-${rowIdx}`} className={rowIdx % 2 === 0 ? "bg-muted/50" : ""}>
                 {Array.from({ length: totalCols }).map((_, colIdx) => (
@@ -340,25 +311,21 @@ export function DataTable<TData extends object>({
           title={`إضافة ${entityLabel}`}
           description="إضافة"
         >
-          <FormBody
-            onConfirm={() => { onAdd?.(); setAddDialogOpen(false); }}
-            onCancel={() => setAddDialogOpen(false)}
-          />
+          {resolveFormContent(() => setAddDialogOpen(false))}
         </ResponsiveModal>
       )}
 
       {/* Edit Modal */}
-      {popup && can("Edit") && (
+      {popup && can("Edit") && editTarget && (
         <ResponsiveModal
           open={!!editTarget}
           onOpenChange={(open) => !open && setEditTarget(null)}
           title={`تعديل ${entityLabel}`}
           description="تعديل"
         >
-          <FormBody
-            onConfirm={handleConfirmEdit}
-            onCancel={() => setEditTarget(null)}
-          />
+          {editContent
+            ? editContent(editTarget, () => setEditTarget(null))
+            : resolveFormContent(() => setEditTarget(null))}
         </ResponsiveModal>
       )}
 
@@ -374,7 +341,9 @@ export function DataTable<TData extends object>({
             <div className="space-y-4">
               <ViewBody item={viewTarget} columns={columns} />
               <div className="flex justify-end pt-2">
-                <Button variant="outline" onClick={() => setViewTarget(null)}>إغلاق</Button>
+                <Button variant="outline" onClick={() => setViewTarget(null)}>
+                  إغلاق
+                </Button>
               </div>
             </div>
           )}
@@ -389,7 +358,9 @@ export function DataTable<TData extends object>({
               <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
               <AlertDialogDescription>
                 هل أنت متأكد من حذف{" "}
-                {deleteTarget.length === 1 ? `هذا ${entityLabel}` : `${deleteTarget.length} عناصر`}
+                {deleteTarget.length === 1
+                  ? `هذا ${entityLabel}`
+                  : `${deleteTarget.length} عناصر`}
                 ؟ لا يمكن التراجع عن هذا الإجراء.
               </AlertDialogDescription>
             </AlertDialogHeader>

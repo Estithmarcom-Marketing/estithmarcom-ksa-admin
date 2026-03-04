@@ -99,7 +99,7 @@ export default function Login() {
               </div>
               <FieldDescription>
                 {errors.email && (
-                  <span className="text-destructive text-xs">
+                  <span className="text-xs">
                     {errors.email.message}
                   </span>
                 )}
@@ -137,7 +137,7 @@ export default function Login() {
               </div>
               <FieldDescription>
                 {hasPasswordError && (
-                  <span className="text-destructive text-xs">
+                  <span className="text-xs">
                     {serverError || errors.password?.message}
                   </span>
                 )}

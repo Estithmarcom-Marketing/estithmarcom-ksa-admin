@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export interface ColumnConfig {
   key: string;
   name: string;
@@ -6,14 +8,13 @@ export interface ColumnConfig {
 export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read";
 
 export interface DataTableProps<TData extends object> {
-  columns: ColumnConfig[];
-  data: TData[];
+  columns?: ColumnConfig[];
+  data?: TData[];
   entityLabel?: string;
-  formContent?: React.ReactNode;
-  popup?: boolean
-  onAdd?: () => void;
-  onEdit?: (row: TData) => void;
-  onDelete?: (rows: TData[]) => void;
-  allowedActions?: AllowedActionType[];
+  formContent?: (onClose: () => void) => ReactNode;
+  editContent?: (row: TData, onClose: () => void) => ReactNode;
   isLoading?: boolean;
+  onDelete?: (rows: TData[]) => void;
+  popup?: boolean;
+  allowedActions?: AllowedActionType[];
 }
