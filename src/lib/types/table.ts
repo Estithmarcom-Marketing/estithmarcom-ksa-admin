@@ -3,6 +3,8 @@ export interface ColumnConfig {
   name: string;
 }
 
+export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read";
+
 export interface DataTableProps<TData extends object> {
   columns: ColumnConfig[];
   data: TData[];
@@ -12,4 +14,6 @@ export interface DataTableProps<TData extends object> {
   onAdd?: () => void;
   onEdit?: (row: TData) => void;
   onDelete?: (rows: TData[]) => void;
+  allowedActions?: AllowedActionType[];
+  isLoading?: boolean;
 }

@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { Trash2, Pencil, Plus, Eye, ChevronsUpDown, ChevronUp, ChevronDown } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -30,21 +31,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import type { DataTableProps } from "@/lib/types/table";
+import type { AllowedActionType, DataTableProps } from "@/lib/types/table";
 import { textTruncate } from "@/helper/text-truncate";
 import { ResponsiveModal } from "./responsive-model";
 import { ViewBody } from "./ViewBody";
 
+const SKELETON_ROWS = 5;
+
 export function DataTable<TData extends object>({
   columns = [],
-  data = [],
+  data,
   entityLabel = "عنصر",
   formContent,
   onAdd,
+  isLoading,
   onEdit,
   onDelete,
   popup = true,
-}: DataTableProps<TData> & { popup?: boolean }) {
+  allowedActions = ["Add", "Remove", "Edit", "Read"],
+}: DataTableProps<TData>) {
+
   const nav = useNavigate();
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -54,34 +60,29 @@ export function DataTable<TData extends object>({
   const [deleteTarget, setDeleteTarget] = useState<TData[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+  const can = (action: AllowedActionType) => allowedActions.includes(action);
+
   const getRowId = (row: TData): string => {
     const r = row as Record<string, unknown>;
     return String(r["id"] ?? r["_id"] ?? "");
   };
 
   const handleAdd = () => {
-    if (popup) {
-      setAddDialogOpen(true);
-    } else {
-      nav(`new`);
-    }
+    if (popup) setAddDialogOpen(true);
+    else nav(`new`);
   };
 
   const handleEdit = (row: TData) => {
-    if (popup) {
-      setEditTarget(row);
-    } else {
-      nav(`edit/${getRowId(row)}`);
-    }
+    if (popup) setEditTarget(row);
+    else nav(`edit/${getRowId(row)}`);
   };
 
   const handleView = (row: TData) => {
-    if (popup) {
-      setViewTarget(row);
-    } else {
-      nav(`read/${getRowId(row)}`);
-    }
+    if (popup) setViewTarget(row);
+    else nav(`read/${getRowId(row)}`);
   };
+
+  const hasAnyRowAction = can("Read") || can("Edit") || can("Remove");
 
   const tanstackColumns: ColumnDef<TData>[] = [
     {
@@ -116,8 +117,7 @@ export function DataTable<TData extends object>({
         cell: ({ row, table }) => {
           if (idx === 0) {
             return (
-              table.getSortedRowModel().rows.findIndex((r) => r.id === row.id) +
-              1
+              table.getSortedRowModel().rows.findIndex((r) => r.id === row.id) + 1
             );
           }
           const value = (row.original as Record<string, unknown>)[col.key];
@@ -128,43 +128,53 @@ export function DataTable<TData extends object>({
       }),
     ),
 
-    {
-      id: "actions",
-      header: "الإجراءات",
-      enableSorting: false,
-      cell: ({ row }) => (
-        <div className="flex gap-4">
-          <button
-            className="text-main hover:text-main-darker cursor-pointer"
-            onClick={() => handleView(row.original)}
-            title="عرض"
-          >
-            <Eye className="h-4 w-4" />
-          </button>
-          <button
-            className="text-blue-600 hover:text-blue-700 cursor-pointer"
-            onClick={() => handleEdit(row.original)}
-            title="تعديل"
-          >
-            <Pencil className="h-4 w-4" />
-          </button>
-          <button
-            className="text-destructive hover:text-destructive cursor-pointer"
-            onClick={() => {
-              setDeleteTarget([row.original]);
-              setDeleteDialogOpen(true);
-            }}
-            title="حذف"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-      ),
-    },
+    ...(hasAnyRowAction
+      ? [
+          {
+            id: "actions",
+            header: "الإجراءات",
+            enableSorting: false,
+            cell: ({ row }: { row: { original: TData } }) => (
+              <div className="flex gap-4">
+                {can("Read") && (
+                  <button
+                    className="text-main hover:text-main-darker cursor-pointer"
+                    onClick={() => handleView(row.original)}
+                    title="عرض"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </button>
+                )}
+                {can("Edit") && (
+                  <button
+                    className="text-blue-600 hover:text-blue-700 cursor-pointer"
+                    onClick={() => handleEdit(row.original)}
+                    title="تعديل"
+                  >
+                    <Pencil className="h-4 w-4" />
+                  </button>
+                )}
+                {can("Remove") && (
+                  <button
+                    className="text-destructive hover:text-destructive cursor-pointer"
+                    onClick={() => {
+                      setDeleteTarget([row.original]);
+                      setDeleteDialogOpen(true);
+                    }}
+                    title="حذف"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+            ),
+          } as ColumnDef<TData>,
+        ]
+      : []),
   ];
 
   const table = useReactTable<TData>({
-    data,
+    data: data ?? [],
     columns: tanstackColumns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -193,6 +203,9 @@ export function DataTable<TData extends object>({
     setEditTarget(null);
   };
 
+  // total visible columns count for colSpan
+  const totalCols = tanstackColumns.length;
+
   const FormBody = ({
     onConfirm,
     onCancel,
@@ -207,9 +220,7 @@ export function DataTable<TData extends object>({
         )}
       </div>
       <div className="flex justify-end gap-2 pt-2">
-        <Button variant="outline" onClick={onCancel}>
-          إلغاء
-        </Button>
+        <Button variant="outline" onClick={onCancel}>إلغاء</Button>
         <Button onClick={onConfirm}>حفظ</Button>
       </div>
     </>
@@ -217,9 +228,10 @@ export function DataTable<TData extends object>({
 
   return (
     <div className="space-y-4 overflow-hidden" dir="rtl">
+      {/* Toolbar */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          {selectedRows.length > 0 && (
+          {can("Remove") && selectedRows.length > 0 && (
             <Button
               variant="destructive"
               size="sm"
@@ -231,16 +243,15 @@ export function DataTable<TData extends object>({
             </Button>
           )}
         </div>
-        <Button
-          size="sm"
-          onClick={handleAdd}
-          className="gap-1 flex items-center"
-        >
-          <Plus className="h-4 w-4" />
-          إضافة {entityLabel}
-        </Button>
+        {can("Add") && (
+          <Button size="sm" onClick={handleAdd} className="gap-1 flex items-center">
+            <Plus className="h-4 w-4" />
+            إضافة {entityLabel}
+          </Button>
+        )}
       </div>
 
+      {/* Table */}
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((hg) => (
@@ -248,7 +259,6 @@ export function DataTable<TData extends object>({
               {hg.headers.map((header) => {
                 const canSort = header.column.getCanSort();
                 const sorted = header.column.getIsSorted();
-
                 return (
                   <TableHead key={header.id} className="text-right bg-main-light px-4!">
                     {header.isPlaceholder ? null : canSort ? (
@@ -274,12 +284,24 @@ export function DataTable<TData extends object>({
             </TableRow>
           ))}
         </TableHeader>
+
         <TableBody>
-          {table.getRowModel().rows.length ? (
+          {isLoading ? (
+            // ── Skeleton rows ──────────────────────────────────────
+            Array.from({ length: SKELETON_ROWS }).map((_, rowIdx) => (
+              <TableRow key={`skeleton-${rowIdx}`} className={rowIdx % 2 === 0 ? "bg-muted/50" : ""}>
+                {Array.from({ length: totalCols }).map((_, colIdx) => (
+                  <TableCell key={`skeleton-cell-${colIdx}`} className="px-4!">
+                    <Skeleton height={16} borderRadius={6} />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : table.getRowModel().rows.length ? (
             table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
-                className={`${index % 2 === 0 ? "bg-muted/50" : ""}`}
+                className={index % 2 === 0 ? "bg-muted/50" : ""}
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
@@ -291,10 +313,7 @@ export function DataTable<TData extends object>({
             ))
           ) : (
             <TableRow>
-              <TableCell
-                colSpan={tanstackColumns.length}
-                className="h-24 text-center"
-              >
+              <TableCell colSpan={totalCols} className="h-24 text-center">
                 لا توجد بيانات
               </TableCell>
             </TableRow>
@@ -302,13 +321,19 @@ export function DataTable<TData extends object>({
         </TableBody>
       </Table>
 
+      {/* Footer count */}
       <div className="text-sm text-muted-foreground">
-        {selectedRows.length} من {table.getFilteredRowModel().rows.length} صف
-        محدد
+        {isLoading ? (
+          <Skeleton width={120} height={14} borderRadius={4} />
+        ) : (
+          <>
+            {selectedRows.length} من {table.getFilteredRowModel().rows.length} صف محدد
+          </>
+        )}
       </div>
 
       {/* Add Modal */}
-      {popup && (
+      {popup && can("Add") && (
         <ResponsiveModal
           open={addDialogOpen}
           onOpenChange={setAddDialogOpen}
@@ -316,17 +341,14 @@ export function DataTable<TData extends object>({
           description="إضافة"
         >
           <FormBody
-            onConfirm={() => {
-              onAdd?.();
-              setAddDialogOpen(false);
-            }}
+            onConfirm={() => { onAdd?.(); setAddDialogOpen(false); }}
             onCancel={() => setAddDialogOpen(false)}
           />
         </ResponsiveModal>
       )}
 
       {/* Edit Modal */}
-      {popup && (
+      {popup && can("Edit") && (
         <ResponsiveModal
           open={!!editTarget}
           onOpenChange={(open) => !open && setEditTarget(null)}
@@ -341,7 +363,7 @@ export function DataTable<TData extends object>({
       )}
 
       {/* View Modal */}
-      {popup && (
+      {popup && can("Read") && (
         <ResponsiveModal
           open={!!viewTarget}
           onOpenChange={(open) => !open && setViewTarget(null)}
@@ -352,39 +374,37 @@ export function DataTable<TData extends object>({
             <div className="space-y-4">
               <ViewBody item={viewTarget} columns={columns} />
               <div className="flex justify-end pt-2">
-                <Button variant="outline" onClick={() => setViewTarget(null)}>
-                  إغلاق
-                </Button>
+                <Button variant="outline" onClick={() => setViewTarget(null)}>إغلاق</Button>
               </div>
             </div>
           )}
         </ResponsiveModal>
       )}
 
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent dir="rtl">
-          <AlertDialogHeader>
-            <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
-            <AlertDialogDescription>
-              هل أنت متأكد من حذف{" "}
-              {deleteTarget.length === 1
-                ? `هذا ${entityLabel}`
-                : `${deleteTarget.length} عناصر`}
-              ؟ لا يمكن التراجع عن هذا الإجراء.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row-reverse gap-2">
-            <AlertDialogCancel>إلغاء</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleConfirmDelete}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              حذف
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      {/* Delete Dialog */}
+      {can("Remove") && (
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent dir="rtl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+              <AlertDialogDescription>
+                هل أنت متأكد من حذف{" "}
+                {deleteTarget.length === 1 ? `هذا ${entityLabel}` : `${deleteTarget.length} عناصر`}
+                ؟ لا يمكن التراجع عن هذا الإجراء.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex-row-reverse gap-2">
+              <AlertDialogCancel>إلغاء</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleConfirmDelete}
+                className="bg-destructive hover:bg-destructive/90"
+              >
+                حذف
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

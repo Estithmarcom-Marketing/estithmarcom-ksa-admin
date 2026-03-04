@@ -6,6 +6,7 @@ import './index.css'
 import App from './App.tsx'
 import { queryClient } from './lib/queryClient.ts'
 import { Toaster } from './components/ui/sonner.tsx'
+import "react-loading-skeleton/dist/skeleton.css";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

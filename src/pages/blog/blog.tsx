@@ -85,7 +85,7 @@ const Blog = () => {
   return (
     <div className="space-y-6">
       <div>
-        <SpecialHeader title="المدونة"/>
+        <SpecialHeader title="المدونة" />
       </div>
 
       <DataTable<BlogType>
@@ -97,6 +97,7 @@ const Blog = () => {
         onDelete={handleDelete}
         formContent={<BlogForm />}
         popup={false}
+        allowedActions={["Add", "Read", "Edit"]}
       />
     </div>
   );
