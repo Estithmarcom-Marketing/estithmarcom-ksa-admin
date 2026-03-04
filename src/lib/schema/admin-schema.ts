@@ -19,7 +19,7 @@ export const addAdminSchema = z.object({
 })
 .refine((data) => data.password === data.password_confirmation, {
   message: "كلمتا السر غير متطابقتين",
-  path: ["confirmPassword"],
+  path: ["password_confirmation"],
 });
 
 export type AdminFormData = z.infer<typeof addAdminSchema>;
