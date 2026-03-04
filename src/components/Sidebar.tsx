@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -14,8 +14,34 @@ import { cn } from "@/lib/utils";
 import { NAV_GROUPS } from "@/config/nav";
 import logo from "@/assets/logo2.webp";
 import { LogOut } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
+import useAxios from "@/hooks/use-axios";
+import { LogoutFn } from "@/lib/api/auth";
+import type { AxiosError } from "axios";
+import { queryKeys } from "@/lib/querykeys/queryKeys";
 
 const AppSidebar = () => {
+  const Axios = useAxios();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { mutate: logout, isPending } = useMutation({
+    mutationFn: () => LogoutFn(Axios),
+    onSuccess: () => {
+      Cookies.remove("mithaq-admin");
+      queryClient.removeQueries({ queryKey: queryKeys.currentUser });
+      toast.success("تم تسجيل الخروج بنجاح");
+      navigate("/login");
+    },
+    onError: (error: AxiosError<{ error: string }>) => {
+      const message =
+        error.response?.data?.error || "حدث خطأ، يرجى المحاولة مرة أخرى";
+      toast.error(message);
+    },
+  });
+
   return (
     <Sidebar side="right" collapsible="icon">
       {/* Header / Logo */}
@@ -58,18 +84,19 @@ const AppSidebar = () => {
                   </NavLink>
                 </SidebarMenuItem>
               ))}
-              {group.label === "الإعدادات"  &&<SidebarMenuItem>
-                <SidebarMenuButton
-                  tooltip={"تسجيل خروج"}
-                  className={"text-red-600 hover:text-red-600"}
-                >
-                  <LogOut
-                    size={18}
-                    strokeWidth={1.8}
-                  />
-                  <span>تسجيل خروج</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>}
+              {group.label === "الإعدادات" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    tooltip={"تسجيل خروج"}
+                    className={"text-red-600 hover:text-red-600"}
+                    disabled={isPending}
+                    onClick={() => logout()}
+                  >
+                    <LogOut size={18} strokeWidth={1.8} />
+                    <span>{isPending ? "جاري الخروج..." : "تسجيل خروج"}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroup>
         ))}
