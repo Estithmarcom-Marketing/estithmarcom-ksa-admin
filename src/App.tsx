@@ -12,6 +12,7 @@ import Comments from "./pages/comments";
 import EditBlog from "./pages/blog/blog-actions";
 import AddBlog from "./pages/blog/add-blog";
 import Login from "./pages/login/login";
+import Admins from "./pages/admins";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="blog/:action/:id" element={<EditBlog />} />
 
           <Route path="team" element={<Team />} />
+          <Route path="admins" element={<Admins />} />
           <Route path="settings" element={<Settings />} />
           <Route path="profile" element={<Profile />} />
           <Route path="requests" element={<Requests />} />

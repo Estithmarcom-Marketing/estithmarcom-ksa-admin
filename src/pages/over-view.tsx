@@ -23,7 +23,7 @@ ChartJS.register(
   LineElement,
   PointElement,
   Tooltip,
-  Filler
+  Filler,
 );
 
 const lineData = monthsNames.map((m, i) => ({
@@ -51,15 +51,22 @@ const stats = [
   { label: "عدد المدونات", value: "134", change: -3, Icon: Rss },
 ];
 
+const mainColor = getComputedStyle(document.documentElement)
+  .getPropertyValue("--main-color")
+  .trim();
+
+const mainDarkerColor = getComputedStyle(document.documentElement)
+  .getPropertyValue("--main-darker-color")
+  .trim();
+
 const barChartData = {
   labels: barData.map((d) => d.service),
   datasets: [
     {
       label: "عدد الطلبات",
       data: barData.map((d) => d.count),
-      backgroundColor: "hsl(var(--primary) / 0.8)",
-      hoverBackgroundColor: "hsl(var(--primary))",
-      borderRadius: 6,
+      backgroundColor: mainColor,
+      hoverBackgroundColor: mainDarkerColor,
       borderSkipped: false,
     },
   ],
@@ -90,10 +97,7 @@ const barChartOptions: ChartOptions<"bar"> = {
   },
 };
 
-function makeLineChartData(
-  key: "طلبات" | "رسائل" | "تعليقات",
-  color: string
-) {
+function makeLineChartData(key: "طلبات" | "رسائل" | "تعليقات", color: string) {
   return {
     labels: lineData.map((d) => d.name),
     datasets: [
@@ -137,9 +141,13 @@ const lineOptions: ChartOptions<"line"> = {
 };
 
 const lineConfigs = [
-  { key: "طلبات" as const, color: "hsl(var(--primary))", title: "الطلبات عبر العام" },
-  { key: "رسائل" as const, color: "#10b981", title: "الرسائل عبر العام" },
-  { key: "تعليقات" as const, color: "#f59e0b", title: "التعليقات عبر العام" },
+  {
+    key: "طلبات" as const,
+    color: "#10b981",
+    title: "الطلبات عبر العام",
+  },
+  { key: "رسائل" as const, color: mainColor, title: "الرسائل عبر العام" },
+  { key: "تعليقات" as const, color: "#ff0000", title: "التعليقات عبر العام" },
 ];
 
 const Overview = () => (
@@ -173,7 +181,10 @@ const Overview = () => (
           </CardHeader>
           <CardContent>
             <div style={{ height: 200 }}>
-              <Line data={makeLineChartData(key, color)} options={lineOptions} />
+              <Line
+                data={makeLineChartData(key, color)}
+                options={lineOptions}
+              />
             </div>
           </CardContent>
         </Card>
