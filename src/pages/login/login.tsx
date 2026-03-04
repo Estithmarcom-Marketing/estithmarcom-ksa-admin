@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import logoImg from "@/assets/logo2.webp";
@@ -8,9 +10,26 @@ import {
   FieldLabel,
   FieldDescription,
 } from "@/components/ui/field";
+import { loginSchema, type LoginFormValues } from "@/lib/schema/login-schema";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
+    console.log(data);
+  };
 
   return (
     <div className="min-h-screen relative">
@@ -28,8 +47,8 @@ export default function Login() {
         <div className="space-y-7 w-full sm:max-w-[400px] relative z-2 bg-white p-6 shadow-lg">
           <h1 className="text-2xl text-center font-bold text-main">تسجيل دخول</h1>
 
-          <form className="space-y-7" dir="rtl">
-            <Field data-invalid={false}>
+          <form className="space-y-7" dir="rtl" onSubmit={handleSubmit(onSubmit)}>
+            <Field data-invalid={!!errors.email}>
               <FieldLabel htmlFor="email">البريد الإلكتروني</FieldLabel>
               <div className="relative">
                 <Mail className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -37,13 +56,20 @@ export default function Login() {
                   id="email"
                   placeholder="Ex: admin@example.com"
                   className="ps-10"
-                  aria-invalid={false}
+                  aria-invalid={!!errors.email}
+                  {...register("email")}
                 />
               </div>
-              <FieldDescription />
+              <FieldDescription>
+                {errors.email && (
+                  <span className="text-destructive text-xs">
+                    {errors.email.message}
+                  </span>
+                )}
+              </FieldDescription>
             </Field>
 
-            <Field data-invalid={false}>
+            <Field data-invalid={!!errors.password}>
               <FieldLabel htmlFor="password">كلمة السر</FieldLabel>
               <div className="relative">
                 <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -52,7 +78,8 @@ export default function Login() {
                   id="password"
                   placeholder="كلمة السر"
                   className="px-10"
-                  aria-invalid={false}
+                  aria-invalid={!!errors.password}
+                  {...register("password")}
                 />
                 <button
                   type="button"
@@ -69,10 +96,18 @@ export default function Login() {
                   )}
                 </button>
               </div>
-              <FieldDescription />
+              <FieldDescription>
+                {errors.password && (
+                  <span className="text-destructive text-xs">
+                    {errors.password.message}
+                  </span>
+                )}
+              </FieldDescription>
             </Field>
 
-            <Button className="w-full">تسجيل</Button>
+            <Button className="w-full" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "جاري التسجيل..." : "تسجيل"}
+            </Button>
           </form>
         </div>
       </div>
