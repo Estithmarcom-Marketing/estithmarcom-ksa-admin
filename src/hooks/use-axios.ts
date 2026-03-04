@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { useMemo } from "react";
+import Cookies from "js-cookie";
 
 export default function useAxios() {
 
@@ -14,6 +15,13 @@ export default function useAxios() {
         if (!(config.data instanceof FormData)) {
           config.headers["Content-Type"] = "application/json";
           config.headers["Accept"] = "application/json";
+        }
+
+        config.headers["Accept-Language"] = "ar";
+
+        const token = Cookies.get("mithaq-admin");
+        if (token) {
+          config.headers["Authorization"] = `Bearer ${token}`;
         }
 
         return config;

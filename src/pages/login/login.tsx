@@ -1,24 +1,33 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import Cookies from "js-cookie";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import logoImg from "@/assets/logo2.webp";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldLabel,
-  FieldDescription,
-} from "@/components/ui/field";
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { loginSchema, type LoginFormValues } from "@/lib/schema/login-schema";
+import useAxios from "@/hooks/use-axios";
+import { LoginFn } from "@/lib/api/auth";
+import type { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
+import { queryKeys } from "@/lib/querykeys/queryKeys";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const Axios = useAxios();
+  const nav = useNavigate()
+  const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -27,9 +36,31 @@ export default function Login() {
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    console.log(data);
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: LoginFormValues) => LoginFn(Axios, values),
+    onSuccess: (data) => {
+      setServerError(null);
+      Cookies.set("mithaq-admin", data.data.token, { expires: 7 });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.currentUser,
+      });
+      toast.success("تم تسجيل الدخول بنجاح");
+      nav('/dashboard', {replace: true})
+    },
+    onError: (error: AxiosError<{ error: string }>) => {
+      const message =
+        error.response?.data?.error || "حدث خطأ، يرجى المحاولة مرة أخرى";
+      setValue("password", "");
+      setServerError(message);
+    },
+  });
+
+  const onSubmit = (values: LoginFormValues) => {
+    setServerError(null);
+    mutate(values);
   };
+
+  const hasPasswordError = !!errors.password || !!serverError;
 
   return (
     <div className="min-h-screen relative">
@@ -45,9 +76,15 @@ export default function Login() {
         <img src={logoImg} alt="لوجو" width={70} />
 
         <div className="space-y-7 w-full sm:max-w-[400px] relative z-2 bg-white p-6 shadow-lg">
-          <h1 className="text-2xl text-center font-bold text-main">تسجيل دخول</h1>
+          <h1 className="text-2xl text-center font-bold text-main">
+            تسجيل دخول
+          </h1>
 
-          <form className="space-y-7" dir="rtl" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="space-y-7"
+            dir="rtl"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <Field data-invalid={!!errors.email}>
               <FieldLabel htmlFor="email">البريد الإلكتروني</FieldLabel>
               <div className="relative">
@@ -69,7 +106,7 @@ export default function Login() {
               </FieldDescription>
             </Field>
 
-            <Field data-invalid={!!errors.password}>
+            <Field data-invalid={hasPasswordError}>
               <FieldLabel htmlFor="password">كلمة السر</FieldLabel>
               <div className="relative">
                 <Lock className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -78,8 +115,10 @@ export default function Login() {
                   id="password"
                   placeholder="كلمة السر"
                   className="px-10"
-                  aria-invalid={!!errors.password}
-                  {...register("password")}
+                  aria-invalid={hasPasswordError}
+                  {...register("password", {
+                    onChange: () => setServerError(null),
+                  })}
                 />
                 <button
                   type="button"
@@ -97,16 +136,16 @@ export default function Login() {
                 </button>
               </div>
               <FieldDescription>
-                {errors.password && (
+                {hasPasswordError && (
                   <span className="text-destructive text-xs">
-                    {errors.password.message}
+                    {serverError || errors.password?.message}
                   </span>
                 )}
               </FieldDescription>
             </Field>
 
-            <Button className="w-full" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "جاري التسجيل..." : "تسجيل"}
+            <Button className="w-full" type="submit" disabled={isPending}>
+              {isPending ? "جاري التسجيل..." : "تسجيل"}
             </Button>
           </form>
         </div>
