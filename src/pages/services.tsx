@@ -17,13 +17,6 @@ const mockServices: ServiceType[] = [
 ];
 
 const Services = () => {
-  const handleAdd = () => {
-    console.log("add triggered");
-  };
-
-  const handleEdit = (row: ServiceType) => {
-    console.log("edit", row);
-  };
 
   const handleDelete = (rows: ServiceType[]) => {
     console.log("delete", rows);
@@ -39,8 +32,6 @@ const Services = () => {
         columns={serviceColumns}
         data={mockServices}
         entityLabel="خدمة"
-        onAdd={handleAdd}
-        onEdit={handleEdit}
         onDelete={handleDelete}
         // formContent={<ServiceForm />}  ← plug in your form later
       />

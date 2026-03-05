@@ -12,7 +12,6 @@ import { Trash2, Pencil, Plus, Eye, ChevronsUpDown, ChevronUp, ChevronDown } fro
 import Skeleton from "react-loading-skeleton";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -83,28 +82,6 @@ export function DataTable<TData extends object>({
   const hasAnyRowAction = can("Read") || can("Edit") || can("Remove");
 
   const tanstackColumns: ColumnDef<TData>[] = [
-    {
-      id: "select",
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(v) => table.toggleAllPageRowsSelected(!!v)}
-          aria-label="تحديد الكل"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(v) => row.toggleSelected(!!v)}
-          aria-label="تحديد الصف"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     ...columns.map(
       (col, idx): ColumnDef<TData> => ({
         id: col.key,
@@ -181,11 +158,6 @@ export function DataTable<TData extends object>({
     .getFilteredSelectedRowModel()
     .rows.map((r) => r.original);
 
-  const handleBulkDelete = () => {
-    setDeleteTarget(selectedRows);
-    setDeleteDialogOpen(true);
-  };
-
   const handleConfirmDelete = () => {
     onDelete?.(deleteTarget);
     setDeleteDialogOpen(false);
@@ -201,22 +173,9 @@ export function DataTable<TData extends object>({
   return (
     <div className="space-y-4 overflow-hidden" dir="rtl">
       {/* Toolbar */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {can("Remove") && selectedRows.length > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleBulkDelete}
-              className="gap-1 flex items-center"
-            >
-              <Trash2 className="h-4 w-4" />
-              حذف المحدد ({selectedRows.length})
-            </Button>
-          )}
-        </div>
+      <div className="flex items-center justify-end">
         {can("Add") && (
-          <Button size="sm" onClick={handleAdd} className="gap-1 flex items-center">
+          <Button size="sm" onClick={handleAdd} className="gap-1 justify-end flex items-center">
             <Plus className="h-4 w-4" />
             إضافة {entityLabel}
           </Button>
