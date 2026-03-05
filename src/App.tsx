@@ -15,34 +15,42 @@ import Admins from "./pages/admins";
 import BlogActions from "./pages/blogs/blog-actions";
 import AddService from "./pages/services/add-service";
 import ServiceActions from "./pages/services/service-actions";
+import LoginGuard from "./auth/LoginGuard";
+import AuthGuard from "./auth/DashboardGuard";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard/overview" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="overview" replace />} />
-          <Route path="overview" element={<Overview />} />
 
-          <Route path="services" element={<Services />} />
-          <Route path="services/new" element={<AddService />} />
-          <Route path="services/:action" element={<Navigate to="/dashboard/services" replace />} />
-          <Route path="services/:action/:id" element={<ServiceActions />} />
+        <Route element={<LoginGuard />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
 
-          <Route path="blog" element={<Blog />} />
-          <Route path="blog/new" element={<AddBlog />} />
-          <Route path="blog/:action" element={<Navigate to="/dashboard/blog" replace />} />
-          <Route path="blog/:action/:id" element={<BlogActions />} />
+        <Route element={<AuthGuard />}>
+          <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route index element={<Navigate to="overview" replace />} />
+            <Route path="overview" element={<Overview />} />
 
-          <Route path="team" element={<Team />} />
-          <Route path="admins" element={<Admins />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="requests" element={<Requests />} />
-          <Route path="messages" element={<ContactMessages />} />
-          <Route path="comments" element={<Comments />} />
+            <Route path="services" element={<Services />} />
+            <Route path="services/new" element={<AddService />} />
+            <Route path="services/:action" element={<Navigate to="/dashboard/services" replace />} />
+            <Route path="services/:action/:id" element={<ServiceActions />} />
+
+            <Route path="blog" element={<Blog />} />
+            <Route path="blog/new" element={<AddBlog />} />
+            <Route path="blog/:action" element={<Navigate to="/dashboard/blog" replace />} />
+            <Route path="blog/:action/:id" element={<BlogActions />} />
+
+            <Route path="team" element={<Team />} />
+            <Route path="admins" element={<Admins />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="requests" element={<Requests />} />
+            <Route path="messages" element={<ContactMessages />} />
+            <Route path="comments" element={<Comments />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
