@@ -124,7 +124,7 @@ export function RichTextEditor({
     <div
       className={cn(
         uid,
-        "w-full bg-white border border-input rounded-md shadow-xs overflow-hidden",
+        "w-full bg-white border border-input shadow-xs overflow-hidden",
         "transition-[color,box-shadow]",
         "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",
         ariaInvalid &&
