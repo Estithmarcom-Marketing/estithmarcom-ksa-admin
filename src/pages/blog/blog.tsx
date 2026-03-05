@@ -70,13 +70,6 @@ export const blogsData: blogType[] = [
 ];
 
 const Blog = () => {
-  const handleAdd = () => {
-    console.log("add triggered");
-  };
-
-  const handleEdit = (row: BlogType) => {
-    console.log("edit", row);
-  };
 
   const handleDelete = (rows: BlogType[]) => {
     console.log("delete", rows);
@@ -92,8 +85,6 @@ const Blog = () => {
         columns={serviceColumns}
         data={blogsData}
         entityLabel="مدونة"
-        onAdd={handleAdd}
-        onEdit={handleEdit}
         onDelete={handleDelete}
         formContent={<BlogForm />}
         popup={false}

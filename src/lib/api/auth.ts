@@ -19,6 +19,6 @@ export async function LogoutFn(axiosInstance: AxiosInstance) {
 }
 
 export async function getUser(axiosInstance: AxiosInstance): Promise<UserType> {
-  const res = await axiosInstance.get<UserType>("/auth/me");
+  const res = await axiosInstance.get<UserType>("/admins/authenticated");
   return res.data;
 }

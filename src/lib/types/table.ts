@@ -11,7 +11,7 @@ export interface DataTableProps<TData extends object> {
   columns?: ColumnConfig[];
   data?: TData[];
   entityLabel?: string;
-  formContent?: (onClose: () => void) => ReactNode;
+  formContent?: ReactNode | ((onClose: () => void) => ReactNode);
   editContent?: (row: TData, onClose: () => void) => ReactNode;
   isLoading?: boolean;
   onDelete?: (rows: TData[]) => void;
