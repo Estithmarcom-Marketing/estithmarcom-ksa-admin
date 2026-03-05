@@ -7,7 +7,7 @@ import {
   FieldDescription,
 } from "./ui/field";
 
-export default function BlogForm({ showActions = false }: { showActions?: boolean }) {
+export default function BlogForm() {
   return (
     <form className="space-y-6">
       <div className="grid grid-cols-2 gap-x-4 gap-y-6">
@@ -62,11 +62,9 @@ export default function BlogForm({ showActions = false }: { showActions?: boolea
         </div>
       </div>
 
-      {showActions && (
         <div>
           <Button type="submit">حفظ</Button>
         </div>
-      )}
     </form>
   );
 }

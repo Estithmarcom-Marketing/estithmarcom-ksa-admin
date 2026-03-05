@@ -1,4 +1,3 @@
-import BlogForm from "@/components/blog-form";
 import { DataTable } from "@/components/DataTable";
 import SpecialHeader from "@/components/SpecialHeader";
 import type { BlogType } from "@/lib/types/blog";
@@ -86,7 +85,6 @@ const Blog = () => {
         data={blogsData}
         entityLabel="مدونة"
         onDelete={handleDelete}
-        formContent={<BlogForm />}
         popup={false}
         allowedActions={["Add", "Read", "Edit"]}
       />

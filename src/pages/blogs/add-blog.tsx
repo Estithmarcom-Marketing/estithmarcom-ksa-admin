@@ -8,7 +8,7 @@ export default function AddBlog() {
         <SpecialHeader title="اضافة مدونة" />
       </div>
       <div>
-        <BlogForm showActions />
+        <BlogForm />
       </div>
     </div>
   );

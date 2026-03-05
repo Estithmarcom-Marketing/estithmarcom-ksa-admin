@@ -33,7 +33,7 @@ const Services = () => {
         data={mockServices}
         entityLabel="خدمة"
         onDelete={handleDelete}
-        // formContent={<ServiceForm />}  ← plug in your form later
+        popup={false}
       />
     </div>
   );

@@ -154,10 +154,6 @@ export function DataTable<TData extends object>({
     state: { rowSelection, sorting },
   });
 
-  const selectedRows = table
-    .getFilteredSelectedRowModel()
-    .rows.map((r) => r.original);
-
   const handleConfirmDelete = () => {
     onDelete?.(deleteTarget);
     setDeleteDialogOpen(false);
@@ -250,17 +246,6 @@ export function DataTable<TData extends object>({
           )}
         </TableBody>
       </Table>
-
-      {/* Footer count */}
-      <div className="text-sm text-muted-foreground">
-        {isLoading ? (
-          <Skeleton width={120} height={14} borderRadius={4} />
-        ) : (
-          <>
-            {selectedRows.length} من {table.getFilteredRowModel().rows.length} صف محدد
-          </>
-        )}
-      </div>
 
       {/* Add Modal */}
       {popup && can("Add") && (

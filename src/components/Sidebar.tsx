@@ -9,6 +9,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS } from "@/config/nav";
@@ -26,6 +27,13 @@ const AppSidebar = () => {
   const Axios = useAxios();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { setOpenMobile } = useSidebar()
+
+  const handleItemClick = () => {
+    if (window.innerWidth < 768) {
+      setOpenMobile(false)
+    }
+  }
 
   const { mutate: logout, isPending } = useMutation({
     mutationFn: () => LogoutFn(Axios),
@@ -43,7 +51,7 @@ const AppSidebar = () => {
   });
 
   return (
-    <Sidebar side="right" collapsible="icon">
+    <Sidebar  side="right" collapsible="icon">
       {/* Header / Logo */}
       <SidebarHeader>
         <div className="flex items-center gap-3 cursor-default">
@@ -67,6 +75,7 @@ const AppSidebar = () => {
                         isActive={isActive}
                         tooltip={label}
                         className={cn("relative", isActive && "bg-main-light!")}
+                        onClick={handleItemClick}
                       >
                         {isActive && (
                           <span className="absolute start-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-main rounded-e-full" />
@@ -90,7 +99,10 @@ const AppSidebar = () => {
                     tooltip={"تسجيل خروج"}
                     className={"text-red-600 hover:text-red-600"}
                     disabled={isPending}
-                    onClick={() => logout()}
+                    onClick={() => {
+                      logout()
+                      handleItemClick()
+                    }}
                   >
                     <LogOut size={18} strokeWidth={1.8} />
                     <span>{isPending ? "جاري الخروج..." : "تسجيل خروج"}</span>
