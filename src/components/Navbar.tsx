@@ -2,10 +2,12 @@ import { useLocation } from "react-router-dom";
 import { Bell } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { resolvePageMeta } from "@/config/page-titles";
+import { useCurrentUser } from "@/lib/querykeys/current-user-query";
 
 const Navbar = () => {
   const location = useLocation();
   const meta = resolvePageMeta(location.pathname);
+  const {data: user} = useCurrentUser()
 
   return (
     <header className="h-14 flex items-center justify-between px-4 gap-4 bg-sidebar backdrop-blur-md border-b">
@@ -30,7 +32,7 @@ const Navbar = () => {
         </button>
 
         <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white bg-main cursor-pointer hover:opacity-90 transition-opacity">
-          مك
+          {user?.name.slice(0,2)}
         </div>
       </div>
     </header>

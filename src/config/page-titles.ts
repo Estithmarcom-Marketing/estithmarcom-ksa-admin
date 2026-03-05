@@ -1,7 +1,7 @@
 export type PageMeta = { title: string; description: string };
 
 export const PAGE_TITLES: Record<string, PageMeta> = {
-  overview: { title: "نظرة عامة", description: "Welcome back, Alex" },
+  overview: { title: "نظرة عامة", description: "مرحبا بك مجدد!" },
   services: { title: "الخدمات", description: "اضافة, تعديل و تصفح الخدمات" },
   blog: { title: "المدونة", description: "اضافة, تعديل و تصفح المدونات" },
   team: { title: "الفريق", description: "اضافة, تعديل و تصفح الفريق" },

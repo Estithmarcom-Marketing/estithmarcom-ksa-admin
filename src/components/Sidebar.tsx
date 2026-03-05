@@ -22,18 +22,20 @@ import useAxios from "@/hooks/use-axios";
 import { LogoutFn } from "@/lib/api/auth";
 import type { AxiosError } from "axios";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
+import { useCurrentUser } from "@/lib/querykeys/current-user-query";
 
 const AppSidebar = () => {
   const Axios = useAxios();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { setOpenMobile } = useSidebar()
+  const { setOpenMobile } = useSidebar();
+  const { data: user } = useCurrentUser();
 
   const handleItemClick = () => {
     if (window.innerWidth < 768) {
-      setOpenMobile(false)
+      setOpenMobile(false);
     }
-  }
+  };
 
   const { mutate: logout, isPending } = useMutation({
     mutationFn: () => LogoutFn(Axios),
@@ -51,7 +53,7 @@ const AppSidebar = () => {
   });
 
   return (
-    <Sidebar  side="right" collapsible="icon">
+    <Sidebar side="right" collapsible="icon">
       {/* Header / Logo */}
       <SidebarHeader>
         <div className="flex items-center gap-3 cursor-default">
@@ -100,8 +102,8 @@ const AppSidebar = () => {
                     className={"text-red-600 hover:text-red-600"}
                     disabled={isPending}
                     onClick={() => {
-                      logout()
-                      handleItemClick()
+                      logout();
+                      handleItemClick();
                     }}
                   >
                     <LogOut size={18} strokeWidth={1.8} />
@@ -120,14 +122,14 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" tooltip="مستخدم">
               <div className="w-8 h-8 rounded-full bg-main text-white flex items-center justify-center text-xs font-bold shrink-0">
-                م
+                {user?.name.slice(0, 2)}
               </div>
               <div className="overflow-hidden text-start">
                 <p className="text-sm font-medium truncate leading-tight">
-                  محمود كامل
+                  {user?.name}
                 </p>
                 <p className="text-xs text-zinc-500 truncate leading-tight">
-                  mahmoudkamel26300@gmail.com
+                  {user?.email}
                 </p>
               </div>
             </SidebarMenuButton>
