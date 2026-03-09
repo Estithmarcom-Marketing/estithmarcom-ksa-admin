@@ -8,7 +8,15 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Trash2, Pencil, Plus, Eye, ChevronsUpDown, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Trash2,
+  Pencil,
+  Plus,
+  Eye,
+  ChevronsUpDown,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
 import { Button } from "@/components/ui/button";
@@ -56,6 +64,18 @@ export function DataTable<TData extends object>({
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TData[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+
+  const handleEditOpenChange = (open: boolean) => {
+    setEditDialogOpen(open);
+    if (!open) setTimeout(() => setEditTarget(null), 300);
+  };
+
+  const handleViewOpenChange = (open: boolean) => {
+    setViewDialogOpen(open);
+    if (!open) setTimeout(() => setViewTarget(null), 300);
+  };
 
   const can = (action: AllowedActionType) => allowedActions.includes(action);
 
@@ -70,13 +90,17 @@ export function DataTable<TData extends object>({
   };
 
   const handleEdit = (row: TData) => {
-    if (popup) setEditTarget(row);
-    else nav(`edit/${getRowId(row)}`);
+    if (popup) {
+      setEditTarget(row);
+      setEditDialogOpen(true);
+    } else nav(`edit/${getRowId(row)}`);
   };
 
   const handleView = (row: TData) => {
-    if (popup) setViewTarget(row);
-    else nav(`read/${getRowId(row)}`);
+    if (popup) {
+      setViewTarget(row);
+      setViewDialogOpen(true);
+    } else nav(`read/${getRowId(row)}`);
   };
 
   const hasAnyRowAction = can("Read") || can("Edit") || can("Remove");
@@ -90,14 +114,17 @@ export function DataTable<TData extends object>({
         enableSorting: idx !== 0,
         cell: ({ row, table }) => {
           if (idx === 0) {
-            return table.getSortedRowModel().rows.findIndex((r) => r.id === row.id) + 1;
+            return (
+              table.getSortedRowModel().rows.findIndex((r) => r.id === row.id) +
+              1
+            );
           }
           const value = (row.original as Record<string, unknown>)[col.key];
           return value !== undefined && value !== null
             ? textTruncate(String(value), 30)
             : "—";
         },
-      })
+      }),
     ),
     ...(hasAnyRowAction
       ? [
@@ -162,7 +189,6 @@ export function DataTable<TData extends object>({
 
   const totalCols = tanstackColumns.length;
 
-  // Resolve formContent — supports both ReactNode and render function
   const resolveFormContent = (onClose: () => void) =>
     typeof formContent === "function" ? formContent(onClose) : formContent;
 
@@ -171,7 +197,11 @@ export function DataTable<TData extends object>({
       {/* Toolbar */}
       <div className="flex items-center justify-end">
         {can("Add") && (
-          <Button size="sm" onClick={handleAdd} className="gap-1 justify-end flex items-center">
+          <Button
+            size="sm"
+            onClick={handleAdd}
+            className="gap-1 justify-end flex items-center"
+          >
             <Plus className="h-4 w-4" />
             إضافة {entityLabel}
           </Button>
@@ -187,13 +217,19 @@ export function DataTable<TData extends object>({
                 const canSort = header.column.getCanSort();
                 const sorted = header.column.getIsSorted();
                 return (
-                  <TableHead key={header.id} className="text-right bg-main-light px-4!">
+                  <TableHead
+                    key={header.id}
+                    className="text-right bg-main-light px-4!"
+                  >
                     {header.isPlaceholder ? null : canSort ? (
                       <button
                         className="flex items-center gap-1 cursor-pointer select-none"
                         onClick={header.column.getToggleSortingHandler()}
                       >
-                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                         {sorted === "asc" ? (
                           <ChevronUp className="h-3.5 w-3.5" />
                         ) : sorted === "desc" ? (
@@ -203,7 +239,10 @@ export function DataTable<TData extends object>({
                         )}
                       </button>
                     ) : (
-                      flexRender(header.column.columnDef.header, header.getContext())
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )
                     )}
                   </TableHead>
                 );
@@ -215,7 +254,10 @@ export function DataTable<TData extends object>({
         <TableBody>
           {isLoading ? (
             Array.from({ length: SKELETON_ROWS }).map((_, rowIdx) => (
-              <TableRow key={`skeleton-${rowIdx}`} className={rowIdx % 2 === 0 ? "bg-muted/50" : ""}>
+              <TableRow
+                key={`skeleton-${rowIdx}`}
+                className={rowIdx % 2 === 0 ? "bg-muted/50" : ""}
+              >
                 {Array.from({ length: totalCols }).map((_, colIdx) => (
                   <TableCell key={`skeleton-cell-${colIdx}`} className="px-4!">
                     <Skeleton height={16} borderRadius={6} />
@@ -260,24 +302,25 @@ export function DataTable<TData extends object>({
       )}
 
       {/* Edit Modal */}
-      {popup && can("Edit") && editTarget && (
+      {popup && can("Edit") && (
         <ResponsiveModal
-          open={!!editTarget}
-          onOpenChange={(open) => !open && setEditTarget(null)}
+          open={editDialogOpen}
+          onOpenChange={handleEditOpenChange}
           title={`تعديل ${entityLabel}`}
           description="تعديل"
         >
-          {editContent
-            ? editContent(editTarget, () => setEditTarget(null))
-            : resolveFormContent(() => setEditTarget(null))}
+          {editTarget &&
+            (editContent
+              ? editContent(editTarget, () => setEditDialogOpen(false))
+              : resolveFormContent(() => setEditDialogOpen(false)))}
         </ResponsiveModal>
       )}
 
       {/* View Modal */}
       {popup && can("Read") && (
         <ResponsiveModal
-          open={!!viewTarget}
-          onOpenChange={(open) => !open && setViewTarget(null)}
+          open={viewDialogOpen}
+          onOpenChange={handleViewOpenChange}
           title={`عرض ${entityLabel}`}
           description="تفاصيل العنصر"
         >
