@@ -14,6 +14,14 @@ const TOOLBAR = [
   [{ list: "bullet" }, { list: "ordered" }],
 ];
 
+// Quill emits "<p><br></p>" (and variants) when the editor is empty.
+// This makes Zod's .min(1) think there's content, so errors never surface.
+// We normalise those cases back to "" before calling onChange.
+function normalizeQuillEmpty(html: string): string {
+  const stripped = html.replace(/<[^>]+>/g, "").trim();
+  return stripped === "" ? "" : html;
+}
+
 interface RichTextEditorProps {
   id?: string;
   value?: string;
@@ -33,8 +41,10 @@ export function RichTextEditor({
   "aria-invalid": ariaInvalid,
   className,
 }: RichTextEditorProps) {
-  // unique class per instance so dir styles never bleed between editors
-  const uid = useMemo(() => `rte-${id ?? Math.random().toString(36).slice(2)}`, [id]);
+  const uid = useMemo(
+    () => `rte-${id ?? Math.random().toString(36).slice(2)}`,
+    [id],
+  );
 
   const styles = `
     /* ── reset quill borders ── */
@@ -129,7 +139,7 @@ export function RichTextEditor({
         "focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50",
         ariaInvalid &&
           "border-destructive focus-within:ring-destructive/20 dark:focus-within:ring-destructive/40",
-        className
+        className,
       )}
     >
       <style>{styles}</style>
@@ -137,7 +147,7 @@ export function RichTextEditor({
         id={id}
         theme="snow"
         value={value}
-        onChange={onChange}
+        onChange={(html) => onChange?.(normalizeQuillEmpty(html))}
         placeholder={placeholder}
         modules={{ toolbar: TOOLBAR }}
       />

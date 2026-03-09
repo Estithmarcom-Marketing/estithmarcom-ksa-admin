@@ -1,12 +1,29 @@
 import ServiceForm from "@/components/service-form";
 import SpecialHeader from "@/components/SpecialHeader";
-import type { ServiceFormValues } from "@/lib/schema/service-schema";
+import useAxios from "@/hooks/use-axios";
+import { addService } from "@/lib/api/service";
+import { queryKeys } from "@/lib/querykeys/queryKeys";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export default function AddService() {
+  const Axios = useAxios();
+  const queryClient = useQueryClient();
 
-  function SubmitService(data: ServiceFormValues){
-    console.log(data);
+  function SubmitService(data: FormData) {
+    addServiceMutation(data);
   }
+
+  const { mutateAsync: addServiceMutation, isPending: isLoadingAddService } = useMutation({
+    mutationFn: (data: FormData) => addService(Axios, data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
+      toast.success("تم إضافة الخدمة بنجاح");
+    },
+    onError: () => {
+      toast.error("حدث خطأ أثناء إضافة الخدمة");
+    },
+  });
 
   return (
     <div className="space-y-6">
@@ -14,7 +31,7 @@ export default function AddService() {
         <SpecialHeader title="اضافة خدمة" />
       </div>
       <div>
-        <ServiceForm onSubmit={(data) => SubmitService(data)} />
+        <ServiceForm isPending={isLoadingAddService} onSubmit={(data) => SubmitService(data)} />
       </div>
     </div>
   );

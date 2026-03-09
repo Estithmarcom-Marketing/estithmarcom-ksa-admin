@@ -119,7 +119,40 @@ export function DataTable<TData extends object>({
               1
             );
           }
+
           const value = (row.original as Record<string, unknown>)[col.key];
+
+          if (col.key === "published") {
+            const isPublished =
+              value === true;
+            return (
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  isPublished
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
+                {isPublished ? "مفعل" : "غير مفعل"}
+              </span>
+            );
+          }
+
+          if (col.key === "image") {
+            return value ? (
+              <img
+                src={String(value)}
+                alt="صورة"
+                className="h-10 w-10 object-cover border border-border"
+                loading="lazy"
+              />
+            ) : (
+              <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center text-muted-foreground text-xs border border-border">
+                لا صورة
+              </div>
+            );
+          }
+
           return value !== undefined && value !== null
             ? textTruncate(String(value), 30)
             : "—";

@@ -9,7 +9,7 @@ const LoadingScreen = () => (
     <img
       src={logoImg}
       alt="Logo"
-      className="w-18 h-18 opacity-95"
+      className="w-18 opacity-95"
       onError={(e) => {
         (e.target as HTMLImageElement).style.display = "none";
         const fallback = document.getElementById("logo-fallback");
