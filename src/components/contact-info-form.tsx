@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -12,20 +13,30 @@ import { Button } from "@/components/ui/button";
 interface ContactInfoFormProps {
   defaultValues?: Partial<ContactInfoValues>;
   onSubmit: (data: ContactInfoValues) => void;
+  isLoading: boolean;
 }
 
 export function ContactInfoForm({
   defaultValues,
   onSubmit,
+  isLoading,
 }: ContactInfoFormProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ContactInfoValues>({
     resolver: zodResolver(contactInfoSchema),
-    defaultValues: defaultValues ?? {},
+    defaultValues: {},
   });
+
+  // Update form when API data arrives
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
@@ -81,7 +92,9 @@ export function ContactInfoForm({
         </Field>
       </div>
 
-      <Button type="submit">حفظ المعلومات</Button>
+      <Button disabled={isLoading} type="submit">
+        {isLoading ? "جاري الحفظ..." : "حفظ المعلومات"}
+      </Button>
     </form>
   );
 }

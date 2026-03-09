@@ -7,7 +7,7 @@ import Team from "./pages/team";
 import Requests from "./pages/requests";
 import ContactMessages from "./pages/contact-messages";
 import Profile from "./pages/profile";
-import Settings from "./pages/settings";
+import Settings from "./pages/mithaq-info";
 import Comments from "./pages/comments";
 import AddBlog from "./pages/blogs/add-blog";
 import Login from "./pages/login/login";

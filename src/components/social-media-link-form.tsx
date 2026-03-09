@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 interface SocialLinksFormProps {
   defaultValues?: Partial<SocialLinksValues>;
   onSubmit: (data: SocialLinksValues) => void;
+  isLoading: boolean;
 }
 
 const socials: {
@@ -45,15 +47,24 @@ const socials: {
 export function SocialLinksForm({
   defaultValues,
   onSubmit,
+  isLoading,
 }: SocialLinksFormProps) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<SocialLinksValues>({
     resolver: zodResolver(socialLinksSchema),
-    defaultValues: defaultValues ?? {},
+    defaultValues: {},
   });
+
+  console.log(defaultValues);
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
@@ -77,7 +88,9 @@ export function SocialLinksForm({
         ))}
       </div>
 
-      <Button type="submit">حفظ الروابط</Button>
+      <Button disabled={isLoading} type="submit">
+        {isLoading ? "جار الحفظ..." : "حفظ الروابط"}
+      </Button>
     </form>
   );
 }
