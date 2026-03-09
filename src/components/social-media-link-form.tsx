@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -52,19 +51,11 @@ export function SocialLinksForm({
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<SocialLinksValues>({
     resolver: zodResolver(socialLinksSchema),
-    defaultValues: {},
+    values: defaultValues as SocialLinksValues,
   });
-
-  console.log(defaultValues);
-  useEffect(() => {
-    if (defaultValues) {
-      reset(defaultValues);
-    }
-  }, [defaultValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">

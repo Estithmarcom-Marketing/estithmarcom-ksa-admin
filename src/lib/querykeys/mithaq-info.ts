@@ -7,7 +7,7 @@ export function useInfo() {
   const Axios = useAxios();
 
   return useQuery({
-    queryKey: queryKeys.admins,
+    queryKey: queryKeys.info,
     queryFn: () => getMithaqInfo(Axios),
   });
 }

@@ -12,6 +12,7 @@ import type {
 } from "@/lib/schema/website-info-schema";
 import type { AxiosResponse } from "axios";
 import Skeleton from "react-loading-skeleton";
+import { toast } from "sonner";
 
 const Settings = () => {
   const { data: info, isLoading } = useInfo();
@@ -21,20 +22,28 @@ const Settings = () => {
   const { mutate: updateContactMutation, isPending: isLoadingUpdateContact } =
     useMutation<AxiosResponse, Error, ContactInfoValues>({
       mutationFn: (data) => updateMithaqContact(Axios, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
           queryKey: queryKeys.info,
         });
+        toast.success("تم حفظ معلومات الموقع بنجاح");
+      },
+      onError: () => {
+        toast.error("حدث خطأ أثناء حفظ معلومات الموقع");
       },
     });
 
   const { mutate: updateLinksMutation, isPending: isLoadingUpdateLinks } =
     useMutation<AxiosResponse, Error, SocialLinksValues>({
       mutationFn: (data) => updateMithaqLinks(Axios, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
           queryKey: queryKeys.info,
         });
+        toast.success("تم حفظ الروابط بنجاح");
+      },
+      onError: () => {
+        toast.error("حدث خطأ أثناء حفظ الروابط");
       },
     });
 

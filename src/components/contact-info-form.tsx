@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -24,19 +23,11 @@ export function ContactInfoForm({
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<ContactInfoValues>({
     resolver: zodResolver(contactInfoSchema),
-    defaultValues: {},
+    values: defaultValues as ContactInfoValues,
   });
-
-  // Update form when API data arrives
-  useEffect(() => {
-    if (defaultValues) {
-      reset(defaultValues);
-    }
-  }, [defaultValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
