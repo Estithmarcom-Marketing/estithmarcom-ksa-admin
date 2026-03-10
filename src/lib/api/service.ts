@@ -14,3 +14,12 @@ export async function getService(axiosInstance: AxiosInstance, id: string | unde
 export async function addService(axiosInstance: AxiosInstance, values: FormData) {
   return await axiosInstance.post("/services", values);
 }
+
+export async function updateService(axiosInstance: AxiosInstance, id: string | undefined, values: FormData) {
+  values.append("_method", "patch");
+  return await axiosInstance.patch(`/services/${id}`, values);
+}
+
+export async function deleteService(axiosInstance: AxiosInstance, id: number) {
+  return await axiosInstance.delete(`/services/${id}`);
+}

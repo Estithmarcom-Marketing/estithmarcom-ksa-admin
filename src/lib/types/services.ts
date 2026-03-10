@@ -32,7 +32,7 @@ export interface ServiceType {
   desc: string;
   published: boolean;
   features: FeaturesType[];
-  faq: FAQType[];
+  faqs: FAQType[];
 }
 
 export interface ServiceResType {

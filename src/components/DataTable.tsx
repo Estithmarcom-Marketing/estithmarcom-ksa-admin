@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/table";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -62,8 +61,9 @@ export function DataTable<TData extends object>({
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TData | null>(null);
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
-  const [deleteTarget, setDeleteTarget] = useState<TData[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<TData | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
@@ -75,6 +75,12 @@ export function DataTable<TData extends object>({
   const handleViewOpenChange = (open: boolean) => {
     setViewDialogOpen(open);
     if (!open) setTimeout(() => setViewTarget(null), 300);
+  };
+
+  const handleDeleteOpenChange = (open: boolean) => {
+    if (isDeleting) return;
+    setDeleteDialogOpen(open);
+    if (!open) setTimeout(() => setDeleteTarget(null), 300);
   };
 
   const can = (action: AllowedActionType) => allowedActions.includes(action);
@@ -123,8 +129,7 @@ export function DataTable<TData extends object>({
           const value = (row.original as Record<string, unknown>)[col.key];
 
           if (col.key === "published") {
-            const isPublished =
-              value === true;
+            const isPublished = value === true;
             return (
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -189,7 +194,7 @@ export function DataTable<TData extends object>({
                   <button
                     className="text-destructive hover:text-destructive cursor-pointer"
                     onClick={() => {
-                      setDeleteTarget([row.original]);
+                      setDeleteTarget(row.original);
                       setDeleteDialogOpen(true);
                     }}
                     title="حذف"
@@ -214,10 +219,18 @@ export function DataTable<TData extends object>({
     state: { rowSelection, sorting },
   });
 
-  const handleConfirmDelete = () => {
-    onDelete?.(deleteTarget);
-    setDeleteDialogOpen(false);
-    table.resetRowSelection();
+  // Awaits the promise returned by onDelete before closing
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await onDelete?.(deleteTarget);
+      setDeleteDialogOpen(false);
+      setTimeout(() => setDeleteTarget(null), 300);
+    } finally {
+      // Always clear loading — on error the dialog stays open
+      setIsDeleting(false);
+    }
   };
 
   const totalCols = tanstackColumns.length;
@@ -372,26 +385,30 @@ export function DataTable<TData extends object>({
 
       {/* Delete Dialog */}
       {can("Remove") && (
-        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialog open={deleteDialogOpen} onOpenChange={handleDeleteOpenChange}>
           <AlertDialogContent dir="rtl">
             <AlertDialogHeader>
               <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
               <AlertDialogDescription>
-                هل أنت متأكد من حذف{" "}
-                {deleteTarget.length === 1
-                  ? `هذا ${entityLabel}`
-                  : `${deleteTarget.length} عناصر`}
-                ؟ لا يمكن التراجع عن هذا الإجراء.
+                هل أنت متأكد من حذف هذا {entityLabel}؟ لا يمكن التراجع عن هذا
+                الإجراء.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-row-reverse gap-2">
-              <AlertDialogCancel>إلغاء</AlertDialogCancel>
-              <AlertDialogAction
+              <AlertDialogCancel disabled={isDeleting}>إلغاء</AlertDialogCancel>
+              <Button
+                className="flex items-center gap-1"
+                disabled={isDeleting}
                 onClick={handleConfirmDelete}
-                className="bg-destructive hover:bg-destructive/90"
               >
-                حذف
-              </AlertDialogAction>
+                {isDeleting ? (
+                  <>
+                    جارٍ الحذف...
+                  </>
+                ) : (
+                  "حذف"
+                )}
+              </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

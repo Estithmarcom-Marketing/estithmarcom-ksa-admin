@@ -70,7 +70,7 @@ export const blogsData: blogType[] = [
 
 const Blog = () => {
 
-  const handleDelete = (rows: BlogType[]) => {
+  const handleDelete = (rows: BlogType) => {
     console.log("delete", rows);
   };
 

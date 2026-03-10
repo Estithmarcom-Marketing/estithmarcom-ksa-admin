@@ -43,9 +43,8 @@ const Admins = () => {
     // await updateAdmin(row.id, data)
   };
 
-  const handleDelete = (rows: UserType[]) => {
+  const handleDelete = (rows: UserType) => {
     console.log("delete", rows);
-    // await deleteAdmins(rows.map(r => r.id))
   };
 
   const adminData = admins?.admins ?? [];

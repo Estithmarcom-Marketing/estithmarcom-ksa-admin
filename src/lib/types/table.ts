@@ -14,7 +14,7 @@ export interface DataTableProps<TData extends object> {
   formContent?: ReactNode | ((onClose: () => void) => ReactNode);
   editContent?: (row: TData, onClose: () => void) => ReactNode;
   isLoading?: boolean;
-  onDelete?: (rows: TData[]) => void;
+  onDelete?: (rows: TData) => void;
   popup?: boolean;
   allowedActions?: AllowedActionType[];
 }
