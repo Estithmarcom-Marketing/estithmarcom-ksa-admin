@@ -121,12 +121,47 @@ export function RichTextEditor({
       text-align: ${dir === "rtl" ? "right" : "left"};
     }
 
+    /* ── RTL list fixes ── */
+    .${uid} .ql-editor[dir="rtl"] ul,
+    .${uid} .ql-editor[dir="rtl"] ol {
+      padding-left: 0 !important;
+      padding-right: 1.5em !important;
+    }
+
+    .${uid} .ql-editor[dir="rtl"] li {
+      padding-left: 0 !important;
+      padding-right: 0.5em !important;
+    }
+
+    .${uid} .ql-editor[dir="rtl"] li::before {
+      margin-left: unset !important;
+      margin-right: -1.5em !important;
+      text-align: right !important;
+      float: right !important;
+    }
+
+    /* ── RTL indented levels ── */
+    .${uid} .ql-editor[dir="rtl"] .ql-indent-1 {
+      padding-right: 3em !important;
+      padding-left: 0 !important;
+    }
+    .${uid} .ql-editor[dir="rtl"] .ql-indent-2 {
+      padding-right: 4.5em !important;
+      padding-left: 0 !important;
+    }
+    .${uid} .ql-editor[dir="rtl"] .ql-indent-1::before {
+      margin-right: -3em !important;
+    }
+    .${uid} .ql-editor[dir="rtl"] .ql-indent-2::before {
+      margin-right: -4.5em !important;
+    }
+
     /* ── placeholder ── */
     .${uid} .ql-editor.ql-blank::before {
       color: #94a3b8;
       font-style: normal;
       left:  ${dir === "rtl" ? "unset" : "12px"};
-      right: ${dir === "rtl" ? "12px"  : "unset"};
+      right: ${dir === "rtl" ? "12px" : "unset"};
     }
   `;
 

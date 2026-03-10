@@ -1,32 +1,8 @@
+import { RichRow, Row } from "@/components/read-row";
 import type { ServiceType } from "@/lib/types/services";
 
 interface ReadServiceProps {
   service: ServiceType;
-}
-
-function Row({ label, value, fullWidth }: { label: string; value?: string | null; fullWidth?: boolean }) {
-  return (
-    <div className={`flex flex-col gap-0.5 py-3 border-b border-input last:border-b-0 ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
-      <span className="text-sm text-[#666]">{value || "—"}</span>
-    </div>
-  );
-}
-
-function RichRow({ label, value, fullWidth }: { label: string; value?: string | null; fullWidth?: boolean }) {
-  return (
-    <div className={`flex flex-col gap-0.5 py-3 border-b border-input last:border-b-0 ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
-      {value ? (
-        <div
-          className="text-sm text-[#666] prose prose-sm max-w-none"
-          dangerouslySetInnerHTML={{ __html: value }}
-        />
-      ) : (
-        <span className="text-sm text-[#666]">—</span>
-      )}
-    </div>
-  );
 }
 
 function SectionTitle({ title }: { title: string }) {
