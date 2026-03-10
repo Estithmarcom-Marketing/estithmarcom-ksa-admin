@@ -4,18 +4,18 @@ interface ReadServiceProps {
   service: ServiceType;
 }
 
-function Row({ label, value }: { label: string; value?: string | null }) {
+function Row({ label, value, fullWidth }: { label: string; value?: string | null; fullWidth?: boolean }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className={`flex flex-col gap-0.5 py-3 border-b border-input last:border-b-0 ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
       <span className="text-sm font-semibold text-foreground">{label}</span>
       <span className="text-sm text-[#666]">{value || "—"}</span>
     </div>
   );
 }
 
-function RichRow({ label, value }: { label: string; value?: string | null }) {
+function RichRow({ label, value, fullWidth }: { label: string; value?: string | null; fullWidth?: boolean }) {
   return (
-    <div className="flex flex-col gap-0.5">
+    <div className={`flex flex-col gap-0.5 py-3 border-b border-input last:border-b-0 ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}>
       <span className="text-sm font-semibold text-foreground">{label}</span>
       {value ? (
         <div
@@ -46,12 +46,12 @@ export default function ReadService({ service }: ReadServiceProps) {
       {/* Basic Info */}
       <div>
         <SectionTitle title="المعلومات الأساسية" />
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
 
           <Row label="الحالة" value={isPublished ? "مفعّل" : "غير مفعّل"} />
 
           {service.image && (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 py-3 border-b border-input">
               <span className="text-sm font-semibold text-foreground">صورة الخدمة</span>
               <img
                 src={typeof service.image === "string" ? service.image : URL.createObjectURL(service.image)}
@@ -65,8 +65,8 @@ export default function ReadService({ service }: ReadServiceProps) {
           <Row label="العنوان (انجليزي)" value={service.title_en} />
           <Row label="وصف قصير (عربي)" value={service.short_description_ar} />
           <Row label="وصف قصير (انجليزي)" value={service.short_description_en} />
-          <RichRow label="وصف طويل (عربي)" value={service.long_description_ar} />
-          <RichRow label="وصف طويل (انجليزي)" value={service.long_description_en} />
+          <RichRow label="وصف طويل (عربي)" value={service.long_description_ar} fullWidth />
+          <RichRow label="وصف طويل (انجليزي)" value={service.long_description_en} fullWidth />
         </div>
       </div>
 
@@ -78,12 +78,14 @@ export default function ReadService({ service }: ReadServiceProps) {
         ) : (
           <div className="space-y-4">
             {service.features.map((feature, index) => (
-              <div key={feature.id} className="space-y-2">
+              <div key={feature.id}>
                 <span className="text-xs text-muted-foreground">#{index + 1}</span>
-                <Row label="الميزة (عربي)" value={feature.title_ar} />
-                <Row label="الميزة (انجليزي)" value={feature.title_en} />
-                <Row label="الحالة" value={feature.published === "1" ? "مفعّل" : "غير مفعّل"} />
-                {index < service.features.length - 1 && <hr className="border-input" />}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 mt-1">
+                  <Row label="الميزة (عربي)" value={feature.title_ar} />
+                  <Row label="الميزة (انجليزي)" value={feature.title_en} />
+                  <Row label="الحالة" value={feature.published === "1" ? "مفعّل" : "غير مفعّل"} />
+                </div>
+                {index < service.features.length - 1 && <hr className="border-input mt-2" />}
               </div>
             ))}
           </div>
@@ -98,14 +100,16 @@ export default function ReadService({ service }: ReadServiceProps) {
         ) : (
           <div className="space-y-4">
             {service.faqs.map((faq, index) => (
-              <div key={faq.id} className="space-y-2">
+              <div key={faq.id}>
                 <span className="text-xs text-muted-foreground">#{index + 1}</span>
-                <Row label="السؤال (عربي)" value={faq.question_ar} />
-                <Row label="السؤال (انجليزي)" value={faq.question_en} />
-                <Row label="الجواب (عربي)" value={faq.answer_ar} />
-                <Row label="الجواب (انجليزي)" value={faq.answer_en} />
-                <Row label="الحالة" value={faq.published === "1" ? "مفعّل" : "غير مفعّل"} />
-                {index < service.faqs.length - 1 && <hr className="border-input" />}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 mt-1">
+                  <Row label="السؤال (عربي)" value={faq.question_ar} />
+                  <Row label="السؤال (انجليزي)" value={faq.question_en} />
+                  <Row label="الجواب (عربي)" value={faq.answer_ar} />
+                  <Row label="الجواب (انجليزي)" value={faq.answer_en} />
+                  <Row label="الحالة" value={faq.published === "1" ? "مفعّل" : "غير مفعّل"} />
+                </div>
+                {index < service.faqs.length - 1 && <hr className="border-input mt-2" />}
               </div>
             ))}
           </div>
@@ -115,7 +119,7 @@ export default function ReadService({ service }: ReadServiceProps) {
       {/* SEO */}
       <div>
         <SectionTitle title="محركات البحث (SEO)" />
-        <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
           <Row label="عنوان الصفحة (عربي)" value={service.meta_title_ar} />
           <Row label="عنوان الصفحة (انجليزي)" value={service.meta_title_en} />
           <Row label="وصف الصفحة (عربي)" value={service.meta_description_ar} />

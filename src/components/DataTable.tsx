@@ -41,6 +41,7 @@ import type { AllowedActionType, DataTableProps } from "@/lib/types/table";
 import { textTruncate } from "@/helper/text-truncate";
 import { ResponsiveModal } from "./responsive-model";
 import { ViewBody } from "./ViewBody";
+import { formatDate } from "@/helper/date-format";
 
 const SKELETON_ROWS = 5;
 
@@ -140,6 +141,14 @@ export function DataTable<TData extends object>({
               >
                 {isPublished ? "مفعل" : "غير مفعل"}
               </span>
+            );
+          }
+
+          if (col.key === "created_at") {
+            return (
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium`}
+              >{formatDate(value as any)}</span>
             );
           }
 
@@ -385,7 +394,10 @@ export function DataTable<TData extends object>({
 
       {/* Delete Dialog */}
       {can("Remove") && (
-        <AlertDialog open={deleteDialogOpen} onOpenChange={handleDeleteOpenChange}>
+        <AlertDialog
+          open={deleteDialogOpen}
+          onOpenChange={handleDeleteOpenChange}
+        >
           <AlertDialogContent dir="rtl">
             <AlertDialogHeader>
               <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
@@ -401,13 +413,7 @@ export function DataTable<TData extends object>({
                 disabled={isDeleting}
                 onClick={handleConfirmDelete}
               >
-                {isDeleting ? (
-                  <>
-                    جارٍ الحذف...
-                  </>
-                ) : (
-                  "حذف"
-                )}
+                {isDeleting ? <>جارٍ الحذف...</> : "حذف"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
