@@ -33,6 +33,7 @@ export interface ServiceType {
   published: boolean;
   features: FeaturesType[];
   faqs: FAQType[];
+  created_at: string
 }
 
 export interface ServiceResType {

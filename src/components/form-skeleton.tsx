@@ -50,7 +50,7 @@ function RichEditorFieldSkeleton() {
   );
 }
 
-export function ServiceFormSkeleton() {
+export function FormSkeleton() {
   return (
     <div className="space-y-4">
       {/* Basic Info Section */}

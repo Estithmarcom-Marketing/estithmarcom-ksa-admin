@@ -3,4 +3,5 @@ export const queryKeys = {
   admins: ["admins"] as const,
   info: ["info"] as const,
   services:    (id?: string)    => id ? ["services", id] : ["services"],
+  blogs:    (id?: string)    => id ? ["blogs", id] : ["blogs"],
 };

@@ -2,13 +2,13 @@ import SpecialHeader from "@/components/SpecialHeader";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ServiceForm from "@/components/service-form";
-import { ServiceFormSkeleton } from "@/components/service-form-skeleton";
 import ReadService from "./read-service";
 import useAxios from "@/hooks/use-axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { getService, updateService } from "@/lib/api/service";
 import { toast } from "sonner";
+import { FormSkeleton } from "@/components/form-skeleton";
 
 export default function ServiceActions() {
   const nav = useNavigate();
@@ -52,7 +52,7 @@ export default function ServiceActions() {
       <div>
         {action === "edit" ? (
           isLoading ? (
-            <ServiceFormSkeleton />
+            <FormSkeleton />
           ) : (
             <ServiceForm
               initial={
@@ -82,7 +82,7 @@ export default function ServiceActions() {
         ) : null}
         {action === "read" && (
           isLoading ? (
-            <ServiceFormSkeleton />
+            <FormSkeleton />
           ) : service ? (
             <ReadService service={service} />
           ) : null
