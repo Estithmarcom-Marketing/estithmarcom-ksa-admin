@@ -17,7 +17,7 @@ export async function addService(axiosInstance: AxiosInstance, values: FormData)
 
 export async function updateService(axiosInstance: AxiosInstance, id: string | undefined, values: FormData) {
   values.append("_method", "patch");
-  return await axiosInstance.patch(`/services/${id}`, values);
+  return await axiosInstance.post(`/services/${id}`, values);
 }
 
 export async function deleteService(axiosInstance: AxiosInstance, id: number) {
