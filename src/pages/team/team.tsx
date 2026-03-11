@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/DataTable";
+import Pagination from "@/components/Pagination";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
 import { deleteMember } from "@/lib/api/team";
@@ -63,6 +64,7 @@ const Team = () => {
         popup={false}
         allowedActions={["Add", "Read", "Edit", "Remove"]}
       />
+      {members?.meta && <Pagination meta={members.meta} />}
     </div>
   );
 };

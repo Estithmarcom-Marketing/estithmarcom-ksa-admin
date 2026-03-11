@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/DataTable";
+import Pagination from "@/components/Pagination";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
 import { deleteService } from "@/lib/api/service";
@@ -62,6 +63,7 @@ const Services = () => {
         onDelete={handleDelete}
         popup={false}
       />
+      {services?.meta && <Pagination meta={services.meta} />}
     </div>
   );
 };

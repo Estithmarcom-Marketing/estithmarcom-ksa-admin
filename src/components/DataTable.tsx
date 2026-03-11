@@ -248,7 +248,7 @@ export function DataTable<TData extends object>({
     typeof formContent === "function" ? formContent(onClose) : formContent;
 
   return (
-    <div className="space-y-4 overflow-hidden" dir="rtl">
+    <div className="space-y-4 mb-0 overflow-hidden" dir="rtl">
       {/* Toolbar */}
       <div className="flex items-center justify-end">
         {can("Add") && (
@@ -264,7 +264,7 @@ export function DataTable<TData extends object>({
       </div>
 
       {/* Table */}
-      <Table>
+      <Table className="min-h-[661px]">
         <TableHeader>
           {table.getHeaderGroups().map((hg) => (
             <TableRow key={hg.id}>

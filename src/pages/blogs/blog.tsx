@@ -1,4 +1,5 @@
 import { DataTable } from "@/components/DataTable";
+import Pagination from "@/components/Pagination";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
 import { deleteBlog } from "@/lib/api/blog";
@@ -63,6 +64,7 @@ const Blog = () => {
         popup={false}
         allowedActions={["Add", "Read", "Edit", "Remove"]}
       />
+      {blogs?.meta && <Pagination meta={blogs.meta} />}
     </div>
   );
 };
