@@ -5,11 +5,13 @@ import { addService } from "@/lib/api/service";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 export default function AddService() {
   const Axios = useAxios();
   const queryClient = useQueryClient();
+  const nav = useNavigate()
 
   function SubmitService(data: FormData) {
     addServiceMutation(data);
@@ -20,6 +22,7 @@ export default function AddService() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
       toast.success("تم إضافة الخدمة بنجاح");
+      nav("/dashboard/services")
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");

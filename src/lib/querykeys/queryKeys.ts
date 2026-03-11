@@ -4,4 +4,5 @@ export const queryKeys = {
   info: ["info"] as const,
   services:    (id?: string)    => id ? ["services", id] : ["services"],
   blogs:    (id?: string)    => id ? ["blogs", id] : ["blogs"],
+  members:    (id?: string)    => id ? ["members", id] : ["members"],
 };

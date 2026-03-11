@@ -27,6 +27,7 @@ export default function BlogActions() {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: queryKeys.blogs() });
         toast.success("تم تحديث المدونة بنجاح");
+        nav("/dashboard/blog")
       },
       onError: (err: AxiosError<{ message: string }>) => {
         toast.error(err.response?.data?.message || "حدث خطأ ما");

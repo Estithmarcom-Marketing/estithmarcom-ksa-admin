@@ -26,6 +26,7 @@ export default function ServiceActions() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
       toast.success("تم تحديث الخدمة بنجاح");
+      nav("/dashboard/services")
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");

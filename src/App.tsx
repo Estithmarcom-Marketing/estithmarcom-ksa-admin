@@ -3,7 +3,6 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Overview from "./pages/over-view";
 import Services from "./pages/services/services";
 import Blog from "./pages/blogs/blog";
-import Team from "./pages/team";
 import Requests from "./pages/requests";
 import ContactMessages from "./pages/contact-messages";
 import Profile from "./pages/profile";
@@ -17,6 +16,9 @@ import AddService from "./pages/services/add-service";
 import ServiceActions from "./pages/services/service-actions";
 import LoginGuard from "./auth/LoginGuard";
 import AuthGuard from "./auth/DashboardGuard";
+import Team from "./pages/team/team";
+import AddMember from "./pages/team/add-member";
+import MemberActions from "./pages/team/member-actions";
 
 const App = () => {
   return (
@@ -44,6 +46,10 @@ const App = () => {
             <Route path="blog/:action/:id" element={<BlogActions />} />
 
             <Route path="team" element={<Team />} />
+            <Route path="team/new" element={<AddMember />} />
+            <Route path="team/:action" element={<Navigate to="/dashboard/team" replace />} />
+            <Route path="team/:action/:id" element={<MemberActions />} />
+
             <Route path="admins" element={<Admins />} />
             <Route path="settings" element={<Settings />} />
             <Route path="profile" element={<Profile />} />

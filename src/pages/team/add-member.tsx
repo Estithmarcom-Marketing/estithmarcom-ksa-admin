@@ -1,28 +1,28 @@
-import BlogForm from "@/components/blog-form";
+import MemberForm from "@/components/member-form";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
-import { addBlog } from "@/lib/api/blog";
+import { addMember } from "@/lib/api/team";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-export default function AddBlog() {
+export default function AddMember() {
   const Axios = useAxios();
   const queryClient = useQueryClient();
   const nav = useNavigate()
 
-  function SubmitBlog(data: FormData) {
-    addBlogMutation(data);
+  function SubmitMember(data: FormData) {
+    addMemberMutation(data);
   }
 
-  const { mutateAsync: addBlogMutation, isPending: isLoadingAddBlog } = useMutation({
-    mutationFn: (data: FormData) => addBlog(Axios, data),
+  const { mutateAsync: addMemberMutation, isPending: isLoadingAddBlog } = useMutation({
+    mutationFn: (data: FormData) => addMember(Axios, data),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.blogs() });
-      toast.success("تم إضافة المدونة بنجاح");
-      nav("/dashboard/blog")
+      await queryClient.invalidateQueries({ queryKey: queryKeys.members() });
+      toast.success("تم إضافة العضو بنجاح");
+      nav("/dashboard/team")
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");
@@ -35,7 +35,7 @@ export default function AddBlog() {
         <SpecialHeader title="اضافة مدونة" />
       </div>
       <div>
-        <BlogForm isPending={isLoadingAddBlog} onSubmit={(data) => SubmitBlog(data)} />
+        <MemberForm isPending={isLoadingAddBlog} onSubmit={(data) => SubmitMember(data)} />
       </div>
     </div>
   );

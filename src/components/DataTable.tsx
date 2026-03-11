@@ -129,7 +129,7 @@ export function DataTable<TData extends object>({
 
           const value = (row.original as Record<string, unknown>)[col.key];
 
-          if (col.key === "published") {
+          if (col.key === "published" || col.key === "active") {
             const isPublished = value === true;
             return (
               <span
