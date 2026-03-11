@@ -15,6 +15,7 @@ import { LoginFn } from "@/lib/api/auth";
 import type { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
+import { usePageTitle } from "@/hooks/use-page-title";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +23,7 @@ export default function Login() {
   const Axios = useAxios();
   const nav = useNavigate()
   const queryClient = useQueryClient();
+  usePageTitle("تسجيل دخول")
 
   const {
     register,
