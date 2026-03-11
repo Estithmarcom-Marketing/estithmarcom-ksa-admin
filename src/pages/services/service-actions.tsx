@@ -77,6 +77,7 @@ export default function ServiceActions() {
                     }
                   : undefined
               }
+              edit
               onSubmit={(data) => HandleEdit(data)}
               isPending={isLoadingUpdateService}
             />

@@ -70,6 +70,7 @@ export default function MemberActions() {
                     }
                   : undefined
               }
+              edit
               onSubmit={(data) => HandleEdit(data)}
               isPending={isLoadingUpdateMember}
             />

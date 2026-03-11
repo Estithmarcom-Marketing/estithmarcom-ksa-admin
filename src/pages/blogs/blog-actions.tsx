@@ -80,6 +80,7 @@ export default function BlogActions() {
               }
               onSubmit={(data) => HandleEdit(data)}
               isPending={isLoadingUpdateBlog}
+              edit
             />
           )
         ) : null}

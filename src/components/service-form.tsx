@@ -22,6 +22,7 @@ interface ServiceFormProps {
   initial?: Record<string, any>;
   onSubmit?: (formData: FormData) => void;
   isPending?: boolean;
+  edit?: boolean
 }
 
 function toFormData(values: ServiceFormValues): FormData {
@@ -64,6 +65,7 @@ export default function ServiceForm({
   initial = {},
   onSubmit,
   isPending,
+  edit = false
 }: ServiceFormProps) {
   const {
     register,
@@ -142,6 +144,7 @@ export default function ServiceForm({
                     invalid={!!errors.image}
                     placeholder="اسحب صورة الخدمة هنا أو اضغط للاختيار"
                     onChange={field.onChange}
+                    edit={edit}
                   />
                 )}
               />

@@ -11,6 +11,7 @@ interface ImageUploaderProps {
   className?: string;
   disabled?: boolean;
   invalid?: boolean;
+  edit?: boolean;
 }
 
 export function ImageUploader({
@@ -18,6 +19,7 @@ export function ImageUploader({
   onChange,
   placeholder = "اسحب الصورة هنا أو اضغط للاختيار",
   className,
+  edit,
   disabled = false,
   invalid = false,
 }: ImageUploaderProps) {
@@ -39,7 +41,6 @@ export function ImageUploader({
     },
     [disabled, onChange],
   );
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleFile(e.target.files?.[0] ?? null);
     e.target.value = "";
@@ -111,7 +112,7 @@ export function ImageUploader({
                 <span className="text-xs font-medium">تغيير الصورة</span>
               </div>
             </div>
-            {!disabled && (
+            {!disabled && !edit && (
               <button
                 type="button"
                 onClick={handleClear}

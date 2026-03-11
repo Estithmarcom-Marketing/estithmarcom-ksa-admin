@@ -18,6 +18,7 @@ interface BlogFormProps {
   initial?: Record<string, any>;
   onSubmit?: (formData: FormData) => void;
   isPending?: boolean;
+  edit?: boolean
 }
 
 function toFormData(values: BlogFormValues): FormData {
@@ -48,6 +49,7 @@ export default function BlogForm({
   initial = {},
   onSubmit,
   isPending,
+  edit = false
 }: BlogFormProps) {
   const {
     register,
@@ -118,6 +120,7 @@ export default function BlogForm({
                     invalid={!!errors.image}
                     placeholder="اسحب صورة المقال هنا أو اضغط للاختيار"
                     onChange={field.onChange}
+                    edit={edit}
                   />
                 )}
               />

@@ -16,6 +16,7 @@ interface MemberFormProps {
   initial?: Record<string, any>;
   onSubmit?: (formData: FormData) => void;
   isPending?: boolean;
+  edit?: boolean
 }
 
 function toFormData(values: MemberFormValues): FormData {
@@ -38,6 +39,7 @@ export default function MemberForm({
   initial = {},
   onSubmit,
   isPending,
+  edit = false
 }: MemberFormProps) {
   const {
     register,
@@ -99,6 +101,7 @@ export default function MemberForm({
                     invalid={!!errors.image}
                     placeholder="اسحب صورة العضو هنا أو اضغط للاختيار"
                     onChange={field.onChange}
+                    edit={edit}
                   />
                 )}
               />
