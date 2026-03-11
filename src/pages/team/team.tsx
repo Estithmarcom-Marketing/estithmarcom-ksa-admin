@@ -8,6 +8,7 @@ import type { ColumnConfig } from "@/lib/types/table";
 import type { MemberType } from "@/lib/types/team";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const teamColumns: ColumnConfig[] = [
@@ -20,16 +21,22 @@ const teamColumns: ColumnConfig[] = [
 ];
 
 const Team = () => {
-  const { data: members, isLoading: isLoadingServices } = useMembers();
+  const { data: members, isLoading: isLoadingMembers } = useMembers();
   const Axios = useAxios();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? Number(pageParam) : undefined;
 
   const membersData = members?.members ?? [];
 
   const { mutateAsync: removeMemberMutation } = useMutation({
     mutationFn: (id: number) => deleteMember(Axios, id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.members() });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.members(undefined, page),
+      });
       toast.success("تم حذف العضو بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
@@ -52,7 +59,7 @@ const Team = () => {
         data={membersData}
         entityLabel="عضو"
         onDelete={handleDelete}
-        isLoading={isLoadingServices}
+        isLoading={isLoadingMembers}
         popup={false}
         allowedActions={["Add", "Read", "Edit", "Remove"]}
       />

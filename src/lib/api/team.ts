@@ -1,8 +1,13 @@
 import type { AxiosInstance } from "axios";
 import type { MemberResType, MemberType } from "../types/team";
 
-export async function getMembers(axiosInstance: AxiosInstance): Promise<MemberResType> {
-  const res = await axiosInstance.get("/members");
+export async function getMembers(
+  axiosInstance: AxiosInstance,
+  page?: number
+): Promise<MemberResType> {
+  const res = await axiosInstance.get("/members", {
+    params: page ? { page } : undefined,
+  });
   return res.data.data;
 }
 

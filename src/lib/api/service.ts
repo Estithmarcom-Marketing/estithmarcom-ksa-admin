@@ -1,8 +1,13 @@
 import type { AxiosInstance } from "axios";
 import type { ServiceResType, ServiceType } from "../types/services";
 
-export async function getServices(axiosInstance: AxiosInstance): Promise<ServiceResType> {
-  const res = await axiosInstance.get("/services");
+export async function getServices(
+  axiosInstance: AxiosInstance,
+  page?: number
+): Promise<ServiceResType> {
+  const res = await axiosInstance.get("/services", {
+    params: page ? { page } : undefined,
+  });
   return res.data.data;
 }
 

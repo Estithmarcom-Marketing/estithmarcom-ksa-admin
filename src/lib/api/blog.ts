@@ -1,8 +1,13 @@
 import type { AxiosInstance } from "axios";
 import type { BlogResType, BlogType } from "../types/blog";
 
-export async function getBlogs(axiosInstance: AxiosInstance): Promise<BlogResType> {
-  const res = await axiosInstance.get("/blogs");
+export async function getBlogs(
+  axiosInstance: AxiosInstance,
+  page?: number
+): Promise<BlogResType> {
+  const res = await axiosInstance.get("/blogs", {
+    params: page ? { page } : undefined,
+  });
   return res.data.data;
 }
 

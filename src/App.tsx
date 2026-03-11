@@ -51,6 +51,7 @@ const App = () => {
             <Route path="team/:action/:id" element={<MemberActions />} />
 
             <Route path="admins" element={<Admins />} />
+            
             <Route path="settings" element={<Settings />} />
             <Route path="profile" element={<Profile />} />
             <Route path="requests" element={<Requests />} />

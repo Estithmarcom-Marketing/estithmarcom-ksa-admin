@@ -8,6 +8,7 @@ import type { BlogType } from "@/lib/types/blog";
 import type { ColumnConfig } from "@/lib/types/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const serviceColumns: ColumnConfig[] = [
@@ -19,19 +20,23 @@ const serviceColumns: ColumnConfig[] = [
   { key: "created_at", name: "تاريخ الإنشاء" },
 ];
 
-
-
 const Blog = () => {
-  const { data: blogs, isLoading: isLoadingServices } = useBlogs();
+  const { data: blogs, isLoading: isLoadingBlogs } = useBlogs();
   const Axios = useAxios();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? Number(pageParam) : undefined;
 
   const blogsData = blogs?.blogs ?? [];
 
   const { mutateAsync: removeBlogMutation } = useMutation({
     mutationFn: (id: number) => deleteBlog(Axios, id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.blogs() });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.blogs(undefined, page),
+      });
       toast.success("تم حذف المدونة بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
@@ -54,7 +59,7 @@ const Blog = () => {
         data={blogsData}
         entityLabel="مدونة"
         onDelete={handleDelete}
-        isLoading={isLoadingServices}
+        isLoading={isLoadingBlogs}
         popup={false}
         allowedActions={["Add", "Read", "Edit", "Remove"]}
       />

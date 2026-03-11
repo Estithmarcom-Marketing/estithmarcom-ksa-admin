@@ -8,6 +8,7 @@ import type { ServiceType } from "@/lib/types/services";
 import type { ColumnConfig } from "@/lib/types/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const serviceColumns: ColumnConfig[] = [
@@ -23,13 +24,19 @@ const Services = () => {
   const { data: services, isLoading: isLoadingServices } = useServices();
   const Axios = useAxios();
   const queryClient = useQueryClient();
+  const [searchParams] = useSearchParams();
+
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? Number(pageParam) : undefined;
 
   const servicesData = services?.services ?? [];
 
   const { mutateAsync: removeServiceMutation } = useMutation({
     mutationFn: (id: number) => deleteService(Axios, id),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.services(undefined, page),
+      });
       toast.success("تم حذف الخدمة بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
