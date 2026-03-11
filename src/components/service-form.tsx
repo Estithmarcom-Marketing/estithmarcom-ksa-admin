@@ -123,7 +123,7 @@ export default function ServiceForm({
                     onCheckedChange={field.onChange}
                   />
                   <Label htmlFor="published" className="text-xs mb-0 font-medium">
-                    {field.value ? "مفعّل" : "غير مفعّل"}
+                    مفعّل
                   </Label>
                 </>
               )}
@@ -277,7 +277,7 @@ export default function ServiceForm({
                           onCheckedChange={field.onChange}
                         />
                         <Label htmlFor={`feature-published-${index}`} className="text-xs mb-0 font-medium">
-                          {field.value ? "مفعّل" : "غير مفعّل"}
+                          مفعّل
                         </Label>
                       </>
                     )}
@@ -355,7 +355,7 @@ export default function ServiceForm({
                           onCheckedChange={field.onChange}
                         />
                         <Label htmlFor={`faq-published-${index}`} className="text-xs mb-0 font-medium">
-                          {field.value ? "مفعّل" : "غير مفعّل"}
+                          مفعّل
                         </Label>
                       </>
                     )}

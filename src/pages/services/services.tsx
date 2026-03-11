@@ -7,6 +7,7 @@ import { useServices } from "@/lib/querykeys/service-query";
 import type { ServiceType } from "@/lib/types/services";
 import type { ColumnConfig } from "@/lib/types/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 const serviceColumns: ColumnConfig[] = [
@@ -31,8 +32,8 @@ const Services = () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
       toast.success("تم حذف الخدمة بنجاح");
     },
-    onError: () => {
-      toast.error("حدث خطأ أثناء حذف الخدمة");
+    onError: (err: AxiosError<{ message: string }>) => {
+      toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 

@@ -9,6 +9,7 @@ import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { getService, updateService } from "@/lib/api/service";
 import { toast } from "sonner";
 import { FormSkeleton } from "@/components/form-skeleton";
+import type { AxiosError } from "axios";
 
 export default function ServiceActions() {
   const nav = useNavigate();
@@ -26,8 +27,8 @@ export default function ServiceActions() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
       toast.success("تم تحديث الخدمة بنجاح");
     },
-    onError: () => {
-      toast.error("حدث خطأ أثناء تحديث الخدمة");
+    onError: (err: AxiosError<{ message: string }>) => {
+      toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 

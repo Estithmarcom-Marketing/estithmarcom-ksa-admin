@@ -7,6 +7,7 @@ import { queryKeys } from "@/lib/querykeys/queryKeys";
 import type { BlogType } from "@/lib/types/blog";
 import type { ColumnConfig } from "@/lib/types/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 const serviceColumns: ColumnConfig[] = [
@@ -33,8 +34,8 @@ const Blog = () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.blogs() });
       toast.success("تم حذف المدونة بنجاح");
     },
-    onError: () => {
-      toast.error("حدث خطأ أثناء حذف المدونة");
+    onError: (err: AxiosError<{ message: string }>) => {
+      toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 

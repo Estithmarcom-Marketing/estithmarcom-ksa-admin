@@ -9,6 +9,7 @@ import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { getBlog, updateBlog } from "@/lib/api/blog";
 import { toast } from "sonner";
 import { FormSkeleton } from "@/components/form-skeleton";
+import type { AxiosError } from "axios";
 
 export default function BlogActions() {
   const nav = useNavigate();
@@ -27,8 +28,8 @@ export default function BlogActions() {
         await queryClient.invalidateQueries({ queryKey: queryKeys.blogs() });
         toast.success("تم تحديث المدونة بنجاح");
       },
-      onError: () => {
-        toast.error("حدث خطأ أثناء تحديث المدونة");
+      onError: (err: AxiosError<{ message: string }>) => {
+        toast.error(err.response?.data?.message || "حدث خطأ ما");
       },
     });
 

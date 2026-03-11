@@ -4,6 +4,7 @@ import useAxios from "@/hooks/use-axios";
 import { addBlog } from "@/lib/api/blog";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 export default function AddBlog() {
@@ -20,8 +21,8 @@ export default function AddBlog() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.blogs() });
       toast.success("تم إضافة المدونة بنجاح");
     },
-    onError: () => {
-      toast.error("حدث خطأ أثناء إضافة المدونة");
+    onError: (err: AxiosError<{ message: string }>) => {
+      toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 

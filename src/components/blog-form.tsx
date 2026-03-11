@@ -98,7 +98,7 @@ export default function BlogForm({
                     onCheckedChange={field.onChange}
                   />
                   <Label htmlFor="published" className="text-xs mb-0 font-medium">
-                    {field.value ? "مفعّل" : "غير مفعّل"}
+                    مفعّل
                   </Label>
                 </>
               )}

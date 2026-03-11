@@ -4,6 +4,7 @@ import useAxios from "@/hooks/use-axios";
 import { addService } from "@/lib/api/service";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import { toast } from "sonner";
 
 export default function AddService() {
@@ -20,8 +21,8 @@ export default function AddService() {
       await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
       toast.success("تم إضافة الخدمة بنجاح");
     },
-    onError: () => {
-      toast.error("حدث خطأ أثناء إضافة الخدمة");
+    onError: (err: AxiosError<{ message: string }>) => {
+      toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 
