@@ -264,7 +264,7 @@ export function DataTable<TData extends object>({
       </div>
 
       {/* Table */}
-      <Table className="min-h-[661px]">
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((hg) => (
             <TableRow key={hg.id}>
