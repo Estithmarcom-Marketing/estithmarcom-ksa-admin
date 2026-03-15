@@ -5,7 +5,7 @@ export interface ColumnConfig {
   name: string;
 }
 
-export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read";
+export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve";
 
 export interface DataTableProps<TData extends object> {
   columns?: ColumnConfig[];
@@ -15,6 +15,7 @@ export interface DataTableProps<TData extends object> {
   editContent?: (row: TData, onClose: () => void) => ReactNode;
   isLoading?: boolean;
   onDelete?: (rows: TData) => void;
+  onApprove?: (rows: TData) => void;
   popup?: boolean;
   allowedActions?: AllowedActionType[];
 }

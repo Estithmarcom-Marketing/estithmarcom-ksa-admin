@@ -16,6 +16,7 @@ import {
   ChevronsUpDown,
   ChevronUp,
   ChevronDown,
+  BadgeCheck,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -40,8 +41,8 @@ import {
 import type { AllowedActionType, DataTableProps } from "@/lib/types/table";
 import { textTruncate } from "@/helper/text-truncate";
 import { ResponsiveModal } from "./responsive-model";
-import { ViewBody } from "./ViewBody";
 import { formatDate } from "@/helper/date-format";
+import { ViewBody } from "./ViewBody";
 
 const SKELETON_ROWS = 5;
 
@@ -51,6 +52,7 @@ export function DataTable<TData extends object>({
   entityLabel = "عنصر",
   formContent,
   editContent,
+  onApprove,
   isLoading,
   onDelete,
   popup = true,
@@ -63,8 +65,11 @@ export function DataTable<TData extends object>({
   const [editTarget, setEditTarget] = useState<TData | null>(null);
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TData | null>(null);
+  const [approveTarget, setApproveTarget] = useState<TData | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [approveDialogOpen, setApproveDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
@@ -81,6 +86,12 @@ export function DataTable<TData extends object>({
   const handleDeleteOpenChange = (open: boolean) => {
     if (isDeleting) return;
     setDeleteDialogOpen(open);
+    if (!open) setTimeout(() => setDeleteTarget(null), 300);
+  };
+
+  const handleApproveOpenChange = (open: boolean) => {
+    if (isApproving) return;
+    setApproveDialogOpen(open);
     if (!open) setTimeout(() => setDeleteTarget(null), 300);
   };
 
@@ -129,7 +140,7 @@ export function DataTable<TData extends object>({
 
           const value = (row.original as Record<string, unknown>)[col.key];
 
-          if (col.key === "published" || col.key === "active") {
+          if (col.key === "published" || col.key === "active" || col.key === "approved") {
             const isPublished = value === true;
             return (
               <span
@@ -199,6 +210,18 @@ export function DataTable<TData extends object>({
                     <Pencil className="h-4 w-4" />
                   </button>
                 )}
+                {can("Approve") && (row.original as Record<string, unknown>)["approved"] === false && (
+                  <button
+                    className="text-green-600 hover:text-green-700 cursor-pointer"
+                    onClick={() => {
+                      setApproveTarget(row.original);
+                      setApproveDialogOpen(true);
+                    }}
+                    title="نشر"
+                  >
+                    <BadgeCheck className="h-4 w-4" />
+                  </button>
+                )}
                 {can("Remove") && (
                   <button
                     className="text-destructive hover:text-destructive cursor-pointer"
@@ -239,6 +262,19 @@ export function DataTable<TData extends object>({
     } finally {
       // Always clear loading — on error the dialog stays open
       setIsDeleting(false);
+    }
+  };
+
+  const handleConfirmApprove = async () => {
+    if (!approveTarget) return;
+    setIsApproving(true);
+    try {
+      await onApprove?.(approveTarget);
+      setApproveDialogOpen(false);
+      setTimeout(() => setApproveTarget(null), 300);
+    } finally {
+      // Always clear loading — on error the dialog stays open
+      setIsApproving(false);
     }
   };
 
@@ -414,6 +450,34 @@ export function DataTable<TData extends object>({
                 onClick={handleConfirmDelete}
               >
                 {isDeleting ? <>جارٍ الحذف...</> : "حذف"}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {/* Delete Dialog */}
+      {can("Approve") && (
+        <AlertDialog
+          open={approveDialogOpen}
+          onOpenChange={handleApproveOpenChange}
+        >
+          <AlertDialogContent dir="rtl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>تأكيد النشر</AlertDialogTitle>
+              <AlertDialogDescription>
+                هل أنت متأكد من نشر هذا {entityLabel}؟ لا يمكن التراجع عن هذا
+                الإجراء.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex-row-reverse gap-2">
+              <AlertDialogCancel disabled={isApproving}>إلغاء</AlertDialogCancel>
+              <Button
+                className="flex items-center bg-green-600 hover:bg-green-700 text-white gap-1"
+                disabled={isApproving}
+                onClick={handleConfirmApprove}
+              >
+                {isApproving ? <>جارٍ النشر...</> : "نشر"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>
