@@ -17,6 +17,7 @@ import {
   ChevronUp,
   ChevronDown,
   BadgeCheck,
+  CircleX,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -72,6 +73,8 @@ export function DataTable<TData extends object>({
   const [isApproving, setIsApproving] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const approveTargetApproved =
+    (approveTarget as Record<string, unknown>)?.["approved"] === false;
 
   const handleEditOpenChange = (open: boolean) => {
     setEditDialogOpen(open);
@@ -140,7 +143,11 @@ export function DataTable<TData extends object>({
 
           const value = (row.original as Record<string, unknown>)[col.key];
 
-          if (col.key === "published" || col.key === "active" || col.key === "approved") {
+          if (
+            col.key === "published" ||
+            col.key === "active" ||
+            col.key === "approved"
+          ) {
             const isPublished = value === true;
             return (
               <span
@@ -159,7 +166,9 @@ export function DataTable<TData extends object>({
             return (
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium`}
-              >{formatDate(value as any)}</span>
+              >
+                {formatDate(value as any)}
+              </span>
             );
           }
 
@@ -210,16 +219,26 @@ export function DataTable<TData extends object>({
                     <Pencil className="h-4 w-4" />
                   </button>
                 )}
-                {can("Approve") && (row.original as Record<string, unknown>)["approved"] === false && (
+                {can("Approve") && (
                   <button
-                    className="text-green-600 hover:text-green-700 cursor-pointer"
+                    className="cursor-pointer"
                     onClick={() => {
                       setApproveTarget(row.original);
                       setApproveDialogOpen(true);
                     }}
-                    title="نشر"
+                    title={
+                      (row.original as Record<string, unknown>)["approved"] ===
+                      false
+                        ? "نشر"
+                        : "الغاء النشر"
+                    }
                   >
-                    <BadgeCheck className="h-4 w-4" />
+                    {(row.original as Record<string, unknown>)["approved"] ===
+                    false ? (
+                      <BadgeCheck className="h-4 w-4 text-green-600 hover:text-green-700" />
+                    ) : (
+                      <CircleX className="h-4 w-4 text-red-600 hover:text-red-700" />
+                    )}
                   </button>
                 )}
                 {can("Remove") && (
@@ -419,7 +438,10 @@ export function DataTable<TData extends object>({
             <div className="space-y-4">
               <ViewBody item={viewTarget} columns={columns} />
               <div className="flex justify-end pt-2">
-                <Button variant="outline" onClick={() => handleViewOpenChange(false)}>
+                <Button
+                  variant="outline"
+                  onClick={() => handleViewOpenChange(false)}
+                >
                   إغلاق
                 </Button>
               </div>
@@ -456,7 +478,7 @@ export function DataTable<TData extends object>({
         </AlertDialog>
       )}
 
-      {/* Delete Dialog */}
+      {/* Approve Dialog */}
       {can("Approve") && (
         <AlertDialog
           open={approveDialogOpen}
@@ -464,20 +486,39 @@ export function DataTable<TData extends object>({
         >
           <AlertDialogContent dir="rtl">
             <AlertDialogHeader>
-              <AlertDialogTitle>تأكيد النشر</AlertDialogTitle>
+              <AlertDialogTitle>
+                {approveTargetApproved ? "تأكيد النشر" : "تأكيد إلغاء النشر"}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                هل أنت متأكد من نشر هذا {entityLabel}؟ لا يمكن التراجع عن هذا
-                الإجراء.
+                {approveTargetApproved
+                  ? `هل أنت متأكد من نشر هذا ${entityLabel}؟ لا يمكن التراجع عن هذا الإجراء.`
+                  : `هل أنت متأكد من إلغاء نشر هذا ${entityLabel}؟ لا يمكن التراجع عن هذا الإجراء.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-row-reverse gap-2">
-              <AlertDialogCancel disabled={isApproving}>إلغاء</AlertDialogCancel>
+              <AlertDialogCancel disabled={isApproving}>
+                إلغاء
+              </AlertDialogCancel>
               <Button
-                className="flex items-center bg-green-600 hover:bg-green-700 text-white gap-1"
+                className={`flex items-center text-white gap-1 ${
+                  approveTargetApproved
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
                 disabled={isApproving}
                 onClick={handleConfirmApprove}
               >
-                {isApproving ? <>جارٍ النشر...</> : "نشر"}
+                {isApproving ? (
+                  <>
+                    {approveTargetApproved
+                      ? "جارٍ النشر..."
+                      : "جارٍ إلغاء النشر..."}
+                  </>
+                ) : approveTargetApproved ? (
+                  "نشر"
+                ) : (
+                  "إلغاء النشر"
+                )}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -15,8 +15,8 @@ export async function deleteComment(axiosInstance: AxiosInstance, id: number) {
   return await axiosInstance.delete(`/comments/${id}`);
 }
 
-export async function approveComment(axiosInstance: AxiosInstance, id: number) {
+export async function approveComment(axiosInstance: AxiosInstance, id: number, approve: boolean) {
   return await axiosInstance.patch(`/comments/${id}`, {
-    approved: true
+    approved: !approve
   });
 }

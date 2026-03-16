@@ -45,12 +45,15 @@ const Comments = () => {
   });
 
   const { mutateAsync: approveCommentMutation } = useMutation({
-    mutationFn: (id: number) => approveComment(Axios, id),
-    onSuccess: async () => {
+    mutationFn: ({ id, approve }: { id: number; approve: boolean }) =>
+      approveComment(Axios, id, approve),
+    onSuccess: async (_, { approve }) => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.comments(undefined, page),
       });
-      toast.success("تم نشر التعليق بنجاح");
+      toast.success(
+        approve ? "تم نشر التعليق بنجاح" : "تم إلغاء نشر التعليق بنجاح",
+      );
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");
@@ -62,7 +65,7 @@ const Comments = () => {
   };
 
   const handleApprove = async (row: CommentType): Promise<void> => {
-    await approveCommentMutation(row.id);
+    await approveCommentMutation({ id: row.id, approve: row.approved });
   };
 
   return (
