@@ -5,7 +5,7 @@ export interface ColumnConfig {
   name: string;
 }
 
-export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve";
+export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve" | "Contact";
 
 export interface DataTableProps<TData extends object> {
   columns?: ColumnConfig[];
@@ -16,6 +16,7 @@ export interface DataTableProps<TData extends object> {
   isLoading?: boolean;
   onDelete?: (rows: TData) => void;
   onApprove?: (rows: TData) => void;
+  onContact?: (rows: TData) => void;
   popup?: boolean;
   allowedActions?: AllowedActionType[];
 }

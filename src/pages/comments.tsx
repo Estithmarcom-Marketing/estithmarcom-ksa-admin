@@ -17,7 +17,7 @@ const commentsColumns: ColumnConfig[] = [
   { key: "name", name: "الأسم" },
   { key: "body", name: "التعليق" },
   { key: "approved", name: "الحالة" },
-  { key: "created_at", name: "تاريخ الإنشاء" },
+  { key: "created_at", name: "تاريخ التعليق" },
 ];
 
 const Comments = () => {

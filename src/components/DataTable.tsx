@@ -18,6 +18,8 @@ import {
   ChevronDown,
   BadgeCheck,
   CircleX,
+  PhoneCall,
+  PhoneMissed,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -54,6 +56,7 @@ export function DataTable<TData extends object>({
   formContent,
   editContent,
   onApprove,
+  onContact,
   isLoading,
   onDelete,
   popup = true,
@@ -67,14 +70,21 @@ export function DataTable<TData extends object>({
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TData | null>(null);
   const [approveTarget, setApproveTarget] = useState<TData | null>(null);
+  const [contactTarget, setContactTarget] = useState<TData | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [approveDialogOpen, setApproveDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
+  const [isContacting, setIsContacting] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
+
   const approveTargetApproved =
     (approveTarget as Record<string, unknown>)?.["approved"] === false;
+
+  const contactTargetContacted =
+    (contactTarget as Record<string, unknown>)?.["is_contacted"] === false;
 
   const handleEditOpenChange = (open: boolean) => {
     setEditDialogOpen(open);
@@ -95,7 +105,13 @@ export function DataTable<TData extends object>({
   const handleApproveOpenChange = (open: boolean) => {
     if (isApproving) return;
     setApproveDialogOpen(open);
-    if (!open) setTimeout(() => setDeleteTarget(null), 300);
+    if (!open) setTimeout(() => setApproveTarget(null), 300);
+  };
+
+  const handleContactOpenChange = (open: boolean) => {
+    if (isContacting) return;
+    setContactDialogOpen(open);
+    if (!open) setTimeout(() => setContactTarget(null), 300);
   };
 
   const can = (action: AllowedActionType) => allowedActions.includes(action);
@@ -146,27 +162,43 @@ export function DataTable<TData extends object>({
           if (
             col.key === "published" ||
             col.key === "active" ||
-            col.key === "approved"
+            col.key === "approved" ||
+            col.key === "contact"
           ) {
-            const isPublished = value === true;
+            const isActive = value === true;
             return (
               <span
                 className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-                  isPublished
+                  isActive
                     ? "bg-green-100 text-green-800"
                     : "bg-red-100 text-red-800"
                 }`}
               >
-                {isPublished ? "مفعل" : "غير مفعل"}
+                {isActive ? "مفعل" : "غير مفعل"}
+              </span>
+            );
+          }
+
+          if (
+            col.key === "is_contacted"
+          ) {
+            const isActive = value === true;
+            return (
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                  isActive
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                }`}
+              >
+                {isActive ? "تم التواصل" : "لم يتم التواصل"}
               </span>
             );
           }
 
           if (col.key === "created_at") {
             return (
-              <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium`}
-              >
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">
                 {formatDate(value as any)}
               </span>
             );
@@ -230,7 +262,7 @@ export function DataTable<TData extends object>({
                       (row.original as Record<string, unknown>)["approved"] ===
                       false
                         ? "نشر"
-                        : "الغاء النشر"
+                        : "إلغاء النشر"
                     }
                   >
                     {(row.original as Record<string, unknown>)["approved"] ===
@@ -238,6 +270,28 @@ export function DataTable<TData extends object>({
                       <BadgeCheck className="h-4 w-4 text-green-600 hover:text-green-700" />
                     ) : (
                       <CircleX className="h-4 w-4 text-red-600 hover:text-red-700" />
+                    )}
+                  </button>
+                )}
+                {can("Contact") && (
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setContactTarget(row.original);
+                      setContactDialogOpen(true);
+                    }}
+                    title={
+                      (row.original as Record<string, unknown>)["is_contacted"] ===
+                      false
+                        ? "تواصل"
+                        : "إلغاء التواصل"
+                    }
+                  >
+                    {(row.original as Record<string, unknown>)["is_contacted"] ===
+                    false ? (
+                      <PhoneCall className="h-4 w-4 text-green-600 hover:text-green-700" />
+                    ) : (
+                      <PhoneMissed className="h-4 w-4 text-red-600 hover:text-red-700" />
                     )}
                   </button>
                 )}
@@ -270,7 +324,6 @@ export function DataTable<TData extends object>({
     state: { rowSelection, sorting },
   });
 
-  // Awaits the promise returned by onDelete before closing
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return;
     setIsDeleting(true);
@@ -279,7 +332,6 @@ export function DataTable<TData extends object>({
       setDeleteDialogOpen(false);
       setTimeout(() => setDeleteTarget(null), 300);
     } finally {
-      // Always clear loading — on error the dialog stays open
       setIsDeleting(false);
     }
   };
@@ -292,8 +344,19 @@ export function DataTable<TData extends object>({
       setApproveDialogOpen(false);
       setTimeout(() => setApproveTarget(null), 300);
     } finally {
-      // Always clear loading — on error the dialog stays open
       setIsApproving(false);
+    }
+  };
+
+  const handleConfirmContact = async () => {
+    if (!contactTarget) return;
+    setIsContacting(true);
+    try {
+      await onContact?.(contactTarget);
+      setContactDialogOpen(false);
+      setTimeout(() => setContactTarget(null), 300);
+    } finally {
+      setIsContacting(false);
     }
   };
 
@@ -491,14 +554,12 @@ export function DataTable<TData extends object>({
               </AlertDialogTitle>
               <AlertDialogDescription>
                 {approveTargetApproved
-                  ? `هل أنت متأكد من نشر هذا ${entityLabel}؟ لا يمكن التراجع عن هذا الإجراء.`
-                  : `هل أنت متأكد من إلغاء نشر هذا ${entityLabel}؟ لا يمكن التراجع عن هذا الإجراء.`}
+                  ? `هل أنت متأكد من نشر هذا ${entityLabel}؟.`
+                  : `هل أنت متأكد من إلغاء نشر هذا ${entityLabel}؟.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-row-reverse gap-2">
-              <AlertDialogCancel disabled={isApproving}>
-                إلغاء
-              </AlertDialogCancel>
+              <AlertDialogCancel disabled={isApproving}>إلغاء</AlertDialogCancel>
               <Button
                 className={`flex items-center text-white gap-1 ${
                   approveTargetApproved
@@ -509,15 +570,52 @@ export function DataTable<TData extends object>({
                 onClick={handleConfirmApprove}
               >
                 {isApproving ? (
-                  <>
-                    {approveTargetApproved
-                      ? "جارٍ النشر..."
-                      : "جارٍ إلغاء النشر..."}
-                  </>
+                  <>{approveTargetApproved ? "جارٍ النشر..." : "جارٍ إلغاء النشر..."}</>
                 ) : approveTargetApproved ? (
                   "نشر"
                 ) : (
                   "إلغاء النشر"
+                )}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {/* Contact Dialog */}
+      {can("Contact") && (
+        <AlertDialog
+          open={contactDialogOpen}
+          onOpenChange={handleContactOpenChange}
+        >
+          <AlertDialogContent dir="rtl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {contactTargetContacted ? "تأكيد التواصل" : "تأكيد إلغاء التواصل"}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {contactTargetContacted
+                  ? `هل أنت متأكد من تفعيل التواصل لهذا ${entityLabel}؟.`
+                  : `هل أنت متأكد من إلغاء التواصل لهذا ${entityLabel}؟.`}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter className="flex-row-reverse gap-2">
+              <AlertDialogCancel disabled={isContacting}>إلغاء</AlertDialogCancel>
+              <Button
+                className={`flex items-center text-white gap-1 ${
+                  contactTargetContacted
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
+                disabled={isContacting}
+                onClick={handleConfirmContact}
+              >
+                {isContacting ? (
+                  <>{contactTargetContacted ? "جارٍ التواصل..." : "جارٍ إلغاء التواصل..."}</>
+                ) : contactTargetContacted ? (
+                  "تواصل"
+                ) : (
+                  "إلغاء التواصل"
                 )}
               </Button>
             </AlertDialogFooter>

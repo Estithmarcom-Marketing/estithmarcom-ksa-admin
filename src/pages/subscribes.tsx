@@ -8,7 +8,7 @@ import type { ColumnConfig } from "@/lib/types/table";
 const subsColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "email", name: "البريد الإلكتروني" },
-  { key: "created_at", name: "تاريخ الإنشاء" },
+  { key: "created_at", name: "تاريخ الأشتراك" },
 ];
 
 const Subscribes = () => {
