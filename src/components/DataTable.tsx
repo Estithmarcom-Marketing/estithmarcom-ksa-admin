@@ -419,7 +419,7 @@ export function DataTable<TData extends object>({
             <div className="space-y-4">
               <ViewBody item={viewTarget} columns={columns} />
               <div className="flex justify-end pt-2">
-                <Button variant="outline" onClick={() => setViewTarget(null)}>
+                <Button variant="outline" onClick={() => handleViewOpenChange(false)}>
                   إغلاق
                 </Button>
               </div>

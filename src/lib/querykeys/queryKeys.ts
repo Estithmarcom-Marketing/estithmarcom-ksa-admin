@@ -10,4 +10,6 @@ export const queryKeys = {
     id ? ["blogs", id] : page ? ["blogs", { page }] : ["blogs"],
   members: (id?: string, page?: number) =>
     id ? ["members", id] : page ? ["members", { page }] : ["members"],
+  subs: (id?: string, page?: number) =>
+    id ? ["subs", id] : page ? ["subs", { page }] : ["subs"],
 };

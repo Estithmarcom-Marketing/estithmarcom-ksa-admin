@@ -10,6 +10,7 @@ import {
   PhoneCall,
   MessageCircle,
   ShieldCheck,
+  Box,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -32,6 +33,7 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "التواصل",
     items: [
       { label: "الطلبات", path: "/dashboard/requests", icon: Scale },
+      { label: "الأشتراكات", path: "/dashboard/subscribes", icon: Box },
       { label: "رسائل التواصل", path: "/dashboard/messages", icon: PhoneCall },
     ],
   },

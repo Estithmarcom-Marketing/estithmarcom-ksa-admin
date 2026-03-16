@@ -19,6 +19,7 @@ import AuthGuard from "./auth/DashboardGuard";
 import Team from "./pages/team/team";
 import AddMember from "./pages/team/add-member";
 import MemberActions from "./pages/team/member-actions";
+import Subscribes from "./pages/subscribes";
 
 const App = () => {
   return (
@@ -53,9 +54,15 @@ const App = () => {
             <Route path="admins" element={<Admins />} />
             
             <Route path="settings" element={<Settings />} />
+
             <Route path="profile" element={<Profile />} />
+
             <Route path="requests" element={<Requests />} />
+
             <Route path="messages" element={<ContactMessages />} />
+
+            <Route path="subscribes" element={<Subscribes />} />
+
             <Route path="comments" element={<Comments />} />
           </Route>
         </Route>
