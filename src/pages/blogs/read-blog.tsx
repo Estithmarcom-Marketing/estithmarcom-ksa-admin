@@ -1,16 +1,9 @@
 import { RichRow, Row } from "@/components/read-row";
+import SectionTitle from "@/components/Section-title";
 import type { BlogType } from "@/lib/types/blog";
 
 interface ReadBlogProps {
   blog: BlogType;
-}
-
-function SectionTitle({ title }: { title: string }) {
-  return (
-    <h3 className="text-base font-bold text-foreground border-b border-input pb-2 mb-4">
-      {title}
-    </h3>
-  );
 }
 
 export default function ReadBlog({ blog }: ReadBlogProps) {

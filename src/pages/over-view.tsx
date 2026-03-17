@@ -151,7 +151,7 @@ const lineConfigs = [
 ];
 
 const Overview = () => (
-  <div dir="rtl" className="space-y-6 min-h-screen">
+  <div className="space-y-6 min-h-screen">
     <SpecialHeader title="نظرة عامة" />
 
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">

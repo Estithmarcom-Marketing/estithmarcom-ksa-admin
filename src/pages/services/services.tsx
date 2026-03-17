@@ -50,7 +50,7 @@ const Services = () => {
   };
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="space-y-6">
       <div>
         <SpecialHeader title="الخدمات" />
       </div>

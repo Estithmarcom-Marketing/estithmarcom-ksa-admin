@@ -12,12 +12,12 @@ export function Row({
   fullWidth,
 }: {
   label: string;
-  value?: string | null;
+  value?: string | number | null;
   fullWidth?: boolean;
 }) {
   return (
     <div
-      className={`flex flex-col gap-0.5 py-3 border-b border-input last:border-b-0 ${fullWidth ? "col-span-1 md:col-span-2" : ""}`}
+      className={`flex flex-col gap-0.5 py-3 border-b border-input ${fullWidth ? "col-span-1 md:col-span-2 last:border-b-0" : ""}`}
     >
       <span className="text-sm font-semibold text-foreground">{label}</span>
       <span className="text-[#666]">{label === "الحالة" ? <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${value === "مفعّل" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{value || "—"}</span> : value || "—"}</span>
@@ -25,7 +25,6 @@ export function Row({
   );
 }
 
-// read-row.tsx
 export function RichRow({ label, value, fullWidth }: RichRowProps) {
   return (
     <div

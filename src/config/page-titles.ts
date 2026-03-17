@@ -10,6 +10,7 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   settings: { title: "معلومات الموقع", description: "تحديث إعدادات الموقع" },
   profile: { title: "الملف الشخصي", description: "تعديل الملف الشخصي" },
   comments: { title: "التعليقات", description: "تصفح تعليقات المدونة" },
+  subscribes: { title: "الأشتراكات", description: "تصفح الأشتراكات" },
 };
 
 export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
