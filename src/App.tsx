@@ -60,9 +60,11 @@ const App = () => {
             <Route path="profile" element={<Profile />} />
 
             <Route path="requests" element={<Requests />} />
+            <Route path="requests/:action" element={<Navigate to="/dashboard/requests" replace />} />
             <Route path="requests/:action/:id" element={<RequestActions />} />
 
             <Route path="messages" element={<ContactMessages />} />
+            <Route path="messages/:action" element={<Navigate to="/dashboard/messages" replace />} />
             <Route path="messages/:action/:id" element={<MessageActions />} />
 
             <Route path="subscribes" element={<Subscribes />} />
