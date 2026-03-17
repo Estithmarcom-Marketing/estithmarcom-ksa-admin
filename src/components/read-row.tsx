@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 interface RichRowProps {
   label: string;
@@ -21,6 +22,27 @@ export function Row({
     >
       <span className="text-sm font-semibold text-foreground">{label}</span>
       <span className="text-[#666]">{label === "الحالة" ? <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${value === "مفعّل" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{value || "—"}</span> : value || "—"}</span>
+    </div>
+  );
+}
+
+export function RowLink({
+  label,
+  value,
+  href,
+  fullWidth,
+}: {
+  label: string;
+  value?: string | number | null;
+  href: string
+  fullWidth?: boolean;
+}) {
+  return (
+    <div
+      className={`flex flex-col gap-0.5 py-3 border-b border-input ${fullWidth ? "col-span-1 md:col-span-2 last:border-b-0" : ""}`}
+    >
+      <span className="text-sm font-semibold text-foreground">{label}</span>
+      <Link to={href} className="text-[#666] hover:underline hover:text-main w-fit">{label === "الحالة" ? <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${value === "مفعّل" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{value || "—"}</span> : value || "—"}</Link>
     </div>
   );
 }

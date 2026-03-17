@@ -18,7 +18,7 @@ const messagesColumns: ColumnConfig[] = [
   { key: "message", name: "الرسالة" },
   { key: "is_contacted", name: "الحالة" },
   { key: "created_at", name: "تاريخ الرسالة" },
-  { key: "service.slug_ar", name: "اسم الخدمة" }
+  { key: "service.title_ar", name: "اسم الخدمة" }
 ];
 
 const Requests = () => {
@@ -81,7 +81,7 @@ const Requests = () => {
         entityLabel="الطلب"
         isLoading={isLoadingRequests}
         onDelete={handleDelete}
-        popup={true}
+        popup={false}
         onContact={handleContact}
         allowedActions={["Read", "Contact", "Remove"]}
       />

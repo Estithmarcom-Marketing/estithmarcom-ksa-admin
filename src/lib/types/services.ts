@@ -4,7 +4,7 @@ export interface FeaturesType {
   id: number;
   title_ar: string;
   title_en: string;
-  published: string;
+  published: boolean;
 }
 
 export interface FAQType {
@@ -13,7 +13,7 @@ export interface FAQType {
   question_en: string;
   answer_ar: string;
   answer_en: string;
-  published: string;
+  published: boolean;
 }
 
 export interface ServiceType {

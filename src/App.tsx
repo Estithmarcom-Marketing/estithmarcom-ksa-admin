@@ -3,8 +3,8 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Overview from "./pages/over-view";
 import Services from "./pages/services/services";
 import Blog from "./pages/blogs/blog";
-import Requests from "./pages/requests";
-import ContactMessages from "./pages/contact-messages";
+import Requests from "./pages/requests/requests";
+import ContactMessages from "./pages/contact-messages/contact-messages";
 import Profile from "./pages/profile";
 import Settings from "./pages/mithaq-info";
 import Comments from "./pages/comments";
@@ -20,6 +20,8 @@ import Team from "./pages/team/team";
 import AddMember from "./pages/team/add-member";
 import MemberActions from "./pages/team/member-actions";
 import Subscribes from "./pages/subscribes";
+import RequestActions from "./pages/requests/request-action";
+import MessageActions from "./pages/contact-messages/contact-messages-action";
 
 const App = () => {
   return (
@@ -58,8 +60,10 @@ const App = () => {
             <Route path="profile" element={<Profile />} />
 
             <Route path="requests" element={<Requests />} />
+            <Route path="requests/:action/:id" element={<RequestActions />} />
 
             <Route path="messages" element={<ContactMessages />} />
+            <Route path="messages/:action/:id" element={<MessageActions />} />
 
             <Route path="subscribes" element={<Subscribes />} />
 

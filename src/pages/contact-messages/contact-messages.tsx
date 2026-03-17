@@ -80,7 +80,7 @@ const Messages = () => {
         entityLabel="رسالة"
         isLoading={isLoadingMessages}
         onDelete={handleDelete}
-        popup={true}
+        popup={false}
         onContact={handleContact}
         allowedActions={["Read", "Contact", "Remove"]}
       />

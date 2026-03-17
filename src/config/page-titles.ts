@@ -29,6 +29,12 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
     edit: { title: "تعديل عضو", description: "تعديل بيانات العضو" },
     read: { title: "عرض عضو", description: "تفاصيل العضو" },
   },
+  requests: {
+    read: { title: "عرض الطلب", description: "تفاصيل الطلب" },
+  },
+  messages: {
+    read: { title: "عرض الرسالة", description: "تفاصيل الرسالة" },
+  },
 };
 
 export const FALLBACK_META: PageMeta = {

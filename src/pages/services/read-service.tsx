@@ -52,7 +52,7 @@ export default function ReadService({ service }: ReadServiceProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 mt-1">
                   <Row label="الميزة (عربي)" value={feature.title_ar} />
                   <Row label="الميزة (انجليزي)" value={feature.title_en} />
-                  <Row label="الحالة" value={feature.published === "1" ? "مفعّل" : "غير مفعّل"} />
+                  <Row fullWidth label="الحالة" value={feature.published === true ? "مفعّل" : "غير مفعّل"} />
                 </div>
                 {index < service.features.length - 1 && <hr className="border-input mt-2" />}
               </div>
@@ -76,7 +76,7 @@ export default function ReadService({ service }: ReadServiceProps) {
                   <Row label="السؤال (انجليزي)" value={faq.question_en} />
                   <Row label="الجواب (عربي)" value={faq.answer_ar} />
                   <Row label="الجواب (انجليزي)" value={faq.answer_en} />
-                  <Row label="الحالة" value={faq.published === "1" ? "مفعّل" : "غير مفعّل"} />
+                  <Row fullWidth label="الحالة" value={faq.published === true ? "مفعّل" : "غير مفعّل"} />
                 </div>
                 {index < service.faqs.length - 1 && <hr className="border-input mt-2" />}
               </div>

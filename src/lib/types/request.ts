@@ -8,6 +8,10 @@ export interface RequestType {
   message: string
   is_contacted: boolean
   created_at: string
+  service: {
+    id: number
+    title_ar: string
+  }
 }
 
 export interface RequestResType {
