@@ -20,6 +20,8 @@ export interface OverViewType {
   most_requested_services: BarChartType[];
   yearly_charts: {
     months: number[];
+    years: number[];
+    subscriptions: number[]
     comments: number[];
     messages: number[];
     requests: number[];

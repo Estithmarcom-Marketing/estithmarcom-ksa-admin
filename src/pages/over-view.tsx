@@ -44,26 +44,10 @@ const Overview = () => {
   }
 
   const stats = [
-    {
-      title: "عدد الطلبات",
-      card: overView.service_requests,
-      Icon: Box,
-    },
-    {
-      title: "عدد الرسائل",
-      card: overView.contact_us,
-      Icon: Phone,
-    },
-    {
-      title: "عدد التعليقات",
-      card: overView.comments,
-      Icon: MessageCircle,
-    },
-    {
-      title: "عدد الاشتراكات",
-      card: overView.newsletter_subscriptions,
-      Icon: Rss,
-    },
+    { title: "عدد الطلبات", card: overView.service_requests, Icon: Box },
+    { title: "عدد الرسائل", card: overView.contact_us, Icon: Phone },
+    { title: "عدد التعليقات", card: overView.comments, Icon: MessageCircle },
+    { title: "عدد الاشتراكات", card: overView.newsletter_subscriptions, Icon: Rss },
   ];
 
   const barChartData = {
@@ -95,14 +79,14 @@ const Overview = () => {
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: "#64748b", font: { size: 11 } },
+        ticks: { color: "#64748b", font: { size: 12 } },
       },
       y: {
         beginAtZero: true,
         grid: { color: "#f1f5f9" },
         ticks: {
           color: "#94a3b8",
-          font: { size: 11 },
+          font: { size: 12 },
           stepSize: 5,
           precision: 0,
           callback: (value) => Math.round(Number(value)),
@@ -111,16 +95,22 @@ const Overview = () => {
     },
   };
 
-  const lineLabels = overView.yearly_charts.months.map(
+  const lineLabelsShort = overView.yearly_charts.months.map(
     (m) => monthsNames[m - 1] || `شهر ${m}`,
   );
 
+  const lineLabelsFull = overView.yearly_charts.months.map((m, i) => {
+    const monthName = monthsNames[m - 1] || `شهر ${m}`;
+    const year = overView.yearly_charts.years[i] ?? "";
+    return `${monthName} ${year}`.trim();
+  });
+
   const makeLineChartData = (
-    key: "requests" | "messages" | "comments",
+    key: "requests" | "messages" | "comments" | "subscriptions",
     color: string,
     label: string,
   ) => ({
-    labels: lineLabels,
+    labels: lineLabelsShort,
     datasets: [
       {
         label,
@@ -128,7 +118,9 @@ const Overview = () => {
         borderColor: color,
         backgroundColor: `${color}22`,
         borderWidth: 2.5,
-        pointRadius: 0,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: color,
         tension: 0.4,
         fill: true,
       },
@@ -145,20 +137,27 @@ const Overview = () => {
         bodyColor: "#cbd5e1",
         padding: 10,
         cornerRadius: 8,
+        callbacks: {
+          title: (items) => lineLabelsFull[items[0].dataIndex],
+        },
       },
       legend: { display: false },
     },
     scales: {
       x: {
         grid: { display: false },
-        ticks: { color: "#94a3b8", font: { size: 9 }, maxTicksLimit: 6 },
+        ticks: {
+          color: "#94a3b8",
+          font: { size: 15 },
+          maxRotation: 45,
+        },
       },
       y: {
         beginAtZero: true,
         grid: { color: "#f8fafc" },
         ticks: {
           color: "#94a3b8",
-          font: { size: 10 },
+          font: { size: 12 },
           precision: 0,
           stepSize: 10,
           callback: (value) => Math.round(Number(value)),
@@ -168,21 +167,10 @@ const Overview = () => {
   };
 
   const lineConfigs = [
-    {
-      key: "requests" as const,
-      color: "#10b981",
-      title: "الطلبات عبر العام",
-    },
-    {
-      key: "messages" as const,
-      color: mainColor,
-      title: "الرسائل عبر العام",
-    },
-    {
-      key: "comments" as const,
-      color: "#ef4444",
-      title: "التعليقات عبر العام",
-    },
+    { key: "requests" as const, color: "#10b981", title: "الطلبات عبر العام" },
+    { key: "messages" as const, color: mainColor, title: "الرسائل عبر العام" },
+    { key: "comments" as const, color: "#ef4444", title: "التعليقات عبر العام" },
+    { key: "subscriptions" as const, color: "#14192b", title: "الأشتراكات عبر العام" },
   ];
 
   return (
@@ -206,7 +194,7 @@ const Overview = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
         {lineConfigs.map(({ key, color, title }) => (
           <Card key={key}>
             <CardHeader className="pb-2">
@@ -217,11 +205,7 @@ const Overview = () => {
             <CardContent>
               <div style={{ height: 200 }}>
                 <Line
-                  data={makeLineChartData(
-                    key,
-                    color,
-                    title.replace(" عبر العام", ""),
-                  )}
+                  data={makeLineChartData(key, color, title.replace(" عبر العام", ""))}
                   options={lineOptions}
                 />
               </div>
