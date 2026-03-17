@@ -1,33 +1,35 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { CardType } from "@/lib/types/overview";
 import type { LucideIcon } from "lucide-react";
 
 export const StatCard = ({
-  label,
-  value,
-  change,
+  card,
   Icon,
+  title,
 }: {
-  label: string;
-  value: string;
-  change: number;
+  card: CardType;
   Icon: LucideIcon;
+  title: string;
 }) => {
-  const positive = change >= 0;
+  const positive = card.trend === "up";
+  const negative = card.trend === "down";
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">
-          {label}
+          {title}
         </CardTitle>
-        <span className="text-2xl"><Icon /></span>
+        <span className="text-2xl">
+          <Icon />
+        </span>
       </CardHeader>
       <CardContent>
-        <p className="text-3xl font-bold">{value}</p>
+        <p className="text-3xl font-bold">{card.total}</p>
         <p
-          className={`mt-1 text-sm font-medium ${positive ? "text-emerald-600" : "text-rose-500"}`}
+          className={`mt-1 text-sm flex items-start gap-2 font-medium ${positive ? "text-emerald-600" : negative ? "text-rose-500" : "text-gray-400"}`}
         >
-          {positive ? "▲" : "▼"} {Math.abs(change)}%{" "}
-          {positive ? "زيادة" : "انخفاض"} عن الشهر الماضي
+          <span>{positive ? "▲" : negative ? "▼" : "▬"}</span>
+          <span className="flex-1">{card.change_percentage}% {" "} {card.label}</span>
         </p>
       </CardContent>
     </Card>

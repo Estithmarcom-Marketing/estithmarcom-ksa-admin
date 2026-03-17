@@ -2,6 +2,7 @@ export const queryKeys = {
   currentUser: ["current-user"] as const,
   admins: ["admins"] as const,
   info: ["info"] as const,
+  overview: ["overview"] as const,
   services: (id?: string, page?: number) =>
     id ? ["services", id] : page ? ["services", { page }] : ["services"],
   comments: (id?: string, page?: number) =>

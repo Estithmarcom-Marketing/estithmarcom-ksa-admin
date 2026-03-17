@@ -80,6 +80,10 @@ export function DataTable<TData extends object>({
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
 
+  function getNestedValue(obj: any, path: string) {
+    return path.split(".").reduce((acc, key) => acc?.[key], obj);
+  }
+
   const approveTargetApproved =
     (approveTarget as Record<string, unknown>)?.["approved"] === false;
 
@@ -157,7 +161,7 @@ export function DataTable<TData extends object>({
             );
           }
 
-          const value = (row.original as Record<string, unknown>)[col.key];
+          const value = getNestedValue(row.original, col.key);
 
           if (
             col.key === "published" ||
@@ -179,9 +183,7 @@ export function DataTable<TData extends object>({
             );
           }
 
-          if (
-            col.key === "is_contacted"
-          ) {
+          if (col.key === "is_contacted") {
             const isActive = value === true;
             return (
               <span
@@ -281,14 +283,16 @@ export function DataTable<TData extends object>({
                       setContactDialogOpen(true);
                     }}
                     title={
-                      (row.original as Record<string, unknown>)["is_contacted"] ===
-                      false
+                      (row.original as Record<string, unknown>)[
+                        "is_contacted"
+                      ] === false
                         ? "تواصل"
                         : "إلغاء التواصل"
                     }
                   >
-                    {(row.original as Record<string, unknown>)["is_contacted"] ===
-                    false ? (
+                    {(row.original as Record<string, unknown>)[
+                      "is_contacted"
+                    ] === false ? (
                       <PhoneCall className="h-4 w-4 text-green-600 hover:text-green-700" />
                     ) : (
                       <PhoneMissed className="h-4 w-4 text-red-600 hover:text-red-700" />
@@ -559,7 +563,9 @@ export function DataTable<TData extends object>({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-row-reverse gap-2">
-              <AlertDialogCancel disabled={isApproving}>إلغاء</AlertDialogCancel>
+              <AlertDialogCancel disabled={isApproving}>
+                إلغاء
+              </AlertDialogCancel>
               <Button
                 className={`flex items-center text-white gap-1 ${
                   approveTargetApproved
@@ -570,7 +576,11 @@ export function DataTable<TData extends object>({
                 onClick={handleConfirmApprove}
               >
                 {isApproving ? (
-                  <>{approveTargetApproved ? "جارٍ النشر..." : "جارٍ إلغاء النشر..."}</>
+                  <>
+                    {approveTargetApproved
+                      ? "جارٍ النشر..."
+                      : "جارٍ إلغاء النشر..."}
+                  </>
                 ) : approveTargetApproved ? (
                   "نشر"
                 ) : (
@@ -591,7 +601,9 @@ export function DataTable<TData extends object>({
           <AlertDialogContent dir="rtl">
             <AlertDialogHeader>
               <AlertDialogTitle>
-                {contactTargetContacted ? "تأكيد التواصل" : "تأكيد إلغاء التواصل"}
+                {contactTargetContacted
+                  ? "تأكيد التواصل"
+                  : "تأكيد إلغاء التواصل"}
               </AlertDialogTitle>
               <AlertDialogDescription>
                 {contactTargetContacted
@@ -600,7 +612,9 @@ export function DataTable<TData extends object>({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex-row-reverse gap-2">
-              <AlertDialogCancel disabled={isContacting}>إلغاء</AlertDialogCancel>
+              <AlertDialogCancel disabled={isContacting}>
+                إلغاء
+              </AlertDialogCancel>
               <Button
                 className={`flex items-center text-white gap-1 ${
                   contactTargetContacted
@@ -611,7 +625,11 @@ export function DataTable<TData extends object>({
                 onClick={handleConfirmContact}
               >
                 {isContacting ? (
-                  <>{contactTargetContacted ? "جارٍ التواصل..." : "جارٍ إلغاء التواصل..."}</>
+                  <>
+                    {contactTargetContacted
+                      ? "جارٍ التواصل..."
+                      : "جارٍ إلغاء التواصل..."}
+                  </>
                 ) : contactTargetContacted ? (
                   "تواصل"
                 ) : (

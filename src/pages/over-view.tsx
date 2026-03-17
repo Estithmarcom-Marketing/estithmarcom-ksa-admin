@@ -15,6 +15,8 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { Bar, Line } from "react-chartjs-2";
+import { useOverView } from "@/lib/querykeys/overview-query";
+import OverviewSkeleton from "@/components/overview-skeleton";
 
 ChartJS.register(
   CategoryScale,
@@ -26,31 +28,6 @@ ChartJS.register(
   Filler,
 );
 
-const lineData = monthsNames.map((m, i) => ({
-  name: m,
-  طلبات: Math.round(80 + Math.sin(i * 0.7) * 30 + i * 8),
-  رسائل: Math.round(120 + Math.cos(i * 0.5) * 40 + i * 5),
-  تعليقات: Math.round(60 + Math.sin(i * 0.9) * 20 + i * 6),
-}));
-
-const barData = [
-  { service: "القضايا الجزائية", count: 142 },
-  { service: "القضايا المدنية", count: 98 },
-  { service: "القضايا التجارية", count: 76 },
-  { service: "القضايا العمالية", count: 65 },
-  { service: "قضايا الأحوال الشخصية", count: 53 },
-  { service: "القضايا الإدارية", count: 44 },
-  { service: "القضايا التنفيذ", count: 130 },
-  { service: "التحكيم وتسوية المنازعات", count: 16 },
-];
-
-const stats = [
-  { label: "عدد الطلبات", value: "1,284", change: +12, Icon: Box },
-  { label: "عدد الرسائل", value: "3,920", change: -8, Icon: Phone },
-  { label: "عدد التعليقات", value: "876", change: +20, Icon: MessageCircle },
-  { label: "عدد المدونات", value: "134", change: -3, Icon: Rss },
-];
-
 const mainColor = getComputedStyle(document.documentElement)
   .getPropertyValue("--main-color")
   .trim();
@@ -59,51 +36,95 @@ const mainDarkerColor = getComputedStyle(document.documentElement)
   .getPropertyValue("--main-darker-color")
   .trim();
 
-const barChartData = {
-  labels: barData.map((d) => d.service),
-  datasets: [
+const Overview = () => {
+  const { data: overView, isLoading } = useOverView();
+
+  if (isLoading || !overView) {
+    return <OverviewSkeleton />;
+  }
+
+  const stats = [
     {
-      label: "عدد الطلبات",
-      data: barData.map((d) => d.count),
-      backgroundColor: mainColor,
-      hoverBackgroundColor: mainDarkerColor,
-      borderSkipped: false,
+      title: "عدد الطلبات",
+      card: overView.service_requests,
+      Icon: Box,
     },
-  ],
-};
+    {
+      title: "عدد الرسائل",
+      card: overView.contact_us,
+      Icon: Phone,
+    },
+    {
+      title: "عدد التعليقات",
+      card: overView.comments,
+      Icon: MessageCircle,
+    },
+    {
+      title: "عدد الاشتراكات",
+      card: overView.newsletter_subscriptions,
+      Icon: Rss,
+    },
+  ];
 
-const barChartOptions: ChartOptions<"bar"> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    tooltip: {
-      backgroundColor: "rgba(15,23,42,0.85)",
-      titleColor: "#f1f5f9",
-      bodyColor: "#cbd5e1",
-      padding: 10,
-      cornerRadius: 8,
-    },
-    legend: { display: false },
-  },
-  scales: {
-    x: {
-      grid: { display: false },
-      ticks: { color: "#64748b", font: { size: 11 } },
-    },
-    y: {
-      grid: { color: "#f1f5f9" },
-      ticks: { color: "#94a3b8", font: { size: 11 } },
-    },
-  },
-};
-
-function makeLineChartData(key: "طلبات" | "رسائل" | "تعليقات", color: string) {
-  return {
-    labels: lineData.map((d) => d.name),
+  const barChartData = {
+    labels: overView.most_requested_services.map((item) => item.title),
     datasets: [
       {
-        label: key,
-        data: lineData.map((d) => d[key]),
+        label: "عدد الطلبات",
+        data: overView.most_requested_services.map((item) => item.total),
+        backgroundColor: mainColor,
+        hoverBackgroundColor: mainDarkerColor,
+        borderSkipped: false,
+      },
+    ],
+  };
+
+  const barChartOptions: ChartOptions<"bar"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(15,23,42,0.85)",
+        titleColor: "#f1f5f9",
+        bodyColor: "#cbd5e1",
+        padding: 10,
+        cornerRadius: 8,
+      },
+      legend: { display: false },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: "#64748b", font: { size: 11 } },
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: "#f1f5f9" },
+        ticks: {
+          color: "#94a3b8",
+          font: { size: 11 },
+          stepSize: 5,
+          precision: 0,
+          callback: (value) => Math.round(Number(value)),
+        },
+      },
+    },
+  };
+
+  const lineLabels = overView.yearly_charts.months.map(
+    (m) => monthsNames[m - 1] || `شهر ${m}`,
+  );
+
+  const makeLineChartData = (
+    key: "requests" | "messages" | "comments",
+    color: string,
+    label: string,
+  ) => ({
+    labels: lineLabels,
+    datasets: [
+      {
+        label,
+        data: overView.yearly_charts[key],
         borderColor: color,
         backgroundColor: `${color}22`,
         borderWidth: 2.5,
@@ -112,85 +133,104 @@ function makeLineChartData(key: "طلبات" | "رسائل" | "تعليقات", 
         fill: true,
       },
     ],
+  });
+
+  const lineOptions: ChartOptions<"line"> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        backgroundColor: "rgba(15,23,42,0.85)",
+        titleColor: "#f1f5f9",
+        bodyColor: "#cbd5e1",
+        padding: 10,
+        cornerRadius: 8,
+      },
+      legend: { display: false },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: "#94a3b8", font: { size: 9 }, maxTicksLimit: 6 },
+      },
+      y: {
+        beginAtZero: true,
+        grid: { color: "#f8fafc" },
+        ticks: {
+          color: "#94a3b8",
+          font: { size: 10 },
+          precision: 0,
+          stepSize: 10,
+          callback: (value) => Math.round(Number(value)),
+        },
+      },
+    },
   };
-}
 
-const lineOptions: ChartOptions<"line"> = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    tooltip: {
-      backgroundColor: "rgba(15,23,42,0.85)",
-      titleColor: "#f1f5f9",
-      bodyColor: "#cbd5e1",
-      padding: 10,
-      cornerRadius: 8,
+  const lineConfigs = [
+    {
+      key: "requests" as const,
+      color: "#10b981",
+      title: "الطلبات عبر العام",
     },
-    legend: { display: false },
-  },
-  scales: {
-    x: {
-      grid: { display: false },
-      ticks: { color: "#94a3b8", font: { size: 9 }, maxTicksLimit: 6 },
+    {
+      key: "messages" as const,
+      color: mainColor,
+      title: "الرسائل عبر العام",
     },
-    y: {
-      grid: { color: "#f8fafc" },
-      ticks: { color: "#94a3b8", font: { size: 10 } },
+    {
+      key: "comments" as const,
+      color: "#ef4444",
+      title: "التعليقات عبر العام",
     },
-  },
+  ];
+
+  return (
+    <div className="space-y-6 min-h-screen">
+      <SpecialHeader title="نظرة عامة" />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {stats.map((s, index) => (
+          <StatCard key={index} card={s.card} title={s.title} Icon={s.Icon} />
+        ))}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">أكثر الخدمات طلباً</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div style={{ height: 280 }}>
+            <Bar data={barChartData} options={barChartOptions} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+        {lineConfigs.map(({ key, color, title }) => (
+          <Card key={key}>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div style={{ height: 200 }}>
+                <Line
+                  data={makeLineChartData(
+                    key,
+                    color,
+                    title.replace(" عبر العام", ""),
+                  )}
+                  options={lineOptions}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
 };
-
-const lineConfigs = [
-  {
-    key: "طلبات" as const,
-    color: "#10b981",
-    title: "الطلبات عبر العام",
-  },
-  { key: "رسائل" as const, color: mainColor, title: "الرسائل عبر العام" },
-  { key: "تعليقات" as const, color: "#ff0000", title: "التعليقات عبر العام" },
-];
-
-const Overview = () => (
-  <div className="space-y-6 min-h-screen">
-    <SpecialHeader title="نظرة عامة" />
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      {stats.map((s) => (
-        <StatCard key={s.label} {...s} />
-      ))}
-    </div>
-
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">أكثر الخدمات طلباً</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div style={{ height: 280 }}>
-          <Bar data={barChartData} options={barChartOptions} />
-        </div>
-      </CardContent>
-    </Card>
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
-      {lineConfigs.map(({ key, color, title }) => (
-        <Card key={key}>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div style={{ height: 200 }}>
-              <Line
-                data={makeLineChartData(key, color)}
-                options={lineOptions}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </div>
-);
 
 export default Overview;
