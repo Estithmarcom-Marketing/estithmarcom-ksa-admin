@@ -3,6 +3,7 @@ export const queryKeys = {
   admins: ["admins"] as const,
   info: ["info"] as const,
   overview: ["overview"] as const,
+  notifications: ["notifications"] as const,
   services: (id?: string, page?: number) =>
     id ? ["services", id] : page ? ["services", { page }] : ["services"],
   comments: (id?: string, page?: number) =>

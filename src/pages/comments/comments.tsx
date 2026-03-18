@@ -80,7 +80,7 @@ const Comments = () => {
         entityLabel="تعليق"
         isLoading={isLoadingComments}
         onDelete={handleDelete}
-        popup={true}
+        popup={false}
         onApprove={handleApprove}
         allowedActions={["Read", "Approve", "Remove"]}
       />

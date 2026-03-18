@@ -1,5 +1,5 @@
 import type { AxiosInstance } from "axios";
-import type { CommentResType } from "../types/comment";
+import type { CommentResType, CommentType } from "../types/comment";
 
 export async function getComments(
   axiosInstance: AxiosInstance,
@@ -13,6 +13,11 @@ export async function getComments(
 
 export async function deleteComment(axiosInstance: AxiosInstance, id: number) {
   return await axiosInstance.delete(`/comments/${id}`);
+}
+
+export async function getComment(axiosInstance: AxiosInstance, id: string | undefined): Promise<CommentType> {
+  const res = await axiosInstance.get(`/comments/${id}`);
+  return res.data.data.comment;
 }
 
 export async function approveComment(axiosInstance: AxiosInstance, id: number, approve: boolean) {
