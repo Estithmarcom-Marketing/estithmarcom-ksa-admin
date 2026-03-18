@@ -35,6 +35,9 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
   messages: {
     read: { title: "عرض الرسالة", description: "تفاصيل الرسالة" },
   },
+  comments: {
+    read: { title: "عرض التعليق", description: "تفاصيل التعليق" },
+  },
 };
 
 export const FALLBACK_META: PageMeta = {

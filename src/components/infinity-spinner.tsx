@@ -1,7 +1,7 @@
-export default function InfinitySpinner() {
+export default function InfinitySpinner({size}: {size?: number}) {
   return (
     <svg
-      width="48"
+      width={size ?? 48}
       height="24"
       viewBox="0 0 48 24"
       fill="none"
