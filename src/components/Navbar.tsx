@@ -16,28 +16,69 @@ import useAxios from "@/hooks/use-axios";
 import { markAllAsRead } from "@/lib/api/notifications";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import InfiniteScrollNotifications from "./InfiniteScrollNotifications";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import echo from "@/lib/echo";
 
 const Navbar = () => {
   const location = useLocation();
   const meta = resolvePageMeta(location.pathname);
   const { data: user } = useCurrentUser();
-  const {
-    data,
-    hasNextPage,
-    isFetchingNextPage,
-    fetchNextPage,
-  } = useInfiniteNotifications();
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useInfiniteNotifications();
   const Axios = useAxios();
-  const [notificationOpen, setNotificationOpen] = useState<boolean>()
+  const [notificationOpen, setNotificationOpen] = useState<boolean>();
   const queryClient = useQueryClient();
 
   const notifications = data?.pages.flatMap((p) => p.notifications) ?? [];
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
+  useEffect(() => {
+    // check if already connected when component mounts
+    const state = echo.connector.pusher.connection.state;
+    console.log("[Reverb] current connection state:", state);
+
+    if (state === "connected") {
+      console.log("[Reverb] already connected ✅");
+    }
+
+    // bind for future state changes
+    echo.connector.pusher.connection.bind("connected", () => {
+      console.log("[Reverb] connected ✅");
+    });
+
+    echo.connector.pusher.connection.bind("disconnected", () => {
+      console.log("[Reverb] disconnected ❌");
+    });
+
+    echo.connector.pusher.connection.bind("error", (err: any) => {
+      console.error("[Reverb] connection error ❌", err);
+    });
+
+    echo
+      .private("admins.notifications")
+      .listen(".notification.created", (e: Notification) => {
+        console.log("[Reverb] new notification received:", e);
+        queryClient.setQueryData(queryKeys.notifications, (old: any) => {
+          if (!old) return old;
+          return {
+            ...old,
+            pages: old.pages.map((page: any, index: number) =>
+              index === 0
+                ? { ...page, notifications: [e, ...page.notifications] }
+                : page,
+            ),
+          };
+        });
+      });
+
+    return () => {
+      echo.leave("admins.notifications");
+    };
+  }, []);
+
   const handleReadAll = async (open: boolean) => {
     if (!open) {
-      setNotificationOpen(false)
+      setNotificationOpen(false);
       await markAllAsRead(Axios);
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications });
     }
@@ -56,7 +97,10 @@ const Navbar = () => {
 
       {/* End side */}
       <div className="flex items-center gap-5">
-        <DropdownMenu open={notificationOpen} onOpenChange={setNotificationOpen}>
+        <DropdownMenu
+          open={notificationOpen}
+          onOpenChange={setNotificationOpen}
+        >
           <DropdownMenuTrigger asChild>
             <button className="relative outline-none">
               <Bell size={20} />
@@ -74,7 +118,14 @@ const Navbar = () => {
           >
             <DropdownMenuLabel className="font-semibold flex justify-between flex-row-reverse top-0 bg-popover z-10">
               <span>الأشعارات</span>
-              {unreadCount > 0 && <button onClick={() => handleReadAll(false)} className="text-xs hover:underline cursor-pointer">تحديد الكل كمقروء</button>}
+              {unreadCount > 0 && (
+                <button
+                  onClick={() => handleReadAll(false)}
+                  className="text-xs hover:underline cursor-pointer"
+                >
+                  تحديد الكل كمقروء
+                </button>
+              )}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
@@ -88,7 +139,10 @@ const Navbar = () => {
         </DropdownMenu>
 
         {/* Avatar */}
-        <Link to={`/dashboard/profile`} className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white bg-main cursor-pointer hover:opacity-90 transition-opacity">
+        <Link
+          to={`/dashboard/profile`}
+          className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white bg-main cursor-pointer hover:opacity-90 transition-opacity"
+        >
           {user?.name.slice(0, 2)}
         </Link>
       </div>

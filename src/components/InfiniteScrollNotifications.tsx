@@ -54,8 +54,8 @@ const InfiniteScrollNotifications = ({
   fetchNextPage,
 }: Props) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
-  const Axios = useAxios()
-  const queryClient = useQueryClient()
+  const Axios = useAxios();
+  const queryClient = useQueryClient();
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -89,10 +89,12 @@ const InfiniteScrollNotifications = ({
     );
   }
 
-  const handleReadItem = async (id: number) => {
-        await markItemAsRead(Axios, id);
-        queryClient.invalidateQueries({ queryKey: queryKeys.notifications });
-    };
+  const handleReadItem = async (id: number, is_read: boolean) => {
+    if (!is_read) {
+      await markItemAsRead(Axios, id);
+      queryClient.invalidateQueries({ queryKey: queryKeys.notifications });
+    }
+  };
 
   return (
     <>
@@ -105,7 +107,9 @@ const InfiniteScrollNotifications = ({
             asChild
           >
             <Link
-              onClick={() => handleReadItem(notification.id)}
+              onClick={() =>
+                handleReadItem(notification.id, notification.is_read)
+              }
               to={config.getLink(notification.notifiable_id)}
               className={`flex items-start gap-3 px-3 py-2.5 cursor-pointer rounded-md ${
                 !notification.is_read ? "bg-blue-50 dark:bg-blue-950/30" : ""
@@ -135,9 +139,7 @@ const InfiniteScrollNotifications = ({
       })}
 
       <div ref={sentinelRef} className="py-2 flex justify-center">
-        {isFetchingNextPage && (
-          <InfinitySpinner size={30} />
-        )}
+        {isFetchingNextPage && <InfinitySpinner size={30} />}
         {!hasNextPage && notifications.length > 0 && (
           <span className="text-[10px] text-muted-foreground/50">
             لا يوجد المزيد
