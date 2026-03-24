@@ -5,6 +5,10 @@ import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import type { NotificationType } from "@/lib/types/notification";
 import InfinitySpinner from "./infinity-spinner";
 import { formatDate } from "@/helper/date-format";
+import { markItemAsRead } from "@/lib/api/notifications";
+import useAxios from "@/hooks/use-axios";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/querykeys/queryKeys";
 
 type NotificationConfig = {
   icon: React.ReactNode;
@@ -50,7 +54,8 @@ const InfiniteScrollNotifications = ({
   fetchNextPage,
 }: Props) => {
   const sentinelRef = useRef<HTMLDivElement>(null);
-
+  const Axios = useAxios()
+  const queryClient = useQueryClient()
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -84,6 +89,11 @@ const InfiniteScrollNotifications = ({
     );
   }
 
+  const handleReadItem = async (id: number) => {
+        await markItemAsRead(Axios, id);
+        queryClient.invalidateQueries({ queryKey: queryKeys.notifications });
+    };
+
   return (
     <>
       {notifications.map((notification) => {
@@ -95,6 +105,7 @@ const InfiniteScrollNotifications = ({
             asChild
           >
             <Link
+              onClick={() => handleReadItem(notification.id)}
               to={config.getLink(notification.notifiable_id)}
               className={`flex items-start gap-3 px-3 py-2.5 cursor-pointer rounded-md ${
                 !notification.is_read ? "bg-blue-50 dark:bg-blue-950/30" : ""

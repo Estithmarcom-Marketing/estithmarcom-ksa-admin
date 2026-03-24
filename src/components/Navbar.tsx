@@ -16,6 +16,7 @@ import useAxios from "@/hooks/use-axios";
 import { markAllAsRead } from "@/lib/api/notifications";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import InfiniteScrollNotifications from "./InfiniteScrollNotifications";
+import { useState } from "react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -28,13 +29,15 @@ const Navbar = () => {
     fetchNextPage,
   } = useInfiniteNotifications();
   const Axios = useAxios();
+  const [notificationOpen, setNotificationOpen] = useState<boolean>()
   const queryClient = useQueryClient();
 
   const notifications = data?.pages.flatMap((p) => p.notifications) ?? [];
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-  const handleOpenChange = async (open: boolean) => {
-    if (!open && unreadCount > 0) {
+  const handleReadAll = async (open: boolean) => {
+    if (!open) {
+      setNotificationOpen(false)
       await markAllAsRead(Axios);
       queryClient.invalidateQueries({ queryKey: queryKeys.notifications });
     }
@@ -53,7 +56,7 @@ const Navbar = () => {
 
       {/* End side */}
       <div className="flex items-center gap-5">
-        <DropdownMenu onOpenChange={handleOpenChange}>
+        <DropdownMenu open={notificationOpen} onOpenChange={setNotificationOpen}>
           <DropdownMenuTrigger asChild>
             <button className="relative outline-none">
               <Bell size={20} />
@@ -69,8 +72,9 @@ const Navbar = () => {
             align="start"
             className="w-80 mt-[13px] rounded-none! max-h-[420px] overflow-y-auto"
           >
-            <DropdownMenuLabel className="font-semibold text-right top-0 bg-popover z-10">
-              الأشعارات
+            <DropdownMenuLabel className="font-semibold flex justify-between flex-row-reverse top-0 bg-popover z-10">
+              <span>الأشعارات</span>
+              {unreadCount > 0 && <button onClick={() => handleReadAll(false)} className="text-xs hover:underline cursor-pointer">تحديد الكل كمقروء</button>}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 

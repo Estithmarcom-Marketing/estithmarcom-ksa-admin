@@ -15,3 +15,10 @@ export async function markAllAsRead(
   return await axiosInstance.post("/notifications");
 }
 
+export async function markItemAsRead(
+  axiosInstance: AxiosInstance,
+  id: number
+) {
+  return await axiosInstance.post(`/notifications/${id}`);
+}
+
