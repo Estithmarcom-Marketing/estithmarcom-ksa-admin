@@ -33,40 +33,28 @@ const Navbar = () => {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   useEffect(() => {
-    // check if already connected when component mounts
-    const state = echo.connector.pusher.connection.state;
-    console.log("[Reverb] current connection state:", state);
-
-    if (state === "connected") {
-      console.log("[Reverb] already connected ✅");
-    }
-
-    // bind for future state changes
-    echo.connector.pusher.connection.bind("connected", () => {
-      console.log("[Reverb] connected ✅");
-    });
-
-    echo.connector.pusher.connection.bind("disconnected", () => {
-      console.log("[Reverb] disconnected ❌");
-    });
-
-    echo.connector.pusher.connection.bind("error", (err: any) => {
-      console.error("[Reverb] connection error ❌", err);
-    });
-
     echo
       .private("admins.notifications")
       .listen(".notification.created", (e: Notification) => {
-        console.log("[Reverb] new notification received:", e);
         queryClient.setQueryData(queryKeys.notifications, (old: any) => {
           if (!old) return old;
           return {
             ...old,
-            pages: old.pages.map((page: any, index: number) =>
-              index === 0
-                ? { ...page, notifications: [e, ...page.notifications] }
-                : page,
-            ),
+            pages: old.pages.map((page: any, index: number) => {
+              if (index !== 0) return page;
+
+              const pageSize = page.notifications.length;
+
+              const merged = [e, ...page.notifications].filter(
+                (item, index, self) =>
+                  self.findIndex((n) => n.id === item.id) === index,
+              );
+
+              return {
+                ...page,
+                notifications: merged.slice(0, pageSize),
+              };
+            }),
           };
         });
       });

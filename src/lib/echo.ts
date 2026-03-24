@@ -23,8 +23,6 @@ const echo = new Echo({
     auth: {
         headers: {
             Authorization: `Bearer ${Cookies.get("mithaq-admin")}`,
-            "Content-Type": "Application/json",
-            "Accept": "Application/json"
         },
     },
 });
