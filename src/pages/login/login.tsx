@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import logoImg from "@/assets/logo2.webp";
+import logoImg from "@/assets/logo2.png";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import { loginSchema, type LoginFormValues } from "@/lib/schema/login-schema";

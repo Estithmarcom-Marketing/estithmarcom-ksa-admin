@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS } from "@/config/nav";
-import logo from "@/assets/logo2.webp";
+import logo from "@/assets/logo2.png";
 import { LogOut } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";

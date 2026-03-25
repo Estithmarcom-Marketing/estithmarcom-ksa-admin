@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useCurrentUser } from "@/lib/querykeys/current-user-query";
-import logoImg from "@/assets/logo2.webp";
+import logoImg from "@/assets/logo2.png";
 import InfinitySpinner from "@/components/infinity-spinner";
 
 const LoadingScreen = () => (
