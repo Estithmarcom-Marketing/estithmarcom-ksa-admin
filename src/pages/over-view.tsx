@@ -70,7 +70,7 @@ const Overview = () => {
       tooltip: {
         backgroundColor: "rgba(15,23,42,0.85)",
         titleColor: "#f1f5f9",
-        bodyColor: "#cbd5e1",
+        bodyColor: "#44295a",
         padding: 10,
         cornerRadius: 8,
       },

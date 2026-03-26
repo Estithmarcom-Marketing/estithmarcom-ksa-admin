@@ -59,9 +59,9 @@
 }
 
 :root {
-  --main-light-color: #f9f4f0;
-  --main-color: #c19a6b;
-  --main-darker-color: #b68448;
+  --main-light-color: #f2e6ff;
+  --main-color: #44295a;
+  --main-darker-color: #331b46;
   --secondary-color: #14192b;
   --radius: 0.625rem;
   --background: oklch(1 0 0);

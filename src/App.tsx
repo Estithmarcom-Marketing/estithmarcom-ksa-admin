@@ -23,6 +23,9 @@ import Subscribes from "./pages/subscribes";
 import RequestActions from "./pages/requests/request-action";
 import MessageActions from "./pages/contact-messages/contact-messages-action";
 import CommentsActions from "./pages/comments/comments-action";
+import FAQs from "./pages/faqs/faqs";
+import AddFAQ from "./pages/faqs/add-faq";
+import FAQActions from "./pages/faqs/faq-actions";
 
 const App = () => {
   return (
@@ -43,6 +46,11 @@ const App = () => {
             <Route path="services/new" element={<AddService />} />
             <Route path="services/:action" element={<Navigate to="/dashboard/services" replace />} />
             <Route path="services/:action/:id" element={<ServiceActions />} />
+
+            <Route path="faqs" element={<FAQs />} />
+            <Route path="faqs/new" element={<AddFAQ />} />
+            <Route path="faqs/:action" element={<Navigate to="/dashboard/faqs" replace />} />
+            <Route path="faqs/:action/:id" element={<FAQActions />} />
 
             <Route path="blog" element={<Blog />} />
             <Route path="blog/new" element={<AddBlog />} />

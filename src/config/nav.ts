@@ -11,6 +11,7 @@ import {
   MessageCircle,
   ShieldCheck,
   Box,
+  HelpCircle,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -23,6 +24,7 @@ export const NAV_GROUPS: NavGroup[] = [
         icon: LayoutDashboard,
       },
       { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
+      { label: "الأسئلة الشائعة", path: "/dashboard/faqs", icon: HelpCircle },
       { label: "المدونة", path: "/dashboard/blog", icon: BookOpen },
       { label: "التعليقات", path: "/dashboard/comments", icon: MessageCircle },
       { label: "الفريق", path: "/dashboard/team", icon: Users },
