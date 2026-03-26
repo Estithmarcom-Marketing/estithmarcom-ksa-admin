@@ -5,10 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { faqFormSchema, type FAQFormValues } from "@/lib/schema/faq-schema";
 import { Button } from "@/components/ui/button";
 import FormSection from "@/components/form-section";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 
 interface FAQFormProps {
   initial?: Record<string, any>;
@@ -21,7 +22,7 @@ export default function FAQForm({
   initial = {},
   onSubmit,
   isPending,
-  edit = false,
+  // edit = false,
 }: FAQFormProps) {
   const {
     register,
@@ -33,9 +34,9 @@ export default function FAQForm({
     defaultValues: {
       question_ar: initial.question_ar ?? "",
       question_en: initial.question_en ?? "",
-      answer_ar: initial.answer_ar ?? "",
-      answer_en: initial.answer_en ?? "",
-      published: initial.published ?? true,
+      answer_ar:   initial.answer_ar   ?? "",
+      answer_en:   initial.answer_en   ?? "",
+      published:   initial.published   ?? true,
     },
   });
 
@@ -47,6 +48,8 @@ export default function FAQForm({
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <FormSection title="المعلومات الأساسية">
         <div className="grid grid-cols-2 gap-x-4 gap-y-5">
+
+          {/* Published toggle */}
           <div className="col-span-2 flex items-center justify-end gap-3">
             <Controller
               control={control}
@@ -58,69 +61,74 @@ export default function FAQForm({
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
-                  <Label htmlFor="published">مفعّل</Label>
+                  <Label htmlFor="published" className="text-xs mb-0 font-medium">
+                    مفعّل
+                  </Label>
                 </>
               )}
             />
           </div>
 
+          {/* Question AR */}
           <div className="col-span-2 sm:col-span-1">
-            <Label htmlFor="question_ar">السؤال (عربي) *</Label>
-            <Input
-              id="question_ar"
-              placeholder="أدخل السؤال بالعربية"
-              {...register("question_ar")}
-            />
-            {errors.question_ar && (
-              <span className="text-xs text-red-500">
-                {errors.question_ar.message}
-              </span>
-            )}
+            <Field data-invalid={!!errors.question_ar}>
+              <FieldLabel htmlFor="question-ar">السؤال (عربي) *</FieldLabel>
+              <Input
+                id="question-ar"
+                aria-invalid={!!errors.question_ar}
+                placeholder="أدخل السؤال بالعربية"
+                {...register("question_ar")}
+              />
+              <FieldDescription>{errors.question_ar?.message}</FieldDescription>
+            </Field>
           </div>
 
+          {/* Question EN */}
           <div className="col-span-2 sm:col-span-1">
-            <Label htmlFor="question_en">السؤال (انجليزي) *</Label>
-            <Input
-              id="question_en"
-              placeholder="Enter question in English"
-              {...register("question_en")}
-            />
-            {errors.question_en && (
-              <span className="text-xs text-red-500">
-                {errors.question_en.message}
-              </span>
-            )}
+            <Field data-invalid={!!errors.question_en}>
+              <FieldLabel htmlFor="question-en">السؤال (انجليزي) *</FieldLabel>
+              <Input
+                id="question-en"
+                dir="ltr"
+                aria-invalid={!!errors.question_en}
+                placeholder="Enter question in English"
+                {...register("question_en")}
+              />
+              <FieldDescription>{errors.question_en?.message}</FieldDescription>
+            </Field>
           </div>
 
+          {/* Answer AR */}
           <div className="col-span-2">
-            <Label htmlFor="answer_ar">الجواب (عربي) *</Label>
-            <Textarea
-              id="answer_ar"
-              placeholder="أدخل الجواب بالعربية"
-              {...register("answer_ar")}
-              rows={4}
-            />
-            {errors.answer_ar && (
-              <span className="text-xs text-red-500">
-                {errors.answer_ar.message}
-              </span>
-            )}
+            <Field data-invalid={!!errors.answer_ar}>
+              <FieldLabel htmlFor="answer-ar">الجواب (عربي) *</FieldLabel>
+              <Textarea
+                id="answer-ar"
+                aria-invalid={!!errors.answer_ar}
+                placeholder="أدخل الجواب بالعربية"
+                {...register("answer_ar")}
+                rows={4}
+              />
+              <FieldDescription>{errors.answer_ar?.message}</FieldDescription>
+            </Field>
           </div>
 
+          {/* Answer EN */}
           <div className="col-span-2">
-            <Label htmlFor="answer_en">الجواب (انجليزي) *</Label>
-            <Textarea
-              id="answer_en"
-              placeholder="Enter answer in English"
-              {...register("answer_en")}
-              rows={4}
-            />
-            {errors.answer_en && (
-              <span className="text-xs text-red-500">
-                {errors.answer_en.message}
-              </span>
-            )}
+            <Field data-invalid={!!errors.answer_en}>
+              <FieldLabel htmlFor="answer-en">الجواب (انجليزي) *</FieldLabel>
+              <Textarea
+                id="answer-en"
+                dir="ltr"
+                aria-invalid={!!errors.answer_en}
+                placeholder="Enter answer in English"
+                {...register("answer_en")}
+                rows={4}
+              />
+              <FieldDescription>{errors.answer_en?.message}</FieldDescription>
+            </Field>
           </div>
+
         </div>
       </FormSection>
 

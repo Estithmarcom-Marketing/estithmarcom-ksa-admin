@@ -26,6 +26,12 @@ import CommentsActions from "./pages/comments/comments-action";
 import FAQs from "./pages/faqs/faqs";
 import AddFAQ from "./pages/faqs/add-faq";
 import FAQActions from "./pages/faqs/faq-actions";
+import Clients from "./pages/clients/clients";
+import AddClient from "./pages/clients/add-client";
+import ClientActions from "./pages/clients/client-actions";
+import Countries from "./pages/countries/countries";
+import AddCountry from "./pages/countries/add-country";
+import CountryActions from "./pages/countries/country-actions";
 
 const App = () => {
   return (
@@ -46,6 +52,16 @@ const App = () => {
             <Route path="services/new" element={<AddService />} />
             <Route path="services/:action" element={<Navigate to="/dashboard/services" replace />} />
             <Route path="services/:action/:id" element={<ServiceActions />} />
+
+            <Route path="clients" element={<Clients />} />
+            <Route path="clients/new" element={<AddClient />} />
+            <Route path="clients/:action" element={<Navigate to="/dashboard/clients" replace />} />
+            <Route path="clients/:action/:id" element={<ClientActions />} />
+
+            <Route path="countries" element={<Countries />} />
+            <Route path="countries/new" element={<AddCountry />} />
+            <Route path="countries/:action" element={<Navigate to="/dashboard/countries" replace />} />
+            <Route path="countries/:action/:id" element={<CountryActions />} />
 
             <Route path="faqs" element={<FAQs />} />
             <Route path="faqs/new" element={<AddFAQ />} />

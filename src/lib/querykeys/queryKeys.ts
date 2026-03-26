@@ -20,4 +20,8 @@ export const queryKeys = {
     id ? ["messages", id] : page ? ["messages", { page }] : ["messages"],
   requests: (id?: string, page?: number) =>
     id ? ["requests", id] : page ? ["requests", { page }] : ["requests"],
+  clients: (id?: string, page?: number) =>
+    id ? ["clients", id] : page ? ["clients", { page }] : ["clients"],
+  countries: (id?: string, page?: number) =>
+    id ? ["countries", id] : page ? ["countries", { page }] : ["countries"],
 };
