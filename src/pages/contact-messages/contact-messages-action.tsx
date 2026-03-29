@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { FormSkeleton } from "@/components/form-skeleton";
 import ReadMessage from "./read-contact-messages";
-import { getRequest } from "@/lib/api/contact-message";
+import { getMessage } from "@/lib/api/contact-message";
 
 export default function MessageActions() {
   const nav = useNavigate();
@@ -15,7 +15,7 @@ export default function MessageActions() {
 
   const { data: message, isLoading } = useQuery({
     queryKey: queryKeys.messages(id),
-    queryFn: () => getRequest(Axios, id),
+    queryFn: () => getMessage(Axios, id),
   });
 
   useEffect(() => {

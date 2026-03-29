@@ -1,19 +1,16 @@
 import type { NavGroup } from "@/lib/types/navigation";
 import {
   LayoutDashboard,
-  Wrench,
   BookOpen,
   User,
   Scale,
-  Users,
   Globe,
   PhoneCall,
-  MessageCircle,
   ShieldCheck,
   Box,
   HelpCircle,
   Warehouse,
-  Map,
+  MapPin,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -25,13 +22,13 @@ export const NAV_GROUPS: NavGroup[] = [
         path: "/dashboard/overview",
         icon: LayoutDashboard,
       },
-      { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
-      { label: "الدول", path: "/dashboard/countries", icon: Map },
+      // { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
+      { label: "الدول", path: "/dashboard/countries", icon: MapPin },
       { label: "شركاؤنا", path: "/dashboard/clients", icon: Warehouse },
       { label: "الأسئلة الشائعة", path: "/dashboard/faqs", icon: HelpCircle },
       { label: "المدونة", path: "/dashboard/blog", icon: BookOpen },
-      { label: "التعليقات", path: "/dashboard/comments", icon: MessageCircle },
-      { label: "الفريق", path: "/dashboard/team", icon: Users },
+      // { label: "التعليقات", path: "/dashboard/comments", icon: MessageCircle },
+      // { label: "الفريق", path: "/dashboard/team", icon: Users },
       { label: "المشرفين", path: "/dashboard/admins", icon: ShieldCheck },
     ],
   },

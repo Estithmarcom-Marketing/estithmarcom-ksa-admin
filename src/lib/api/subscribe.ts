@@ -5,7 +5,7 @@ export async function getSubs(
   axiosInstance: AxiosInstance,
   page?: number
 ): Promise<SubResType> {
-  const res = await axiosInstance.get("/newsletters-subscribers", {
+  const res = await axiosInstance.get("/subscriptions", {
     params: page ? { page } : undefined,
   });
   return res.data.data;
