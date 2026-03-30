@@ -1,14 +1,14 @@
 import { Row } from "@/components/read-row";
 import SectionTitle from "@/components/Section-title";
 import { formatDate } from "@/helper/date-format";
-import type { RequestType } from "@/lib/types/request";
+import type { ContactType } from "@/lib/types/contact-message";
 
-interface ReadRequestProps {
-  message: RequestType;
+interface ReadMessageProps {
+  message: ContactType;
 }
 
-export default function ReadMessage({ message }: ReadRequestProps) {
-  const isContacted = message.is_contacted === true || (message.is_contacted as any) === "1";
+export default function ReadMessage({ message }: ReadMessageProps) {
+  const isContacted = message.contacted === true || (message.contacted as any) === "1";
 
   return (
     <div className="space-y-8">

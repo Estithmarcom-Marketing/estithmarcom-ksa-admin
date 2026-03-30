@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { queryKeys } from "./queryKeys";
 import useAxios from "@/hooks/use-axios";
-import { getMessages } from "../api/contact-message";
+import { getContactMessages } from "../api/contact-message";
 
 export function useMessages() {
   const Axios = useAxios();
@@ -13,6 +13,6 @@ export function useMessages() {
 
   return useQuery({
     queryKey: queryKeys.messages(undefined, page),
-    queryFn: () => getMessages(Axios, page),
+    queryFn: () => getContactMessages(Axios, page),
   });
 }

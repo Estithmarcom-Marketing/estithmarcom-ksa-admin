@@ -6,7 +6,7 @@ export interface ContactType {
   email: string
   phone: string
   message: string
-  is_contacted: boolean
+  contacted: boolean
   created_at: string
 }
 

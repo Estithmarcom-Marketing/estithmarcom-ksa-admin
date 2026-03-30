@@ -16,7 +16,7 @@ const messagesColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "name", name: "الأسم" },
   { key: "message", name: "الرسالة" },
-  { key: "is_contacted", name: "الحالة" },
+  { key: "contacted", name: "الحالة" },
   { key: "created_at", name: "تاريخ الرسالة" },
 ];
 
@@ -45,14 +45,14 @@ const Messages = () => {
   });
 
   const { mutateAsync: contactMessageMutation } = useMutation({
-    mutationFn: ({ id, is_contacted }: { id: number; is_contacted: boolean }) =>
-      contactMessage(Axios, id, is_contacted),
-    onSuccess: async (_, { is_contacted }) => {
+    mutationFn: ({ id, contacted }: { id: number; contacted: boolean }) =>
+      contactMessage(Axios, id, contacted),
+    onSuccess: async (_, { contacted }) => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.messages(undefined, page),
       });
       toast.success(
-        !is_contacted ? "تم تفعيل التواصل بنجاح" : "تم إلغاء التواصل بنجاح",
+        !contacted ? "تم تفعيل التواصل بنجاح" : "تم إلغاء التواصل بنجاح",
       );
     },
     onError: (err: AxiosError<{ message: string }>) => {
@@ -65,7 +65,7 @@ const Messages = () => {
   };
 
   const handleContact = async (row: ContactType): Promise<void> => {
-    await contactMessageMutation({ id: row.id, is_contacted: row.is_contacted });
+    await contactMessageMutation({ id: row.id, contacted: row.contacted });
   };
 
   return (

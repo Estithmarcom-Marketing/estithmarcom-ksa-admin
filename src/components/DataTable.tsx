@@ -88,7 +88,7 @@ export function DataTable<TData extends object>({
     (approveTarget as Record<string, unknown>)?.["approved"] === false;
 
   const contactTargetContacted =
-    (contactTarget as Record<string, unknown>)?.["is_contacted"] === false;
+    (contactTarget as Record<string, unknown>)?.["contacted"] === false;
 
   const handleEditOpenChange = (open: boolean) => {
     setEditDialogOpen(open);
@@ -183,7 +183,7 @@ export function DataTable<TData extends object>({
             );
           }
 
-          if (col.key === "is_contacted") {
+          if (col.key === "contacted") {
             const isActive = value === true;
             return (
               <span
@@ -284,14 +284,14 @@ export function DataTable<TData extends object>({
                     }}
                     title={
                       (row.original as Record<string, unknown>)[
-                        "is_contacted"
+                        "contacted"
                       ] === false
                         ? "تواصل"
                         : "إلغاء التواصل"
                     }
                   >
                     {(row.original as Record<string, unknown>)[
-                      "is_contacted"
+                      "contacted"
                     ] === false ? (
                       <PhoneCall className="h-4 w-4 text-green-600 hover:text-green-700" />
                     ) : (

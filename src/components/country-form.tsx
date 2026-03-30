@@ -13,22 +13,27 @@ import FormSection from "@/components/form-section";
 
 interface CountryFormProps {
   initial?: Partial<CountryFormValues>;
-  onSubmit?: (data: any) => void;
+  onSubmit?: (formData: FormData) => void;
   isPending?: boolean;
   edit?: boolean;
 }
 
-function toFormData(values: CountryFormValues): any {
-  return {
-    name_ar: values.name_ar,
-    name_en: values.name_en,
-    title_ar: values.title_ar,
-    title_en: values.title_en,
-    description_ar: values.description_ar,
-    description_en: values.description_en,
-    active: values.active,
-    image: values.image,
-  };
+function toFormData(values: CountryFormValues): FormData {
+  const fd = new FormData();
+
+  fd.append("name_ar",        values.name_ar);
+  fd.append("name_en",        values.name_en);
+  fd.append("title_ar",       values.title_ar);
+  fd.append("title_en",       values.title_en);
+  fd.append("description_ar", values.description_ar);
+  fd.append("description_en", values.description_en);
+  fd.append("active",         values.active ? "1" : "0");
+
+  if (values.image instanceof File) {
+    fd.append("image", values.image);
+  }
+
+  return fd;
 }
 
 export default function CountryForm({
