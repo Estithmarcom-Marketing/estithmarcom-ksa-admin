@@ -20,6 +20,7 @@ import {
   CircleX,
   PhoneCall,
   PhoneMissed,
+  MessageSquareMore,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -41,6 +42,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import type { AllowedActionType, DataTableProps } from "@/lib/types/table";
 import { textTruncate } from "@/helper/text-truncate";
 import { ResponsiveModal } from "./responsive-model";
@@ -57,11 +66,14 @@ export function DataTable<TData extends object>({
   editContent,
   onApprove,
   onContact,
+  onStatus,
   isLoading,
   onDelete,
   popup = true,
   allowedActions = ["Add", "Remove", "Edit", "Read"],
-}: DataTableProps<TData>) {
+}: DataTableProps<TData> & {
+  onStatus?: (row: TData, status: string) => Promise<void> | void;
+}) {
   const nav = useNavigate();
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -71,14 +83,34 @@ export function DataTable<TData extends object>({
   const [deleteTarget, setDeleteTarget] = useState<TData | null>(null);
   const [approveTarget, setApproveTarget] = useState<TData | null>(null);
   const [contactTarget, setContactTarget] = useState<TData | null>(null);
+  const [statusTarget, setStatusTarget] = useState<TData | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [approveDialogOpen, setApproveDialogOpen] = useState(false);
   const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
   const [isContacting, setIsContacting] = useState(false);
+  const [isStatusSaving, setIsStatusSaving] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState<string>("pending");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
+
+  const statusLabels: Record<string, string> = {
+    pending: "معلق",
+    contacted: "تم التواصل",
+    processing: "قيد المعالجة",
+    canceled: "ملغى",
+    forwarded: "محال",
+  };
+
+  const statusOptions = [
+    { value: "pending", label: statusLabels.pending },
+    { value: "contacted", label: statusLabels.contacted },
+    { value: "processing", label: statusLabels.processing },
+    { value: "canceled", label: statusLabels.canceled },
+    { value: "forwarded", label: statusLabels.forwarded },
+  ];
 
   function getNestedValue(obj: any, path: string) {
     return path.split(".").reduce((acc, key) => acc?.[key], obj);
@@ -116,6 +148,16 @@ export function DataTable<TData extends object>({
     if (isContacting) return;
     setContactDialogOpen(open);
     if (!open) setTimeout(() => setContactTarget(null), 300);
+  };
+
+  const handleStatusOpenChange = (open: boolean) => {
+    if (isStatusSaving) return;
+    setStatusDialogOpen(open);
+    if (!open)
+      setTimeout(() => {
+        setStatusTarget(null);
+        setSelectedStatus("pending");
+      }, 300);
   };
 
   const can = (action: AllowedActionType) => allowedActions.includes(action);
@@ -198,6 +240,28 @@ export function DataTable<TData extends object>({
             );
           }
 
+          if (col.key === "status") {
+            const statusValue = String(value ?? "pending");
+            const label = statusLabels[statusValue] ?? statusValue;
+            const statusClass =
+              statusValue === "contacted"
+                ? "bg-green-100 text-green-800"
+                : statusValue === "canceled"
+                  ? "bg-red-100 text-red-800"
+                  : statusValue === "processing"
+                    ? "bg-blue-100 text-blue-800"
+                    : statusValue === "forwarded"
+                      ? "bg-violet-100 text-violet-800"
+                      : "bg-amber-100 text-amber-800";
+            return (
+              <span
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusClass}`}
+              >
+                {label}
+              </span>
+            );
+          }
+
           if (col.key === "created_at") {
             return (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">
@@ -275,6 +339,7 @@ export function DataTable<TData extends object>({
                     )}
                   </button>
                 )}
+                {/* Contact: boolean toggle */}
                 {can("Contact") && (
                   <button
                     className="cursor-pointer"
@@ -283,20 +348,36 @@ export function DataTable<TData extends object>({
                       setContactDialogOpen(true);
                     }}
                     title={
-                      (row.original as Record<string, unknown>)[
-                        "contacted"
-                      ] === false
+                      (row.original as Record<string, unknown>)["contacted"] ===
+                      false
                         ? "تواصل"
                         : "إلغاء التواصل"
                     }
                   >
-                    {(row.original as Record<string, unknown>)[
-                      "contacted"
-                    ] === false ? (
+                    {(row.original as Record<string, unknown>)["contacted"] ===
+                    false ? (
                       <PhoneCall className="h-4 w-4 text-green-600 hover:text-green-700" />
                     ) : (
                       <PhoneMissed className="h-4 w-4 text-red-600 hover:text-red-700" />
                     )}
+                  </button>
+                )}
+                {/* Status: dropdown selector */}
+                {can("Status" as AllowedActionType) && (
+                  <button
+                    className="cursor-pointer"
+                    onClick={() => {
+                      const currentStatus = getNestedValue(
+                        row.original,
+                        "status",
+                      ) as string;
+                      setStatusTarget(row.original);
+                      setSelectedStatus(currentStatus ?? "pending");
+                      setStatusDialogOpen(true);
+                    }}
+                    title="تغيير الحالة"
+                  >
+                    <MessageSquareMore className="h-4 w-4 text-slate-600 hover:text-slate-700" />
                   </button>
                 )}
                 {can("Remove") && (
@@ -361,6 +442,21 @@ export function DataTable<TData extends object>({
       setTimeout(() => setContactTarget(null), 300);
     } finally {
       setIsContacting(false);
+    }
+  };
+
+  const handleConfirmStatus = async () => {
+    if (!statusTarget) return;
+    setIsStatusSaving(true);
+    try {
+      await onStatus?.(statusTarget, selectedStatus);
+      setStatusDialogOpen(false);
+      setTimeout(() => {
+        setStatusTarget(null);
+        setSelectedStatus("pending");
+      }, 300);
+    } finally {
+      setIsStatusSaving(false);
     }
   };
 
@@ -592,7 +688,7 @@ export function DataTable<TData extends object>({
         </AlertDialog>
       )}
 
-      {/* Contact Dialog */}
+      {/* Contact Dialog — boolean toggle */}
       {can("Contact") && (
         <AlertDialog
           open={contactDialogOpen}
@@ -635,6 +731,55 @@ export function DataTable<TData extends object>({
                 ) : (
                   "إلغاء التواصل"
                 )}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+
+      {/* Status Dialog — dropdown selector */}
+      {can("Status" as AllowedActionType) && (
+        <AlertDialog
+          open={statusDialogOpen}
+          onOpenChange={handleStatusOpenChange}
+        >
+          <AlertDialogContent dir="rtl">
+            <AlertDialogHeader>
+              <AlertDialogTitle>تغيير حالة {entityLabel}</AlertDialogTitle>
+              <AlertDialogDescription>
+                اختر الحالة الجديدة للعنصر ثم اضغط حفظ.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="status-select">الحالة</Label>
+                <Select
+                  value={selectedStatus}
+                  onValueChange={(value) => setSelectedStatus(value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="اختر الحالة" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statusOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <AlertDialogFooter className="flex-row-reverse gap-2">
+              <AlertDialogCancel disabled={isStatusSaving}>
+                إلغاء
+              </AlertDialogCancel>
+              <Button
+                className="flex items-center text-white gap-1 bg-main hover:bg-main-darker"
+                disabled={isStatusSaving}
+                onClick={handleConfirmStatus}
+              >
+                {isStatusSaving ? "جارٍ الحفظ..." : "حفظ"}
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -46,6 +46,12 @@ export async function deleteRequest(axiosInstance: AxiosInstance, id: number) {
   return await axiosInstance.delete(`/request-services/${id}`);
 }
 
+export async function updateRequest(axiosInstance: AxiosInstance, id: number, status: string) {
+  return await axiosInstance.patch(`/request-services/${id}`, {
+    status: status
+  });
+}
+
 export async function contactMessage(axiosInstance: AxiosInstance, id: number, contacted: boolean) {
   return await axiosInstance.patch(`/contact-us/${id}`, {
     contacted: !contacted

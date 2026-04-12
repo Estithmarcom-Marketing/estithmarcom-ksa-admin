@@ -2,10 +2,10 @@ import { DataTable } from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
-import { contactMessage, deleteMessage } from "@/lib/api/contact-message";
+import { deleteMessage, updateRequest } from "@/lib/api/contact-message";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useRequests } from "@/lib/querykeys/requests-query";
-import type { ContactType } from "@/lib/types/contact-message";
+import type { RequestType } from "@/lib/types/request";
 import type { ColumnConfig } from "@/lib/types/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -16,9 +16,9 @@ const messagesColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "name", name: "الأسم" },
   { key: "message", name: "الرسالة" },
-  { key: "is_contacted", name: "الحالة" },
+  { key: "status", name: "الحالة" },
   { key: "created_at", name: "تاريخ الرسالة" },
-  { key: "service.title_ar", name: "اسم الخدمة" }
+  { key: "service.title_ar", name: "اسم الخدمة" },
 ];
 
 const Requests = () => {
@@ -45,28 +45,29 @@ const Requests = () => {
     },
   });
 
-  const { mutateAsync: contactMessageMutation } = useMutation({
-    mutationFn: ({ id, is_contacted }: { id: number; is_contacted: boolean }) =>
-      contactMessage(Axios, id, is_contacted),
-    onSuccess: async (_, { is_contacted }) => {
+  const { mutateAsync: statusMessageMutation } = useMutation({
+    mutationFn: ({ id, status }: { id: number; status: string }) =>
+      updateRequest(Axios, id, status),
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.requests(undefined, page),
       });
-      toast.success(
-        !is_contacted ? "تم تفعيل التواصل بنجاح" : "تم إلغاء التواصل بنجاح",
-      );
+      toast.success("تم تحديث الحالة بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 
-  const handleDelete = async (row: ContactType): Promise<void> => {
+  const handleDelete = async (row: RequestType): Promise<void> => {
     await removeMessageMutation(row.id);
   };
 
-  const handleContact = async (row: ContactType): Promise<void> => {
-    await contactMessageMutation({ id: row.id, is_contacted: row.is_contacted });
+  const handleStatus = async (
+    row: RequestType,
+    status: string,
+  ): Promise<void> => {
+    await statusMessageMutation({ id: row.id, status });
   };
 
   return (
@@ -75,15 +76,15 @@ const Requests = () => {
         <SpecialHeader title="الطلبات" />
       </div>
 
-      <DataTable<ContactType>
+      <DataTable<RequestType>
         columns={messagesColumns}
         data={requestsData}
         entityLabel="الطلب"
         isLoading={isLoadingRequests}
         onDelete={handleDelete}
         popup={false}
-        onContact={handleContact}
-        allowedActions={["Read", "Contact", "Remove"]}
+        onStatus={handleStatus}
+        allowedActions={["Read", "Remove", "Status"]}
       />
       {requests?.meta && <Pagination meta={requests.meta} />}
     </div>

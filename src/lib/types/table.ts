@@ -5,7 +5,7 @@ export interface ColumnConfig {
   name: string;
 }
 
-export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve" | "Contact";
+export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve" | "Contact" | "Status";
 
 export interface DataTableProps<TData extends object> {
   columns?: ColumnConfig[];
