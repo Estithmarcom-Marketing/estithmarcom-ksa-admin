@@ -67,8 +67,8 @@ export default function ClientActions() {
               initial={
                 client
                   ? {
-                      name_ar: client.name_ar,
-                      name_en: client.name_en,
+                      alt_ar: client.alt_ar,
+                      alt_en: client.alt_en,
                       link: client.link,
                       image: client.image,
                     }

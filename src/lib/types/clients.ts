@@ -2,8 +2,8 @@ import type { PaginationType } from "./pagination";
 
 export interface ClientType {
   id: number;
-  name_ar: string;
-  name_en: string;
+  alt_ar: string;
+  alt_en: string;
   link: string;
   image: any;
   created_at: string;

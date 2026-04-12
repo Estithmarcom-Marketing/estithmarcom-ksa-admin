@@ -22,14 +22,14 @@ export default function ReadClient({ client }: ReadClientProps) {
                     ? client.image
                     : URL.createObjectURL(client.image)
                 }
-                alt={client.name_ar}
+                alt={client.alt_ar}
                 className="w-48 h-32 object-cover rounded-md border border-input"
               />
             </div>
           )}
 
-          <Row label="الاسم (عربي)" value={client.name_ar} />
-          <Row label="الاسم (انجليزي)" value={client.name_en} />
+          <Row label="الاسم (عربي)" value={client.alt_ar} />
+          <Row label="الاسم (انجليزي)" value={client.alt_en} />
           <Row label="الرابط" value={client.link} />
           <Row label="تاريخ الإنشاء" value={client.created_at} />
         </div>

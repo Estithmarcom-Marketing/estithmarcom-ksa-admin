@@ -18,8 +18,8 @@ interface ClientFormProps {
 
 function toFormData(values: ClientFormValues): FormData {
   const formData = new FormData();
-  formData.append("name_ar",   values.name_ar);
-  formData.append("name_en",   values.name_en);
+  formData.append("alt_ar",   values.alt_ar);
+  formData.append("alt_en",   values.alt_en);
   formData.append("link",      values.link);
   formData.append("published", values.published ? "1" : "0");
 
@@ -44,8 +44,8 @@ export default function ClientForm({
   } = useForm<ClientFormValues>({
     resolver: zodResolver(clientFormSchema),
     defaultValues: {
-      name_ar:   initial.name_ar   ?? "",
-      name_en:   initial.name_en   ?? "",
+      alt_ar:   initial.alt_ar   ?? "",
+      alt_en:   initial.alt_en   ?? "",
       link:      initial.link      ?? "",
       published: initial.published ?? true,
       image:     initial.image     ?? null,
@@ -104,32 +104,32 @@ export default function ClientForm({
             </Field>
           </div>
 
-          {/* Name AR */}
+          {/* alt AR */}
           <div className="col-span-2 sm:col-span-1">
-            <Field data-invalid={!!errors.name_ar}>
-              <FieldLabel htmlFor="name-ar">الاسم (عربي)</FieldLabel>
+            <Field data-invalid={!!errors.alt_ar}>
+              <FieldLabel htmlFor="alt-ar">الاسم (عربي)</FieldLabel>
               <Input
-                id="name-ar"
-                aria-invalid={!!errors.name_ar}
+                id="alt-ar"
+                aria-invalid={!!errors.alt_ar}
                 placeholder="مثال: سوني"
-                {...register("name_ar")}
+                {...register("alt_ar")}
               />
-              <FieldDescription>{errors.name_ar?.message}</FieldDescription>
+              <FieldDescription>{errors.alt_ar?.message}</FieldDescription>
             </Field>
           </div>
 
-          {/* Name EN */}
+          {/* alt EN */}
           <div className="col-span-2 sm:col-span-1">
-            <Field data-invalid={!!errors.name_en}>
-              <FieldLabel htmlFor="name-en">الاسم (انجليزي)</FieldLabel>
+            <Field data-invalid={!!errors.alt_en}>
+              <FieldLabel htmlFor="alt-en">الاسم (انجليزي)</FieldLabel>
               <Input
-                id="name-en"
+                id="alt-en"
                 dir="ltr"
-                aria-invalid={!!errors.name_en}
+                aria-invalid={!!errors.alt_en}
                 placeholder="Ex: Sony"
-                {...register("name_en")}
+                {...register("alt_en")}
               />
-              <FieldDescription>{errors.name_en?.message}</FieldDescription>
+              <FieldDescription>{errors.alt_en?.message}</FieldDescription>
             </Field>
           </div>
 

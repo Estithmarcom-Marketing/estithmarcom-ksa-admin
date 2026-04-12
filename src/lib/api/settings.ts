@@ -10,7 +10,7 @@ export async function updateMithaqLinks(axiosInstance: AxiosInstance, values: So
   return await axiosInstance.patch("/settings", values);
 }
 
-export async function getMithaqInfo(axiosInstance: AxiosInstance): Promise<MithaqInfo> {
+export async function getSettings(axiosInstance: AxiosInstance): Promise<MithaqInfo> {
   const res =  await axiosInstance.get("/settings");
-  return res.data.data.info
+  return res.data.data.settings
 }

@@ -23,7 +23,7 @@ export async function addClient(
   axiosInstance: AxiosInstance,
   values: FormData
 ) {
-  return await axiosInstance.post("/countries", values);
+  return await axiosInstance.post("/clients", values);
 }
 
 export async function updateClient(
@@ -32,12 +32,12 @@ export async function updateClient(
   values: FormData
 ) {
   values.append("_method", "patch");
-  return await axiosInstance.post(`/countries/${id}`, values);
+  return await axiosInstance.post(`/clients/${id}`, values);
 }
 
 export async function deleteClient(
   axiosInstance: AxiosInstance,
   id: number
 ) {
-  return await axiosInstance.delete(`/countries/${id}`);
+  return await axiosInstance.delete(`/clients/${id}`);
 }

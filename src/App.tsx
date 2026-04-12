@@ -6,7 +6,7 @@ import Blog from "./pages/blogs/blog";
 import Requests from "./pages/requests/requests";
 import ContactMessages from "./pages/contact-messages/contact-messages";
 import Profile from "./pages/profile";
-import Settings from "./pages/mithaq-info";
+import Settings from "./pages/settings";
 import Comments from "./pages/comments/comments";
 import AddBlog from "./pages/blogs/add-blog";
 import Login from "./pages/login/login";
