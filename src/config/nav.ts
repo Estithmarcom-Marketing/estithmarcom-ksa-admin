@@ -11,6 +11,7 @@ import {
   HelpCircle,
   Warehouse,
   MapPin,
+  Wrench,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -22,7 +23,7 @@ export const NAV_GROUPS: NavGroup[] = [
         path: "/dashboard/overview",
         icon: LayoutDashboard,
       },
-      // { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
+      { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
       { label: "الدول", path: "/dashboard/countries", icon: MapPin },
       { label: "شركاؤنا", path: "/dashboard/clients", icon: Warehouse },
       { label: "الأسئلة الشائعة", path: "/dashboard/faqs", icon: HelpCircle },

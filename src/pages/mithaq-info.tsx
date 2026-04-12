@@ -3,7 +3,7 @@ import { SocialLinksForm } from "@/components/social-media-link-form";
 import SpecialHeader from "@/components/SpecialHeader";
 import { useInfo } from "@/lib/querykeys/mithaq-info";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateMithaqContact, updateMithaqLinks } from "@/lib/api/mithaq-info";
+import { updateMithaqContact, updateMithaqLinks } from "@/lib/api/settings";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import useAxios from "@/hooks/use-axios";
 import type {
