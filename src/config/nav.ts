@@ -12,6 +12,7 @@ import {
   Warehouse,
   MapPin,
   Wrench,
+  Building2,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -25,6 +26,11 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
       { label: "الدول", path: "/dashboard/countries", icon: MapPin },
+      {
+        label: "المناطق الحرة",
+        path: "/dashboard/free-zones",
+        icon: Building2,
+      },
       { label: "شركاؤنا", path: "/dashboard/clients", icon: Warehouse },
       { label: "الأسئلة الشائعة", path: "/dashboard/faqs", icon: HelpCircle },
       { label: "المدونة", path: "/dashboard/blog", icon: BookOpen },

@@ -2,7 +2,8 @@ export const queryKeys = {
   currentUser: ["current-user"] as const,
   admins: ["admins"] as const,
   info: ["info"] as const,
-  overview: ["overview"] as const,  notifications: ["notifications"] as const,
+  overview: ["overview"] as const,
+  notifications: ["notifications"] as const,
   services: (id?: string, page?: number) =>
     id ? ["services", id] : page ? ["services", { page }] : ["services"],
   faqs: (id?: string, page?: number) =>
@@ -11,6 +12,8 @@ export const queryKeys = {
     id ? ["comments", id] : page ? ["comments", { page }] : ["comments"],
   blogs: (id?: string, page?: number) =>
     id ? ["blogs", id] : page ? ["blogs", { page }] : ["blogs"],
+  freeZones: (id?: string, page?: number) =>
+    id ? ["freeZones", id] : page ? ["freeZones", { page }] : ["freeZones"],
   members: (id?: string, page?: number) =>
     id ? ["members", id] : page ? ["members", { page }] : ["members"],
   subs: (id?: string, page?: number) =>

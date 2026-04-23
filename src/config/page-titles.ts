@@ -4,6 +4,10 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   overview: { title: "نظرة عامة", description: "مرحبا بك مجدد!" },
   services: { title: "الخدمات", description: "اضافة, تعديل و تصفح الخدمات" },
   blog: { title: "المدونة", description: "اضافة, تعديل و تصفح المدونات" },
+  "free-zones": {
+    title: "المناطق الحرة",
+    description: "اضافة, تعديل و تصفح المناطق الحرة",
+  },
   team: { title: "الفريق", description: "اضافة, تعديل و تصفح الفريق" },
   requests: { title: "الطلبات", description: "تصفح الطلبات المرسلة" },
   messages: { title: "رسائل التواصل", description: "تصفح رسائل التواصل" },
@@ -18,6 +22,14 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
     new: { title: "إضافة مدونة", description: "إضافة مدونة جديدة" },
     edit: { title: "تعديل مدونة", description: "تعديل بيانات المدونة" },
     read: { title: "عرض مدونة", description: "تفاصيل المدونة" },
+  },
+  "free-zones": {
+    new: { title: "إضافة منطقة حرة", description: "إضافة منطقة حرة جديدة" },
+    edit: {
+      title: "تعديل منطقة حرة",
+      description: "تعديل بيانات المنطقة الحرة",
+    },
+    read: { title: "عرض منطقة حرة", description: "تفاصيل المنطقة الحرة" },
   },
   services: {
     new: { title: "إضافة خدمة", description: "إضافة خدمة جديدة" },

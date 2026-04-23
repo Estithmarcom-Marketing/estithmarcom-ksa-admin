@@ -32,12 +32,18 @@ import ClientActions from "./pages/clients/client-actions";
 import Countries from "./pages/countries/countries";
 import AddCountry from "./pages/countries/add-country";
 import CountryActions from "./pages/countries/country-actions";
+import FreeZones from "./pages/free-zones/free-zones";
+import AddFreeZone from "./pages/free-zones/add-free-zone";
+import FreeZoneActions from "./pages/free-zones/free-zone-actions";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard/overview" replace />} />
+        <Route
+          path="/"
+          element={<Navigate to="/dashboard/overview" replace />}
+        />
 
         <Route element={<LoginGuard />}>
           <Route path="/login" element={<Login />} />
@@ -50,52 +56,90 @@ const App = () => {
 
             <Route path="services" element={<Services />} />
             <Route path="services/new" element={<AddService />} />
-            <Route path="services/:action" element={<Navigate to="/dashboard/services" replace />} />
+            <Route
+              path="services/:action"
+              element={<Navigate to="/dashboard/services" replace />}
+            />
             <Route path="services/:action/:id" element={<ServiceActions />} />
 
             <Route path="clients" element={<Clients />} />
             <Route path="clients/new" element={<AddClient />} />
-            <Route path="clients/:action" element={<Navigate to="/dashboard/clients" replace />} />
+            <Route
+              path="clients/:action"
+              element={<Navigate to="/dashboard/clients" replace />}
+            />
             <Route path="clients/:action/:id" element={<ClientActions />} />
 
             <Route path="countries" element={<Countries />} />
             <Route path="countries/new" element={<AddCountry />} />
-            <Route path="countries/:action" element={<Navigate to="/dashboard/countries" replace />} />
+            <Route
+              path="countries/:action"
+              element={<Navigate to="/dashboard/countries" replace />}
+            />
             <Route path="countries/:action/:id" element={<CountryActions />} />
+
+            <Route path="free-zones" element={<FreeZones />} />
+            <Route path="free-zones/new" element={<AddFreeZone />} />
+            <Route
+              path="free-zones/:action"
+              element={<Navigate to="/dashboard/free-zones" replace />}
+            />
+            <Route
+              path="free-zones/:action/:id"
+              element={<FreeZoneActions />}
+            />
 
             <Route path="faqs" element={<FAQs />} />
             <Route path="faqs/new" element={<AddFAQ />} />
-            <Route path="faqs/:action" element={<Navigate to="/dashboard/faqs" replace />} />
+            <Route
+              path="faqs/:action"
+              element={<Navigate to="/dashboard/faqs" replace />}
+            />
             <Route path="faqs/:action/:id" element={<FAQActions />} />
 
             <Route path="blog" element={<Blog />} />
             <Route path="blog/new" element={<AddBlog />} />
-            <Route path="blog/:action" element={<Navigate to="/dashboard/blog" replace />} />
+            <Route
+              path="blog/:action"
+              element={<Navigate to="/dashboard/blog" replace />}
+            />
             <Route path="blog/:action/:id" element={<BlogActions />} />
 
             <Route path="team" element={<Team />} />
             <Route path="team/new" element={<AddMember />} />
-            <Route path="team/:action" element={<Navigate to="/dashboard/team" replace />} />
+            <Route
+              path="team/:action"
+              element={<Navigate to="/dashboard/team" replace />}
+            />
             <Route path="team/:action/:id" element={<MemberActions />} />
 
             <Route path="admins" element={<Admins />} />
-            
+
             <Route path="settings" element={<Settings />} />
 
             <Route path="profile" element={<Profile />} />
 
             <Route path="requests" element={<Requests />} />
-            <Route path="requests/:action" element={<Navigate to="/dashboard/requests" replace />} />
+            <Route
+              path="requests/:action"
+              element={<Navigate to="/dashboard/requests" replace />}
+            />
             <Route path="requests/:action/:id" element={<RequestActions />} />
 
             <Route path="messages" element={<ContactMessages />} />
-            <Route path="messages/:action" element={<Navigate to="/dashboard/messages" replace />} />
+            <Route
+              path="messages/:action"
+              element={<Navigate to="/dashboard/messages" replace />}
+            />
             <Route path="messages/:action/:id" element={<MessageActions />} />
 
             <Route path="subscribes" element={<Subscribes />} />
 
             <Route path="comments" element={<Comments />} />
-            <Route path="comments/:action" element={<Navigate to="/dashboard/comments" replace />} />
+            <Route
+              path="comments/:action"
+              element={<Navigate to="/dashboard/comments" replace />}
+            />
             <Route path="comments/:action/:id" element={<CommentsActions />} />
           </Route>
         </Route>
