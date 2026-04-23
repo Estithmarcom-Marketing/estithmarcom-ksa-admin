@@ -7,29 +7,28 @@ export interface CardType {
   label: string;
 }
 
-export interface BarChartType {
-  title: string;
-  total: number;
+export interface StatItem {
+  count: number;
+  percentage: number;
+  trend: "neutral" | "up" | "down";
+}
+
+export interface RequestByService {
+  service: string;
+  count: number;
+  percentage: number;
+  trend: "neutral" | "up" | "down";
 }
 
 export interface OverViewType {
-  comments: CardType;
-  contact_us: CardType;
-  service_requests: CardType;
-  newsletter_subscriptions: CardType;
-  most_requested_services: BarChartType[];
-  yearly_charts: {
-    months: number[];
-    years: number[];
-    subscriptions: number[]
-    comments: number[];
-    messages: number[];
-    requests: number[];
-  };
+  services: StatItem;
+  service_requests: StatItem;
+  contact_us: StatItem;
+  requests_by_service: RequestByService[];
 }
 
 export interface FullCardType {
-  title: string
-  Icon: LucideIcon
-  card: CardType
+  title: string;
+  Icon: LucideIcon;
+  card: CardType;
 }

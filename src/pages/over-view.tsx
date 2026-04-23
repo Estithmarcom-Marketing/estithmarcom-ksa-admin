@@ -1,32 +1,31 @@
 import SpecialHeader from "@/components/SpecialHeader";
 import StatCard from "@/components/StatCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { monthsNames } from "@/config/months-names";
-import { Box, MessageCircle, Phone, Rss } from "lucide-react";
+import { Box, MessageCircle, Phone } from "lucide-react";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
-  LineElement,
-  PointElement,
   Tooltip,
-  Filler,
   type ChartOptions,
 } from "chart.js";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import { useOverView } from "@/lib/querykeys/overview-query";
 import OverviewSkeleton from "@/components/overview-skeleton";
+import type { CardType } from "@/lib/types/overview";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Tooltip,
-  Filler,
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip);
+
+const convertStatItemToCardType = (
+  item: { count: number; percentage: number; trend: "neutral" | "up" | "down" },
+  label: string,
+): CardType => ({
+  total: item.count,
+  change_percentage: item.percentage,
+  trend: item.trend,
+  label,
+});
 
 const mainColor = getComputedStyle(document.documentElement)
   .getPropertyValue("--main-color")
@@ -44,18 +43,29 @@ const Overview = () => {
   }
 
   const stats = [
-    { title: "عدد الطلبات", card: overView.service_requests, Icon: Box },
-    { title: "عدد الرسائل", card: overView.contact_us, Icon: Phone },
-    { title: "عدد التعليقات", card: overView.comments, Icon: MessageCircle },
-    { title: "عدد الاشتراكات", card: overView.newsletter_subscriptions, Icon: Rss },
+    {
+      title: "عدد الخدمات",
+      card: convertStatItemToCardType(overView.services, "الخدمات"),
+      Icon: Box,
+    },
+    {
+      title: "عدد طلبات الخدمات",
+      card: convertStatItemToCardType(overView.service_requests, "الطلبات"),
+      Icon: Phone,
+    },
+    {
+      title: "عدد رسائل التواصل",
+      card: convertStatItemToCardType(overView.contact_us, "الرسائل"),
+      Icon: MessageCircle,
+    },
   ];
 
   const barChartData = {
-    labels: overView.most_requested_services.map((item) => item.title),
+    labels: overView.requests_by_service.map((item) => item.service),
     datasets: [
       {
         label: "عدد الطلبات",
-        data: overView.most_requested_services.map((item) => item.total),
+        data: overView.requests_by_service.map((item) => item.count),
         backgroundColor: mainColor,
         hoverBackgroundColor: mainDarkerColor,
         borderSkipped: false,
@@ -95,89 +105,11 @@ const Overview = () => {
     },
   };
 
-  const lineLabelsShort = overView.yearly_charts.months.map(
-    (m) => monthsNames[m - 1] || `شهر ${m}`,
-  );
-
-  const lineLabelsFull = overView.yearly_charts.months.map((m, i) => {
-    const monthName = monthsNames[m - 1] || `شهر ${m}`;
-    const year = overView.yearly_charts.years[i] ?? "";
-    return `${monthName} ${year}`.trim();
-  });
-
-  const makeLineChartData = (
-    key: "requests" | "messages" | "comments" | "subscriptions",
-    color: string,
-    label: string,
-  ) => ({
-    labels: lineLabelsShort,
-    datasets: [
-      {
-        label,
-        data: overView.yearly_charts[key],
-        borderColor: color,
-        backgroundColor: `${color}22`,
-        borderWidth: 2.5,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        pointBackgroundColor: color,
-        tension: 0.4,
-        fill: true,
-      },
-    ],
-  });
-
-  const lineOptions: ChartOptions<"line"> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      tooltip: {
-        backgroundColor: "rgba(15,23,42,0.85)",
-        titleColor: "#f1f5f9",
-        bodyColor: "#cbd5e1",
-        padding: 10,
-        cornerRadius: 8,
-        callbacks: {
-          title: (items) => lineLabelsFull[items[0].dataIndex],
-        },
-      },
-      legend: { display: false },
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: {
-          color: "#94a3b8",
-          font: { size: 15 },
-          maxRotation: 45,
-        },
-      },
-      y: {
-        beginAtZero: true,
-        grid: { color: "#f8fafc" },
-        ticks: {
-          color: "#94a3b8",
-          font: { size: 12 },
-          precision: 0,
-          stepSize: 10,
-          callback: (value) => Math.round(Number(value)),
-        },
-      },
-    },
-  };
-
-  const lineConfigs = [
-    { key: "requests" as const, color: "#10b981", title: "الطلبات عبر العام" },
-    { key: "messages" as const, color: mainColor, title: "الرسائل عبر العام" },
-    { key: "comments" as const, color: "#ef4444", title: "التعليقات عبر العام" },
-    { key: "subscriptions" as const, color: "#14192b", title: "الأشتراكات عبر العام" },
-  ];
-
   return (
     <div className="space-y-6 min-h-screen">
       <SpecialHeader title="نظرة عامة" />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         {stats.map((s, index) => (
           <StatCard key={index} card={s.card} title={s.title} Icon={s.Icon} />
         ))}
@@ -185,7 +117,7 @@ const Overview = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">أكثر الخدمات طلباً</CardTitle>
+          <CardTitle className="text-base">طلبات الخدمات</CardTitle>
         </CardHeader>
         <CardContent>
           <div style={{ height: 280 }}>
@@ -193,26 +125,6 @@ const Overview = () => {
           </div>
         </CardContent>
       </Card>
-
-      <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
-        {lineConfigs.map(({ key, color, title }) => (
-          <Card key={key}>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div style={{ height: 200 }}>
-                <Line
-                  data={makeLineChartData(key, color, title.replace(" عبر العام", ""))}
-                  options={lineOptions}
-                />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 };
