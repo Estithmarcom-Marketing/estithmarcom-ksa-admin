@@ -21,12 +21,15 @@ export default function ServiceActions() {
     updateServiceMutation(data);
   }
 
-  const { mutateAsync: updateServiceMutation, isPending: isLoadingUpdateService } = useMutation({
+  const {
+    mutateAsync: updateServiceMutation,
+    isPending: isLoadingUpdateService,
+  } = useMutation({
     mutationFn: (data: FormData) => updateService(Axios, id, data),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: queryKeys.services() });
       toast.success("تم تحديث الخدمة بنجاح");
-      nav("/dashboard/services")
+      nav("/dashboard/services");
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");
@@ -67,6 +70,7 @@ export default function ServiceActions() {
                       long_description_ar: service.long_description_ar,
                       long_description_en: service.long_description_en,
                       published: service.published,
+                      countries: service.countries,
                       features: service.features,
                       faqs: service.faqs,
                       meta_title_ar: service.meta_title_ar,
@@ -83,13 +87,12 @@ export default function ServiceActions() {
             />
           )
         ) : null}
-        {action === "read" && (
-          isLoading ? (
+        {action === "read" &&
+          (isLoading ? (
             <FormSkeleton />
           ) : service ? (
             <ReadService service={service} />
-          ) : null
-        )}
+          ) : null)}
       </div>
     </div>
   );

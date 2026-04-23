@@ -26,4 +26,5 @@ export const queryKeys = {
     id ? ["clients", id] : page ? ["clients", { page }] : ["clients"],
   countries: (id?: string, page?: number) =>
     id ? ["countries", id] : page ? ["countries", { page }] : ["countries"],
+  countriesUnpaginated: () => ["countries-unpaginated"] as const,
 };

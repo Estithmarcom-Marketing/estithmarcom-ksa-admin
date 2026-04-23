@@ -11,6 +11,13 @@ export async function getCountries(
   return res.data.data;
 }
 
+export async function getCountriesUnpaginated(
+  axiosInstance: AxiosInstance
+): Promise<CountryType[]> {
+  const res = await axiosInstance.get("/countries/unpaginated");
+  return res.data.data.countries;
+}
+
 export async function getCountry(
   axiosInstance: AxiosInstance,
   id: string | undefined

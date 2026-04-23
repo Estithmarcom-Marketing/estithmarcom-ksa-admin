@@ -17,45 +17,52 @@ import {
   type ServiceFormValues,
 } from "@/lib/schema/service-schema";
 import { RichTextEditor } from "./ui/rich-text-editor";
+import { useCountriesUnpaginated } from "@/lib/querykeys/countries-query";
+import { MultiSelect } from "./multi-select";
 
 interface ServiceFormProps {
   initial?: Record<string, any>;
   onSubmit?: (formData: FormData) => void;
   isPending?: boolean;
-  edit?: boolean
+  edit?: boolean;
 }
 
 function toFormData(values: ServiceFormValues): FormData {
   const fd = new FormData();
 
-  fd.append("title_ar",             values.title_ar);
-  fd.append("title_en",             values.title_en);
+  fd.append("title_ar", values.title_ar);
+  fd.append("title_en", values.title_en);
   fd.append("short_description_ar", values.short_description_ar);
   fd.append("short_description_en", values.short_description_en);
-  fd.append("long_description_ar",  values.long_description_ar);
-  fd.append("long_description_en",  values.long_description_en);
-  fd.append("published",            values.published ? "1" : "0");
-  fd.append("meta_title_ar",        values.meta_title_ar);
-  fd.append("meta_title_en",        values.meta_title_en);
-  fd.append("meta_description_ar",  values.meta_description_ar);
-  fd.append("meta_description_en",  values.meta_description_en);
+  fd.append("long_description_ar", values.long_description_ar);
+  fd.append("long_description_en", values.long_description_en);
+  fd.append("published", values.published ? "1" : "0");
+  fd.append("meta_title_ar", values.meta_title_ar);
+  fd.append("meta_title_en", values.meta_title_en);
+  fd.append("meta_description_ar", values.meta_description_ar);
+  fd.append("meta_description_en", values.meta_description_en);
 
   if (values.image instanceof File) {
     fd.append("image", values.image);
   }
 
+  // Send country_ids as array of integers
+  values.country_ids.forEach((id) => {
+    fd.append("country_ids[]", id);
+  });
+
   values.features.forEach((f, i) => {
-    fd.append(`features[${i}][title_ar]`,  f.title_ar);
-    fd.append(`features[${i}][title_en]`,  f.title_en);
+    fd.append(`features[${i}][title_ar]`, f.title_ar);
+    fd.append(`features[${i}][title_en]`, f.title_en);
     fd.append(`features[${i}][published]`, f.published ? "1" : "0");
   });
 
   values.faqs.forEach((faq, i) => {
     fd.append(`faqs[${i}][question_ar]`, faq.question_ar);
     fd.append(`faqs[${i}][question_en]`, faq.question_en);
-    fd.append(`faqs[${i}][answer_ar]`,   faq.answer_ar);
-    fd.append(`faqs[${i}][answer_en]`,   faq.answer_en);
-    fd.append(`faqs[${i}][published]`,   faq.published ? "1" : "0");
+    fd.append(`faqs[${i}][answer_ar]`, faq.answer_ar);
+    fd.append(`faqs[${i}][answer_en]`, faq.answer_en);
+    fd.append(`faqs[${i}][published]`, faq.published ? "1" : "0");
   });
 
   return fd;
@@ -65,8 +72,20 @@ export default function ServiceForm({
   initial = {},
   onSubmit,
   isPending,
-  edit = false
+  edit = false,
 }: ServiceFormProps) {
+  const { data: countries = [], isLoading: isLoadingCountries } =
+    useCountriesUnpaginated();
+
+  const countryOptions = countries.map((c) => ({
+    label: c.name_ar,
+    value: String(c.id),
+  }));
+
+  // Derive default country_ids from initial.countries array
+  const defaultCountryIds: string[] =
+    initial.countries?.map((c: { id: number }) => String(c.id)) ?? [];
+
   const {
     register,
     handleSubmit,
@@ -75,20 +94,21 @@ export default function ServiceForm({
   } = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
     defaultValues: {
-      title_ar:             initial.title_ar             ?? "",
-      title_en:             initial.title_en             ?? "",
-      image:                initial.image                ?? null,
+      title_ar: initial.title_ar ?? "",
+      title_en: initial.title_en ?? "",
+      image: initial.image ?? null,
       short_description_ar: initial.short_description_ar ?? "",
       short_description_en: initial.short_description_en ?? "",
-      long_description_ar:  initial.long_description_ar  ?? "",
-      long_description_en:  initial.long_description_en  ?? "",
-      published:            initial.published             ?? true,
-      features:             initial.features              ?? [],
-      faqs:                 initial.faqs                  ?? [],
-      meta_title_ar:        initial.meta_title_ar         ?? "",
-      meta_title_en:        initial.meta_title_en         ?? "",
-      meta_description_ar:  initial.meta_description_ar   ?? "",
-      meta_description_en:  initial.meta_description_en   ?? "",
+      long_description_ar: initial.long_description_ar ?? "",
+      long_description_en: initial.long_description_en ?? "",
+      published: initial.published ?? true,
+      country_ids: defaultCountryIds,
+      features: initial.features ?? [],
+      faqs: initial.faqs ?? [],
+      meta_title_ar: initial.meta_title_ar ?? "",
+      meta_title_en: initial.meta_title_en ?? "",
+      meta_description_ar: initial.meta_description_ar ?? "",
+      meta_description_en: initial.meta_description_en ?? "",
     },
   });
 
@@ -112,7 +132,6 @@ export default function ServiceForm({
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <Section title="المعلومات الأساسية">
         <div className="grid grid-cols-2 gap-x-4 gap-y-5">
-
           <div className="col-span-2 flex items-center justify-end gap-3">
             <Controller
               control={control}
@@ -124,7 +143,10 @@ export default function ServiceForm({
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
-                  <Label htmlFor="published" className="text-xs mb-0 font-medium">
+                  <Label
+                    htmlFor="published"
+                    className="text-xs mb-0 font-medium"
+                  >
                     مفعّل
                   </Label>
                 </>
@@ -181,6 +203,31 @@ export default function ServiceForm({
             </Field>
           </div>
 
+          {/* Countries Multi-Select */}
+          <div className="col-span-2">
+            <Field data-invalid={!!errors.country_ids}>
+              <FieldLabel>الدول</FieldLabel>
+              <Controller
+                control={control}
+                name="country_ids"
+                render={({ field }) => (
+                  <MultiSelect
+                    options={countryOptions}
+                    defaultValue={field.value}
+                    onValueChange={field.onChange}
+                    placeholder={
+                      isLoadingCountries ? "جار التحميل..." : "اختر الدول"
+                    }
+                    disabled={isLoadingCountries}
+                    variant="default"
+                    maxCount={5}
+                  />
+                )}
+              />
+              <FieldDescription>{errors.country_ids?.message}</FieldDescription>
+            </Field>
+          </div>
+
           <div className="col-span-2 sm:col-span-1">
             <Field data-invalid={!!errors.short_description_ar}>
               <FieldLabel htmlFor="short-desc-ar">وصف قصير (عربي)</FieldLabel>
@@ -190,13 +237,17 @@ export default function ServiceForm({
                 placeholder="وصف مختصر بالعربي"
                 {...register("short_description_ar")}
               />
-              <FieldDescription>{errors.short_description_ar?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.short_description_ar?.message}
+              </FieldDescription>
             </Field>
           </div>
 
           <div className="col-span-2 sm:col-span-1">
             <Field data-invalid={!!errors.short_description_en}>
-              <FieldLabel htmlFor="short-desc-en">وصف قصير (انجليزي)</FieldLabel>
+              <FieldLabel htmlFor="short-desc-en">
+                وصف قصير (انجليزي)
+              </FieldLabel>
               <Textarea
                 id="short-desc-en"
                 dir="ltr"
@@ -204,7 +255,9 @@ export default function ServiceForm({
                 placeholder="Short description in English"
                 {...register("short_description_en")}
               />
-              <FieldDescription>{errors.short_description_en?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.short_description_en?.message}
+              </FieldDescription>
             </Field>
           </div>
 
@@ -224,7 +277,9 @@ export default function ServiceForm({
                   />
                 )}
               />
-              <FieldDescription>{errors.long_description_ar?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.long_description_ar?.message}
+              </FieldDescription>
             </Field>
           </div>
 
@@ -244,13 +299,15 @@ export default function ServiceForm({
                   />
                 )}
               />
-              <FieldDescription>{errors.long_description_en?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.long_description_en?.message}
+              </FieldDescription>
             </Field>
           </div>
-
         </div>
       </Section>
 
+      {/* Features and FAQs sections remain unchanged */}
       <Section title="المميزات">
         <div className="space-y-3">
           {featureFields.map((field, index) => (
@@ -266,7 +323,6 @@ export default function ServiceForm({
               >
                 <Trash2 size={15} />
               </button>
-
               <div className="grid grid-cols-2 gap-x-4 gap-y-4">
                 <div className="col-span-2 flex items-center gap-3">
                   <Controller
@@ -279,30 +335,37 @@ export default function ServiceForm({
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
-                        <Label htmlFor={`feature-published-${index}`} className="text-xs mb-0 font-medium">
+                        <Label
+                          htmlFor={`feature-published-${index}`}
+                          className="text-xs mb-0 font-medium"
+                        >
                           مفعّل
                         </Label>
                       </>
                     )}
                   />
                 </div>
-
                 <div className="col-span-2 sm:col-span-1">
                   <Field data-invalid={!!errors.features?.[index]?.title_ar}>
-                    <FieldLabel htmlFor={`feature-ar-${index}`}>الميزة (عربي)</FieldLabel>
+                    <FieldLabel htmlFor={`feature-ar-${index}`}>
+                      الميزة (عربي)
+                    </FieldLabel>
                     <Input
                       id={`feature-ar-${index}`}
                       aria-invalid={!!errors.features?.[index]?.title_ar}
                       placeholder="اكتب الميزة بالعربي"
                       {...register(`features.${index}.title_ar`)}
                     />
-                    <FieldDescription>{errors.features?.[index]?.title_ar?.message}</FieldDescription>
+                    <FieldDescription>
+                      {errors.features?.[index]?.title_ar?.message}
+                    </FieldDescription>
                   </Field>
                 </div>
-
                 <div className="col-span-2 sm:col-span-1">
                   <Field data-invalid={!!errors.features?.[index]?.title_en}>
-                    <FieldLabel htmlFor={`feature-en-${index}`}>الميزة (انجليزي)</FieldLabel>
+                    <FieldLabel htmlFor={`feature-en-${index}`}>
+                      الميزة (انجليزي)
+                    </FieldLabel>
                     <Input
                       id={`feature-en-${index}`}
                       dir="ltr"
@@ -310,17 +373,20 @@ export default function ServiceForm({
                       placeholder="Write the feature in English"
                       {...register(`features.${index}.title_en`)}
                     />
-                    <FieldDescription>{errors.features?.[index]?.title_en?.message}</FieldDescription>
+                    <FieldDescription>
+                      {errors.features?.[index]?.title_en?.message}
+                    </FieldDescription>
                   </Field>
                 </div>
               </div>
             </div>
           ))}
-
           <Button
             type="button"
             size="sm"
-            onClick={() => appendFeature({ title_ar: "", title_en: "", published: true })}
+            onClick={() =>
+              appendFeature({ title_ar: "", title_en: "", published: true })
+            }
             className="gap-1.5 flex items-center"
           >
             <Plus size={15} />
@@ -344,7 +410,6 @@ export default function ServiceForm({
               >
                 <Trash2 size={15} />
               </button>
-
               <div className="grid grid-cols-2 gap-x-4 gap-y-4">
                 <div className="col-span-2 flex items-center gap-3">
                   <Controller
@@ -357,30 +422,37 @@ export default function ServiceForm({
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
-                        <Label htmlFor={`faq-published-${index}`} className="text-xs mb-0 font-medium">
+                        <Label
+                          htmlFor={`faq-published-${index}`}
+                          className="text-xs mb-0 font-medium"
+                        >
                           مفعّل
                         </Label>
                       </>
                     )}
                   />
                 </div>
-
                 <div className="col-span-2 sm:col-span-1">
                   <Field data-invalid={!!errors.faqs?.[index]?.question_ar}>
-                    <FieldLabel htmlFor={`faq-q-ar-${index}`}>السؤال (عربي)</FieldLabel>
+                    <FieldLabel htmlFor={`faq-q-ar-${index}`}>
+                      السؤال (عربي)
+                    </FieldLabel>
                     <Input
                       id={`faq-q-ar-${index}`}
                       aria-invalid={!!errors.faqs?.[index]?.question_ar}
                       placeholder="اكتب السؤال بالعربي"
                       {...register(`faqs.${index}.question_ar`)}
                     />
-                    <FieldDescription>{errors.faqs?.[index]?.question_ar?.message}</FieldDescription>
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.question_ar?.message}
+                    </FieldDescription>
                   </Field>
                 </div>
-
                 <div className="col-span-2 sm:col-span-1">
                   <Field data-invalid={!!errors.faqs?.[index]?.question_en}>
-                    <FieldLabel htmlFor={`faq-q-en-${index}`}>السؤال (انجليزي)</FieldLabel>
+                    <FieldLabel htmlFor={`faq-q-en-${index}`}>
+                      السؤال (انجليزي)
+                    </FieldLabel>
                     <Input
                       id={`faq-q-en-${index}`}
                       dir="ltr"
@@ -388,26 +460,32 @@ export default function ServiceForm({
                       placeholder="Write the question in English"
                       {...register(`faqs.${index}.question_en`)}
                     />
-                    <FieldDescription>{errors.faqs?.[index]?.question_en?.message}</FieldDescription>
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.question_en?.message}
+                    </FieldDescription>
                   </Field>
                 </div>
-
                 <div className="col-span-2">
                   <Field data-invalid={!!errors.faqs?.[index]?.answer_ar}>
-                    <FieldLabel htmlFor={`faq-a-ar-${index}`}>الجواب (عربي)</FieldLabel>
+                    <FieldLabel htmlFor={`faq-a-ar-${index}`}>
+                      الجواب (عربي)
+                    </FieldLabel>
                     <Textarea
                       id={`faq-a-ar-${index}`}
                       aria-invalid={!!errors.faqs?.[index]?.answer_ar}
                       placeholder="اكتب الجواب بالعربي"
                       {...register(`faqs.${index}.answer_ar`)}
                     />
-                    <FieldDescription>{errors.faqs?.[index]?.answer_ar?.message}</FieldDescription>
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.answer_ar?.message}
+                    </FieldDescription>
                   </Field>
                 </div>
-
                 <div className="col-span-2">
                   <Field data-invalid={!!errors.faqs?.[index]?.answer_en}>
-                    <FieldLabel htmlFor={`faq-a-en-${index}`}>الجواب (انجليزي)</FieldLabel>
+                    <FieldLabel htmlFor={`faq-a-en-${index}`}>
+                      الجواب (انجليزي)
+                    </FieldLabel>
                     <Textarea
                       id={`faq-a-en-${index}`}
                       dir="ltr"
@@ -415,17 +493,26 @@ export default function ServiceForm({
                       placeholder="Write the answer in English"
                       {...register(`faqs.${index}.answer_en`)}
                     />
-                    <FieldDescription>{errors.faqs?.[index]?.answer_en?.message}</FieldDescription>
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.answer_en?.message}
+                    </FieldDescription>
                   </Field>
                 </div>
               </div>
             </div>
           ))}
-
           <Button
             type="button"
             size="sm"
-            onClick={() => appendFaq({ question_ar: "", question_en: "", answer_ar: "", answer_en: "", published: true })}
+            onClick={() =>
+              appendFaq({
+                question_ar: "",
+                question_en: "",
+                answer_ar: "",
+                answer_en: "",
+                published: true,
+              })
+            }
             className="gap-1.5 flex items-center"
           >
             <Plus size={15} />
@@ -436,23 +523,27 @@ export default function ServiceForm({
 
       <Section title="محركات البحث (SEO)">
         <div className="grid grid-cols-2 gap-x-4 gap-y-5">
-
           <div className="col-span-2 sm:col-span-1">
             <Field data-invalid={!!errors.meta_title_ar}>
-              <FieldLabel htmlFor="meta-title-ar">عنوان الصفحة (عربي)</FieldLabel>
+              <FieldLabel htmlFor="meta-title-ar">
+                عنوان الصفحة (عربي)
+              </FieldLabel>
               <Input
                 id="meta-title-ar"
                 aria-invalid={!!errors.meta_title_ar}
                 placeholder="مثال: خدمة ميثاق للتوثيق"
                 {...register("meta_title_ar")}
               />
-              <FieldDescription>{errors.meta_title_ar?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.meta_title_ar?.message}
+              </FieldDescription>
             </Field>
           </div>
-
           <div className="col-span-2 sm:col-span-1">
             <Field data-invalid={!!errors.meta_title_en}>
-              <FieldLabel htmlFor="meta-title-en">عنوان الصفحة (انجليزي)</FieldLabel>
+              <FieldLabel htmlFor="meta-title-en">
+                عنوان الصفحة (انجليزي)
+              </FieldLabel>
               <Input
                 id="meta-title-en"
                 dir="ltr"
@@ -460,10 +551,11 @@ export default function ServiceForm({
                 placeholder="Ex: Mithaq Documentation Service"
                 {...register("meta_title_en")}
               />
-              <FieldDescription>{errors.meta_title_en?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.meta_title_en?.message}
+              </FieldDescription>
             </Field>
           </div>
-
           <div className="col-span-2">
             <Field data-invalid={!!errors.meta_description_ar}>
               <FieldLabel htmlFor="meta-desc-ar">وصف الصفحة (عربي)</FieldLabel>
@@ -473,13 +565,16 @@ export default function ServiceForm({
                 placeholder="وصف مختصر يظهر في نتائج البحث بالعربي"
                 {...register("meta_description_ar")}
               />
-              <FieldDescription>{errors.meta_description_ar?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.meta_description_ar?.message}
+              </FieldDescription>
             </Field>
           </div>
-
           <div className="col-span-2">
             <Field data-invalid={!!errors.meta_description_en}>
-              <FieldLabel htmlFor="meta-desc-en">وصف الصفحة (انجليزي)</FieldLabel>
+              <FieldLabel htmlFor="meta-desc-en">
+                وصف الصفحة (انجليزي)
+              </FieldLabel>
               <Textarea
                 id="meta-desc-en"
                 dir="ltr"
@@ -487,10 +582,11 @@ export default function ServiceForm({
                 placeholder="Short description shown in search results"
                 {...register("meta_description_en")}
               />
-              <FieldDescription>{errors.meta_description_en?.message}</FieldDescription>
+              <FieldDescription>
+                {errors.meta_description_en?.message}
+              </FieldDescription>
             </Field>
           </div>
-
         </div>
       </Section>
 
