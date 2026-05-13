@@ -27,9 +27,11 @@ jobs:
           push: true
           tags: ghcr.io/estithmarcomegypt-sys/estithmarcom-ksa-admin:latest
           build-args: |
-            VITE_API_BASE_URL=https://test.api.estithmarcom.com/api
-            VITE_APP_NAME=estithmarcom-ksa Admin
-            VITE_APP_ENV=testing
+            VITE_BASE_URL=https://test.api.estithmarcom.com/api/v1/admin
+            VITE_WS_URL=https://test.api.estithmarcom.com
+            VITE_REVERB_APP_KEY=placeholder-key
+            VITE_REVERB_HOST=test.api.estithmarcom.com
+            VITE_REVERB_PORT=443
 
       - name: Deploy to Test Server
         uses: appleboy/ssh-action@v1
