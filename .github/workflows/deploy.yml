@@ -29,9 +29,6 @@ jobs:
           build-args: |
             VITE_BASE_URL=https://test.api.estithmarcom.com/api/v1/admin
             VITE_WS_URL=https://test.api.estithmarcom.com
-            VITE_REVERB_APP_KEY=placeholder-key
-            VITE_REVERB_HOST=test.api.estithmarcom.com
-            VITE_REVERB_PORT=443
 
       - name: Deploy to Test Server
         uses: appleboy/ssh-action@v1
