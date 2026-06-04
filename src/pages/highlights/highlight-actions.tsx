@@ -2,7 +2,7 @@ import SpecialHeader from "@/components/SpecialHeader";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxios from "@/hooks/use-axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { toast } from "sonner";
 import { FormSkeleton } from "@/components/form-skeleton";
