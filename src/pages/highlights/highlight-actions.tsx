@@ -7,7 +7,8 @@ import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { toast } from "sonner";
 import { FormSkeleton } from "@/components/form-skeleton";
 import type { AxiosError } from "axios";
-import { getHighlight, updateHighlight } from "@/lib/api/highlight";
+import { updateHighlight } from "@/lib/api/highlight";
+import { useHighlight } from "@/lib/querykeys/highlights-query";
 import HighlightForm from "@/components/highlight-form";
 import ReadHighlight from "./read-highlight";
 
@@ -32,11 +33,7 @@ export default function HighlightActions() {
       },
     });
 
-  const { data: highlight, isLoading } = useQuery({
-    queryKey: queryKeys.highlights(id),
-    queryFn: () => getHighlight(Axios, id),
-    enabled: !!id,
-  });
+  const { data: highlight, isLoading } = useHighlight(id);
 
   useEffect(() => {
     if (action !== "edit" && action !== "read") {

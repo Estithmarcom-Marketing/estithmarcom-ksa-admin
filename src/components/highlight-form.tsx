@@ -10,7 +10,10 @@ import { ImageUploader } from "./image-uploader";
 import FormSection from "@/components/form-section";
 
 interface HighlightFormProps {
-  initial?: Partial<HighlightFormValues>;
+  initial?: Partial<Omit<HighlightFormValues, "value_ar" | "value_en">> & {
+    value_ar?: string | number;
+    value_en?: string | number;
+  };
   onSubmit?: (data: FormData) => void;
   isPending?: boolean;
   edit?: boolean;
