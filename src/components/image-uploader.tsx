@@ -12,6 +12,7 @@ interface ImageUploaderProps {
   disabled?: boolean;
   invalid?: boolean;
   edit?: boolean;
+  svg?: boolean;
 }
 
 export function ImageUploader({
@@ -22,6 +23,7 @@ export function ImageUploader({
   edit,
   disabled = false,
   invalid = false,
+  svg = false,
 }: ImageUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -36,10 +38,13 @@ export function ImageUploader({
   const handleFile = useCallback(
     (file: File | null) => {
       if (disabled) return;
-      if (file && !file.type.startsWith("image/")) return;
+      if (file) {
+        if (svg && file.type !== "image/svg+xml") return;
+        if (!svg && !file.type.startsWith("image/")) return;
+      }
       onChange?.(file);
     },
-    [disabled, onChange],
+    [disabled, onChange, svg],
   );
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleFile(e.target.files?.[0] ?? null);
@@ -74,7 +79,7 @@ export function ImageUploader({
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={svg ? ".svg" : "image/*"}
         className="hidden"
         disabled={disabled}
         onChange={handleInputChange}
@@ -139,7 +144,7 @@ export function ImageUploader({
               {isDragging ? "أفلت الصورة هنا" : placeholder}
             </p>
             <p className="text-[11px] text-muted-foreground/60">
-              PNG، JPG، WEBP — حتى 5 ميغابايت
+              {svg ? "SVG فقط — حتى 5 ميغابايت" : "PNG، JPG، WEBP — حتى 5 ميغابايت"}
             </p>
           </div>
         )}
