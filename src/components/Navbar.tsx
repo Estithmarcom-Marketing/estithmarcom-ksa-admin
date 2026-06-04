@@ -16,10 +16,7 @@ import useAxios from "@/hooks/use-axios";
 import { markAllAsRead } from "@/lib/api/notifications";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import InfiniteScrollNotifications from "./InfiniteScrollNotifications";
-import { useEffect, useState } from "react";
-import echo from "@/lib/echo";
-import type { NotificationType } from "@/lib/types/notification";
-import NotificationToast from "./notification-toast";
+import { useState } from "react";
 
 const Navbar = () => {
   const location = useLocation();
@@ -30,45 +27,43 @@ const Navbar = () => {
   const Axios = useAxios();
   const [notificationOpen, setNotificationOpen] = useState<boolean>();
   const queryClient = useQueryClient();
-  const [latestToastNotification, setLatestToastNotification] =
-    useState<NotificationType | null>(null);
 
   const notifications = data?.pages.flatMap((p) => p.notifications) ?? [];
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
-  useEffect(() => {
-    echo
-      .private("admins.notifications")
-      .listen(".notification.created", (e: NotificationType) => {
-        setLatestToastNotification(e);
+  // useEffect(() => {
+  //   echo
+  //     .private("admins.notifications")
+  //     .listen(".notification.created", (e: NotificationType) => {
+  //       setLatestToastNotification(e);
 
-        queryClient.setQueryData(queryKeys.notifications, (old: any) => {
-          if (!old) return old;
-          return {
-            ...old,
-            pages: old.pages.map((page: any, index: number) => {
-              if (index !== 0) return page;
+  //       queryClient.setQueryData(queryKeys.notifications, (old: any) => {
+  //         if (!old) return old;
+  //         return {
+  //           ...old,
+  //           pages: old.pages.map((page: any, index: number) => {
+  //             if (index !== 0) return page;
 
-              const pageSize = page.notifications.length;
+  //             const pageSize = page.notifications.length;
 
-              const merged = [e, ...page.notifications].filter(
-                (item, index, self) =>
-                  self.findIndex((n) => n.id === item.id) === index,
-              );
+  //             const merged = [e, ...page.notifications].filter(
+  //               (item, index, self) =>
+  //                 self.findIndex((n) => n.id === item.id) === index,
+  //             );
 
-              return {
-                ...page,
-                notifications: merged.slice(0, pageSize),
-              };
-            }),
-          };
-        });
-      });
+  //             return {
+  //               ...page,
+  //               notifications: merged.slice(0, pageSize),
+  //             };
+  //           }),
+  //         };
+  //       });
+  //     });
 
-    return () => {
-      echo.leave("admins.notifications");
-    };
-  }, []);
+  //   return () => {
+  //     echo.leave("admins.notifications");
+  //   };
+  // }, []);
 
   const handleReadAll = async (open: boolean) => {
     if (!open) {
@@ -143,7 +138,6 @@ const Navbar = () => {
         </div>
       </header>
 
-      <NotificationToast notification={latestToastNotification} />
     </>
   );
 };
