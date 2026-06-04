@@ -15,8 +15,8 @@ import type { ClientType } from "@/lib/types/clients";
 const clientColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "image", name: "الصورة" },
-  { key: "name_ar", name: "الاسم (عربي)" },
-  { key: "name_en", name: "الاسم (انجليزي)" },
+  { key: "alt_ar", name: "الاسم (عربي)" },
+  { key: "alt_en", name: "الاسم (انجليزي)" },
   { key: "link", name: "الرابط" },
   { key: "created_at", name: "تاريخ الإنشاء" },
 ];

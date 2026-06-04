@@ -27,4 +27,9 @@ export const queryKeys = {
   countries: (id?: string, page?: number) =>
     id ? ["countries", id] : page ? ["countries", { page }] : ["countries"],
   countriesUnpaginated: () => ["countries-unpaginated"] as const,
+  categories: (id?: string, page?: number) =>
+    id ? ["categories", id] : page ? ["categories", { page }] : ["categories"],
+  categoriesUnpaginated: () => ["categories-unpaginated"] as const,
+  highlights: (id?: string, page?: number) =>
+    id ? ["highlights", id] : page ? ["highlights", { page }] : ["highlights"],
 };
