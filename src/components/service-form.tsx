@@ -18,7 +18,7 @@ import {
 } from "@/lib/schema/service-schema";
 import { RichTextEditor } from "./ui/rich-text-editor";
 import { useCountriesUnpaginated } from "@/lib/querykeys/countries-query";
-import { MultiSelect } from "./multi-select";
+import { ReactSelect } from "./ui/react-select";
 
 interface ServiceFormProps {
   initial?: Record<string, any>;
@@ -167,6 +167,7 @@ export default function ServiceForm({
                     placeholder="اسحب صورة الخدمة هنا أو اضغط للاختيار"
                     onChange={field.onChange}
                     edit={edit}
+                    svg={true}
                   />
                 )}
               />
@@ -211,16 +212,14 @@ export default function ServiceForm({
                 control={control}
                 name="country_ids"
                 render={({ field }) => (
-                  <MultiSelect
+                  <ReactSelect
                     options={countryOptions}
-                    defaultValue={field.value}
+                    value={field.value}
                     onValueChange={field.onChange}
                     placeholder={
                       isLoadingCountries ? "جار التحميل..." : "اختر الدول"
                     }
                     disabled={isLoadingCountries}
-                    variant="default"
-                    maxCount={5}
                   />
                 )}
               />
