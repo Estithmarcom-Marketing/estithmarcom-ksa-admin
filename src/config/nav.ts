@@ -13,6 +13,8 @@ import {
   MapPin,
   Wrench,
   Building2,
+  Layers,
+  WandSparkles,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -34,6 +36,8 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "شركاؤنا", path: "/dashboard/clients", icon: Warehouse },
       { label: "الأسئلة الشائعة", path: "/dashboard/faqs", icon: HelpCircle },
       { label: "المدونة", path: "/dashboard/blog", icon: BookOpen },
+      { label: "الأقسام", path: "/dashboard/categories", icon: Layers },
+      { label: "الإنجازات", path: "/dashboard/highlights", icon: WandSparkles },
       // { label: "التعليقات", path: "/dashboard/comments", icon: MessageCircle },
       // { label: "الفريق", path: "/dashboard/team", icon: Users },
       { label: "المشرفين", path: "/dashboard/admins", icon: ShieldCheck },

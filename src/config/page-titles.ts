@@ -15,9 +15,20 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   profile: { title: "الملف الشخصي", description: "تعديل الملف الشخصي" },
   comments: { title: "التعليقات", description: "تصفح تعليقات المدونة" },
   subscribes: { title: "الأشتراكات", description: "تصفح الأشتراكات" },
+  categories: { title: "الأقسام", description: "اضافة, تعديل و تصفح الأقسام" },
+  highlights: { title: "الإنجازات", description: "تعديل و تصفح الإنجازات" },
 };
 
 export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
+  highlights: {
+    edit: { title: "تعديل إنجاز", description: "تعديل بيانات الإنجاز" },
+    read: { title: "عرض إنجاز", description: "تفاصيل الإنجاز" },
+  },
+  categories: {
+    new: { title: "إضافة قسم", description: "إضافة قسم جديد" },
+    edit: { title: "تعديل قسم", description: "تعديل بيانات القسم" },
+    read: { title: "عرض قسم", description: "تفاصيل القسم" },
+  },
   blog: {
     new: { title: "إضافة مدونة", description: "إضافة مدونة جديدة" },
     edit: { title: "تعديل مدونة", description: "تعديل بيانات المدونة" },

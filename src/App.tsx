@@ -35,6 +35,11 @@ import CountryActions from "./pages/countries/country-actions";
 import FreeZones from "./pages/free-zones/free-zones";
 import AddFreeZone from "./pages/free-zones/add-free-zone";
 import FreeZoneActions from "./pages/free-zones/free-zone-actions";
+import Categories from "./pages/categories/categories";
+import AddCategory from "./pages/categories/add-category";
+import CategoryActions from "./pages/categories/category-actions";
+import Highlights from "./pages/highlights/highlights";
+import HighlightActions from "./pages/highlights/highlight-actions";
 
 const App = () => {
   return (
@@ -99,11 +104,29 @@ const App = () => {
 
             <Route path="blog" element={<Blog />} />
             <Route path="blog/new" element={<AddBlog />} />
-            <Route
-              path="blog/:action"
-              element={<Navigate to="/dashboard/blog" replace />}
-            />
+            <Route path="blog/:action" element={<Navigate to="/dashboard/blog" replace />} />
             <Route path="blog/:action/:id" element={<BlogActions />} />
+
+            <Route path="categories" element={<Categories />} />
+            <Route path="categories/new" element={<AddCategory />} />
+            <Route
+              path="categories/:action"
+              element={<Navigate to="/dashboard/categories" replace />}
+            />
+            <Route
+              path="categories/:action/:id"
+              element={<CategoryActions />}
+            />
+
+            <Route path="highlights" element={<Highlights />} />
+            <Route
+              path="highlights/:action"
+              element={<Navigate to="/dashboard/highlights" replace />}
+            />
+            <Route
+              path="highlights/:action/:id"
+              element={<HighlightActions />}
+            />
 
             <Route path="team" element={<Team />} />
             <Route path="team/new" element={<AddMember />} />
