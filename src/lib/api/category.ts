@@ -14,9 +14,7 @@ export async function getCategories(
 export async function getCategoriesUnpaginated(
   axiosInstance: AxiosInstance
 ): Promise<CategoryType[]> {
-  const res = await axiosInstance.get("/categories", {
-    params: { unpaginated: 1 },
-  });
+  const res = await axiosInstance.get("/categories/unpaginated");
   return res.data.data.categories;
 }
 

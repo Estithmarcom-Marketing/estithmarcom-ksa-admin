@@ -12,6 +12,12 @@ export interface BlogType {
   content_ar: string
   content_en: string
   published: boolean
+  category_id: number
+  category?: {
+    id: number
+    name_ar: string
+    name_en: string
+  }
   meta_title_ar: string
   meta_title_en: string
   meta_description_ar: string

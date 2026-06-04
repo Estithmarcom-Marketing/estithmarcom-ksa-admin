@@ -13,6 +13,14 @@ import { ImageUploader } from "./image-uploader";
 import Section from "./form-section";
 import { RichTextEditor } from "./ui/rich-text-editor";
 import { blogFormSchema, type BlogFormValues } from "@/lib/schema/blog-schema";
+import { useCategoriesUnpaginated } from "@/lib/querykeys/categories-query";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface BlogFormProps {
   initial?: Record<string, any>;
@@ -28,6 +36,7 @@ function toFormData(values: BlogFormValues): FormData {
   fd.append("title_en",            values.title_en);
   fd.append("subtitle_ar",         values.subtitle_ar);
   fd.append("subtitle_en",         values.subtitle_en);
+  fd.append("category_id",         values.category_id);
   fd.append("short_content_ar",    values.short_content_ar);
   fd.append("short_content_en",    values.short_content_en);
   fd.append("content_ar",          values.content_ar);
@@ -51,6 +60,8 @@ export default function BlogForm({
   isPending,
   edit = false
 }: BlogFormProps) {
+  const { data: categories = [], isLoading: isLoadingCategories } = useCategoriesUnpaginated();
+
   const {
     register,
     handleSubmit,
@@ -63,6 +74,7 @@ export default function BlogForm({
       title_en:            initial.title_en            ?? "",
       subtitle_ar:         initial.subtitle_ar         ?? "",
       subtitle_en:         initial.subtitle_en         ?? "",
+      category_id:         initial.category_id ? String(initial.category_id) : "",
       image:               initial.image               ?? null,
       short_content_ar:    initial.short_content_ar    ?? "",
       short_content_en:    initial.short_content_en    ?? "",
@@ -156,6 +168,43 @@ export default function BlogForm({
                 {...register("title_en")}
               />
               <FieldDescription>{errors.title_en?.message}</FieldDescription>
+            </Field>
+          </div>
+
+          {/* Category Dropdown (Shadcn Select) */}
+          <div className="col-span-2">
+            <Field data-invalid={!!errors.category_id}>
+              <FieldLabel>القسم</FieldLabel>
+              <Controller
+                control={control}
+                name="category_id"
+                render={({ field }) => (
+                  <Select
+                    disabled={isLoadingCategories}
+                    onValueChange={field.onChange}
+                    value={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={
+                          isLoadingCategories ? "جار التحميل..." : "اختر القسم"
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((category) => (
+                        <SelectItem
+                          key={category.id}
+                          value={String(category.id)}
+                        >
+                          {category.name_ar}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldDescription>{errors.category_id?.message}</FieldDescription>
             </Field>
           </div>
 

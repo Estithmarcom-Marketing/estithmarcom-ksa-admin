@@ -14,6 +14,7 @@ export const blogFormSchema = z.object({
   content_ar:          z.string().min(1, "المحتوى بالعربي مطلوب"),
   content_en:          z.string().min(1, "المحتوى بالانجليزي مطلوب"),
   published:           z.boolean(),
+  category_id:         z.string().min(1, "القسم مطلوب"),
   meta_title_ar:       z.string().min(1, "عنوان الصفحة بالعربي مطلوب"),
   meta_title_en:       z.string().min(1, "عنوان الصفحة بالانجليزي مطلوب"),
   meta_description_ar: z.string().min(1, "وصف الصفحة بالعربي مطلوب"),

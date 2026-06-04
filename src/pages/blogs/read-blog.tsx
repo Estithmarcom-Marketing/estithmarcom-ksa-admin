@@ -32,6 +32,7 @@ export default function ReadBlog({ blog }: ReadBlogProps) {
 
           <Row label="العنوان (عربي)"          value={blog.title_ar} />
           <Row label="العنوان (انجليزي)"        value={blog.title_en} />
+          <Row label="القسم"                   value={blog.category?.name_ar || "—"} />
           <Row label="العنوان الفرعي (عربي)"   value={blog.subtitle_ar} />
           <Row label="العنوان الفرعي (انجليزي)" value={blog.subtitle_en} />
           <Row label=" المحتوى القصير (عربي)" value={blog.short_content_ar} />
