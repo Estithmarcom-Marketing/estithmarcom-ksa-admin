@@ -7,6 +7,6 @@ export interface SubType {
 }
 
 export interface SubResType {
-  subscribers: SubType[]
+  subscriptions: SubType[]
   meta: PaginationType
 }

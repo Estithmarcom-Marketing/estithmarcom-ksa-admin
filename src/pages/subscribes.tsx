@@ -14,7 +14,7 @@ const subsColumns: ColumnConfig[] = [
 const Subscribes = () => {
   const { data: subs, isLoading: isLoadingSubs } = useSub();
 
-  const subsData = subs?.subscribers ?? [];
+  const subsData = subs?.subscriptions ?? [];
 
   return (
     <div className="space-y-6">
