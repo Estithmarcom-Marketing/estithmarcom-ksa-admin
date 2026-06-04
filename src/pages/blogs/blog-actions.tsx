@@ -71,6 +71,7 @@ export default function BlogActions() {
                       short_content_en: blog.short_content_en,
                       content_en: blog.content_en,
                       published: blog.published,
+                      category_id: blog.category?.id,
                       meta_title_ar: blog.meta_title_ar,
                       meta_title_en: blog.meta_title_en,
                       meta_description_ar: blog.meta_description_ar,
