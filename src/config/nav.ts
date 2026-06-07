@@ -15,6 +15,7 @@ import {
   Building2,
   Layers,
   WandSparkles,
+  IdCard,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -28,6 +29,7 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       { label: "الخدمات", path: "/dashboard/services", icon: Wrench },
       { label: "الدول", path: "/dashboard/countries", icon: MapPin },
+      { label: "الإقامات", path: "/dashboard/residencies", icon: IdCard },
       {
         label: "المناطق الحرة",
         path: "/dashboard/free-zones",

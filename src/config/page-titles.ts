@@ -17,9 +17,15 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   subscribes: { title: "الأشتراكات", description: "تصفح الأشتراكات" },
   categories: { title: "الأقسام", description: "اضافة, تعديل و تصفح الأقسام" },
   highlights: { title: "الإنجازات", description: "تعديل و تصفح الإنجازات" },
+  residencies: { title: "الإقامات", description: "اضافة, تعديل و تصفح الإقامات" },
 };
 
 export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
+  residencies: {
+    new: { title: "إضافة إقامة", description: "إضافة إقامة جديدة" },
+    edit: { title: "تعديل إقامة", description: "تعديل بيانات الإقامة" },
+    read: { title: "عرض إقامة", description: "تفاصيل الإقامة" },
+  },
   highlights: {
     edit: { title: "تعديل إنجاز", description: "تعديل بيانات الإنجاز" },
     read: { title: "عرض إنجاز", description: "تفاصيل الإنجاز" },

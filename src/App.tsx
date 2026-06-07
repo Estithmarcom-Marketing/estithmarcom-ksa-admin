@@ -40,6 +40,9 @@ import AddCategory from "./pages/categories/add-category";
 import CategoryActions from "./pages/categories/category-actions";
 import Highlights from "./pages/highlights/highlights";
 import HighlightActions from "./pages/highlights/highlight-actions";
+import Residencies from "./pages/residencies/residencies";
+import AddResidency from "./pages/residencies/add-residency";
+import ResidencyActions from "./pages/residencies/residency-actions";
 
 const App = () => {
   return (
@@ -74,6 +77,17 @@ const App = () => {
               element={<Navigate to="/dashboard/clients" replace />}
             />
             <Route path="clients/:action/:id" element={<ClientActions />} />
+
+            <Route path="residencies" element={<Residencies />} />
+            <Route path="residencies/new" element={<AddResidency />} />
+            <Route
+              path="residencies/:action"
+              element={<Navigate to="/dashboard/residencies" replace />}
+            />
+            <Route
+              path="residencies/:action/:id"
+              element={<ResidencyActions />}
+            />
 
             <Route path="countries" element={<Countries />} />
             <Route path="countries/new" element={<AddCountry />} />
