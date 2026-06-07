@@ -17,6 +17,9 @@ export interface FeaturesType {
   id: number;
   title_ar: string;
   title_en: string;
+  description_ar: string;
+  description_en: string;
+  image: any;
   published: boolean;
 }
 

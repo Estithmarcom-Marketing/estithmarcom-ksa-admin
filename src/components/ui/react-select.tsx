@@ -48,7 +48,7 @@ export function ReactSelect({
       classNames={{
         control: ({ isFocused, isDisabled }) =>
           cn(
-            "flex min-h-10 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors",
+            "flex min-h-10 w-full border border-input bg-background px-3 py-1 text-sm shadow-xs transition-colors",
             isFocused ? "outline-none ring-1 ring-ring border-ring" : "",
             isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
           ),

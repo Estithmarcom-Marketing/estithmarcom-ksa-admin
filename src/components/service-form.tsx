@@ -51,10 +51,22 @@ function toFormData(values: ServiceFormValues): FormData {
     fd.append("country_ids[]", id);
   });
 
+  if (values.features.length === 0) {
+    fd.append("features[]", "");
+  }
+
   values.features.forEach((f, i) => {
+    if (f.id) {
+      fd.append(`features[${i}][id]`, String(f.id));
+    }
     fd.append(`features[${i}][title_ar]`, f.title_ar);
     fd.append(`features[${i}][title_en]`, f.title_en);
+    fd.append(`features[${i}][description_ar]`, f.description_ar);
+    fd.append(`features[${i}][description_en]`, f.description_en);
     fd.append(`features[${i}][published]`, f.published ? "1" : "0");
+    if (f.image instanceof File) {
+      fd.append(`features[${i}][image]`, f.image);
+    }
   });
 
   values.faqs.forEach((faq, i) => {
@@ -103,7 +115,15 @@ export default function ServiceForm({
       long_description_en: initial.long_description_en ?? "",
       published: initial.published ?? true,
       country_ids: defaultCountryIds,
-      features: initial.features ?? [],
+      features: initial.features?.map((f: any) => ({
+        id: f.id,
+        title_ar: f.title_ar ?? "",
+        title_en: f.title_en ?? "",
+        description_ar: f.description_ar ?? "",
+        description_en: f.description_en ?? "",
+        image: f.image ?? null,
+        published: f.published ?? true,
+      })) ?? [],
       faqs: initial.faqs ?? [],
       meta_title_ar: initial.meta_title_ar ?? "",
       meta_title_en: initial.meta_title_en ?? "",
@@ -344,6 +364,31 @@ export default function ServiceForm({
                     )}
                   />
                 </div>
+
+                {/* Feature Image */}
+                <div className="col-span-2">
+                  <Field data-invalid={!!errors.features?.[index]?.image}>
+                    <FieldLabel>صورة الميزة</FieldLabel>
+                    <Controller
+                      control={control}
+                      name={`features.${index}.image`}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          invalid={!!errors.features?.[index]?.image}
+                          placeholder="اسحب صورة الميزة هنا أو اضغط للاختيار"
+                          onChange={field.onChange}
+                          edit={edit}
+                          svg={true}
+                        />
+                      )}
+                    />
+                    <FieldDescription>
+                      {errors.features?.[index]?.image?.message as string | undefined}
+                    </FieldDescription>
+                  </Field>
+                </div>
+
                 <div className="col-span-2 sm:col-span-1">
                   <Field data-invalid={!!errors.features?.[index]?.title_ar}>
                     <FieldLabel htmlFor={`feature-ar-${index}`}>
@@ -377,6 +422,41 @@ export default function ServiceForm({
                     </FieldDescription>
                   </Field>
                 </div>
+
+                <div className="col-span-2 sm:col-span-1">
+                  <Field data-invalid={!!errors.features?.[index]?.description_ar}>
+                    <FieldLabel htmlFor={`feature-desc-ar-${index}`}>
+                      الوصف (عربي)
+                    </FieldLabel>
+                    <Textarea
+                      id={`feature-desc-ar-${index}`}
+                      aria-invalid={!!errors.features?.[index]?.description_ar}
+                      placeholder="وصف الميزة بالعربي"
+                      {...register(`features.${index}.description_ar`)}
+                    />
+                    <FieldDescription>
+                      {errors.features?.[index]?.description_ar?.message}
+                    </FieldDescription>
+                  </Field>
+                </div>
+
+                <div className="col-span-2 sm:col-span-1">
+                  <Field data-invalid={!!errors.features?.[index]?.description_en}>
+                    <FieldLabel htmlFor={`feature-desc-en-${index}`}>
+                      الوصف (انجليزي)
+                    </FieldLabel>
+                    <Textarea
+                      id={`feature-desc-en-${index}`}
+                      dir="ltr"
+                      aria-invalid={!!errors.features?.[index]?.description_en}
+                      placeholder="Feature description in English"
+                      {...register(`features.${index}.description_en`)}
+                    />
+                    <FieldDescription>
+                      {errors.features?.[index]?.description_en?.message}
+                    </FieldDescription>
+                  </Field>
+                </div>
               </div>
             </div>
           ))}
@@ -384,7 +464,13 @@ export default function ServiceForm({
             type="button"
             size="sm"
             onClick={() =>
-              appendFeature({ title_ar: "", title_en: "", published: true })
+              appendFeature({
+                title_ar: "",
+                title_en: "",
+                description_ar: "",
+                description_en: "",
+                published: true,
+              })
             }
             className="gap-1.5 flex items-center"
           >

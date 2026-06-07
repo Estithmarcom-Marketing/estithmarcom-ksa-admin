@@ -12,8 +12,12 @@ export const serviceFormSchema = z.object({
   country_ids: z.array(z.string()).min(1, "يجب اختيار دولة واحدة على الأقل"),
   features: z.array(
     z.object({
+      id: z.number().optional(),
       title_ar: z.string().min(1, "الميزة بالعربي مطلوبة"),
       title_en: z.string().min(1, "الميزة بالانجليزي مطلوبة"),
+      description_ar: z.string().min(1, "الوصف بالعربي مطلوب"),
+      description_en: z.string().min(1, "الوصف بالانجليزي مطلوب"),
+      image: z.any().optional().nullable(),
       published: z.boolean(),
     })
   ),
