@@ -52,7 +52,7 @@ function toFormData(values: ServiceFormValues): FormData {
   });
 
   if (values.features.length === 0) {
-    fd.append("features[]", "");
+    fd.append("features", "[]");
   }
 
   values.features.forEach((f, i) => {

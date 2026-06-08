@@ -16,7 +16,6 @@ const serviceColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "image", name: "الصورة" },
   { key: "title_ar", name: "الاسم (عربي)" },
-  { key: "short_description_ar", name: "وصف قصير (عربي)" },
   { key: "published", name: "الحالة" },
   { key: "created_at", name: "تاريخ الإنشاء" },
 ];

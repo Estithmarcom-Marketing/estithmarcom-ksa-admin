@@ -16,7 +16,6 @@ const residencyColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "image", name: "الصورة" },
   { key: "title_ar", name: "العنوان (عربي)" },
-  { key: "title_en", name: "العنوان (انجليزي)" },
   { key: "created_at", name: "تاريخ الإنشاء" },
 ];
 

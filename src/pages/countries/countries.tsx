@@ -17,7 +17,6 @@ const countryColumns: ColumnConfig[] = [
   { key: "image", name: "الصورة" },
   { key: "name_ar", name: "الاسم (عربي)" },
   { key: "name_en", name: "الاسم (انجليزي)" },
-  { key: "title_ar", name: "العنوان (عربي)" },
   { key: "active", name: "الحالة" },
   { key: "created_at", name: "تاريخ الإنشاء" },
 ];
