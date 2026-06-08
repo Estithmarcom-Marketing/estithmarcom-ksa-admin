@@ -54,6 +54,38 @@ export default function ReadFreeZone({ zone }: ReadFreeZoneProps) {
           />
         </div>
       </div>
+
+      {/* FAQs */}
+      <div>
+        <SectionTitle title="الأسئلة الشائعة" />
+        {zone.faqs.length === 0 ? (
+          <span className="text-sm text-[#666]">لا توجد أسئلة</span>
+        ) : (
+          <div className="space-y-4">
+            {zone.faqs.map((faq, index) => (
+              <div key={faq.id}>
+                <span className="text-xs text-muted-foreground">
+                  #{index + 1}
+                </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 mt-1">
+                  <Row label="السؤال (عربي)" value={faq.question_ar} />
+                  <Row label="السؤال (انجليزي)" value={faq.question_en} />
+                  <Row label="الجواب (عربي)" value={faq.answer_ar} />
+                  <Row label="الجواب (انجليزي)" value={faq.answer_en} />
+                  <Row
+                    fullWidth
+                    label="الحالة"
+                    value={faq.published === true ? "مفعّل" : "غير مفعّل"}
+                  />
+                </div>
+                {index < zone.faqs.length - 1 && (
+                  <hr className="border-input mt-2" />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

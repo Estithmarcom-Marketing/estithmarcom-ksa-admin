@@ -12,6 +12,15 @@ export const freeZoneFormSchema = z.object({
     .nullable(),
   content_ar: z.string().min(1, "المحتوى بالعربي مطلوب"),
   content_en: z.string().min(1, "المحتوى بالانجليزي مطلوب"),
+  faqs: z.array(
+    z.object({
+      question_ar: z.string().min(1, "السؤال بالعربي مطلوب"),
+      question_en: z.string().min(1, "السؤال بالانجليزي مطلوب"),
+      answer_ar: z.string().min(1, "الجواب بالعربي مطلوب"),
+      answer_en: z.string().min(1, "الجواب بالانجليزي مطلوب"),
+      published: z.boolean(),
+    })
+  ),
   active: z.boolean(),
 });
 

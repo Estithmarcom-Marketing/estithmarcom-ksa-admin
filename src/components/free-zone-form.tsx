@@ -1,9 +1,11 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, Trash2 } from "lucide-react";
 
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
@@ -38,6 +40,14 @@ function toFormData(values: FreeZoneFormValues): FormData {
     fd.append("image", values.image);
   }
 
+  values.faqs.forEach((faq, i) => {
+    fd.append(`faqs[${i}][question_ar]`, faq.question_ar);
+    fd.append(`faqs[${i}][question_en]`, faq.question_en);
+    fd.append(`faqs[${i}][answer_ar]`, faq.answer_ar);
+    fd.append(`faqs[${i}][answer_en]`, faq.answer_en);
+    fd.append(`faqs[${i}][published]`, faq.published ? "1" : "0");
+  });
+
   return fd;
 }
 
@@ -62,9 +72,16 @@ export default function FreeZoneForm({
       image: initial.image ?? null,
       content_ar: initial.content_ar ?? "",
       content_en: initial.content_en ?? "",
+      faqs: initial.faqs ?? [],
       active: initial.active ?? true,
     },
   });
+
+  const {
+    fields: faqFields,
+    append: appendFaq,
+    remove: removeFaq,
+  } = useFieldArray({ control, name: "faqs" });
 
   const handleFormSubmit = (values: FreeZoneFormValues) => {
     onSubmit?.(toFormData(values));
@@ -216,6 +233,133 @@ export default function FreeZoneForm({
               <FieldDescription>{errors.content_en?.message}</FieldDescription>
             </Field>
           </div>
+        </div>
+      </Section>
+
+      {/* ── FAQs ── */}
+      <Section title="الأسئلة الشائعة">
+        <div className="space-y-3">
+          {faqFields.map((field, index) => (
+            <div
+              key={field.id}
+              className="relative border border-input rounded-md p-4 bg-muted/20"
+            >
+              <button
+                type="button"
+                onClick={() => removeFaq(index)}
+                className="absolute top-3 left-3 text-muted-foreground hover:text-destructive transition-colors"
+                aria-label="حذف"
+              >
+                <Trash2 size={15} />
+              </button>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                <div className="col-span-2 flex items-center gap-3">
+                  <Controller
+                    control={control}
+                    name={`faqs.${index}.published`}
+                    render={({ field }) => (
+                      <>
+                        <Switch
+                          id={`faq-published-${index}`}
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <Label
+                          htmlFor={`faq-published-${index}`}
+                          className="text-xs mb-0 font-medium"
+                        >
+                          مفعّل
+                        </Label>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <Field data-invalid={!!errors.faqs?.[index]?.question_ar}>
+                    <FieldLabel htmlFor={`faq-q-ar-${index}`}>
+                      السؤال (عربي)
+                    </FieldLabel>
+                    <Input
+                      id={`faq-q-ar-${index}`}
+                      aria-invalid={!!errors.faqs?.[index]?.question_ar}
+                      placeholder="اكتب السؤال بالعربي"
+                      {...register(`faqs.${index}.question_ar`)}
+                    />
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.question_ar?.message}
+                    </FieldDescription>
+                  </Field>
+                </div>
+                <div className="col-span-2 sm:col-span-1">
+                  <Field data-invalid={!!errors.faqs?.[index]?.question_en}>
+                    <FieldLabel htmlFor={`faq-q-en-${index}`}>
+                      السؤال (انجليزي)
+                    </FieldLabel>
+                    <Input
+                      id={`faq-q-en-${index}`}
+                      dir="ltr"
+                      aria-invalid={!!errors.faqs?.[index]?.question_en}
+                      placeholder="Write the question in English"
+                      {...register(`faqs.${index}.question_en`)}
+                    />
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.question_en?.message}
+                    </FieldDescription>
+                  </Field>
+                </div>
+                <div className="col-span-2">
+                  <Field data-invalid={!!errors.faqs?.[index]?.answer_ar}>
+                    <FieldLabel htmlFor={`faq-a-ar-${index}`}>
+                      الجواب (عربي)
+                    </FieldLabel>
+                    <Textarea
+                      id={`faq-a-ar-${index}`}
+                      aria-invalid={!!errors.faqs?.[index]?.answer_ar}
+                      placeholder="اكتب الجواب بالعربي"
+                      {...register(`faqs.${index}.answer_ar`)}
+                    />
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.answer_ar?.message}
+                    </FieldDescription>
+                  </Field>
+                </div>
+                <div className="col-span-2">
+                  <Field data-invalid={!!errors.faqs?.[index]?.answer_en}>
+                    <FieldLabel htmlFor={`faq-a-en-${index}`}>
+                      الجواب (انجليزي)
+                    </FieldLabel>
+                    <Textarea
+                      id={`faq-a-en-${index}`}
+                      dir="ltr"
+                      aria-invalid={!!errors.faqs?.[index]?.answer_en}
+                      placeholder="Write the answer in English"
+                      {...register(`faqs.${index}.answer_en`)}
+                    />
+                    <FieldDescription>
+                      {errors.faqs?.[index]?.answer_en?.message}
+                    </FieldDescription>
+                  </Field>
+                </div>
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            size="sm"
+            onClick={() =>
+              appendFaq({
+                question_ar: "",
+                question_en: "",
+                answer_ar: "",
+                answer_en: "",
+                published: true,
+              })
+            }
+            className="gap-1.5 flex items-center"
+          >
+            <Plus size={15} />
+            إضافة سؤال
+          </Button>
         </div>
       </Section>
 

@@ -1,3 +1,4 @@
+import type { FAQType } from "./faq";
 import type { PaginationType } from "./pagination";
 
 export interface FreeZoneType {
@@ -10,6 +11,7 @@ export interface FreeZoneType {
   image: string;
   content_ar: string;
   content_en: string;
+  faqs: FAQType[];
   created_at: string;
 }
 

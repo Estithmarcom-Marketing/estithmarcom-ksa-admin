@@ -72,6 +72,7 @@ export default function FreeZoneActions() {
                       image: zone.image,
                       content_ar: zone.content_ar,
                       content_en: zone.content_en,
+                      faqs: zone.faqs,
                       active: zone.active,
                     }
                   : undefined
