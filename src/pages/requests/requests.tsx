@@ -15,7 +15,6 @@ import { toast } from "sonner";
 const messagesColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "name", name: "الأسم" },
-  { key: "message", name: "الرسالة" },
   { key: "status", name: "الحالة" },
   { key: "created_at", name: "تاريخ الرسالة" },
   { key: "service.title_ar", name: "اسم الخدمة" },
