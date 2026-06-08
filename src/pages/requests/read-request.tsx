@@ -13,14 +13,20 @@ const ADDITIONAL_INFO_LABELS: Record<string, string> = {
   notes: "ملاحظات",
 };
 
+const statusLabels: Record<string, string> = {
+  pending: "معلق",
+  contacted: "تم التواصل",
+  processing: "قيد المعالجة",
+  canceled: "ملغى",
+  forwarded: "محال",
+};
+
 interface ReadRequestProps {
   request: RequestType;
 }
 
 export default function ReadRequest({ request }: ReadRequestProps) {
-  const isContacted =
-    request.is_contacted === true || (request.is_contacted as any) === "1";
-
+  const status = statusLabels[request.status] ?? request.status;
   return (
     <div className="space-y-8">
       <div>
@@ -28,7 +34,7 @@ export default function ReadRequest({ request }: ReadRequestProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
           <Row
             label="الحالة"
-            value={isContacted ? "تم التواصل" : "لم يتم التواصل"}
+            value={status}
           />
           <Row label="الاسم" value={request.name} />
           <Row label="البريد الإلكتروني" value={request.email} />
@@ -39,7 +45,6 @@ export default function ReadRequest({ request }: ReadRequestProps) {
             value={request.service.title_ar}
           />
           <Row label="تاريخ الإرسال" value={formatDate(request.created_at)} />
-          <Row label="الرسالة" value={request.message} fullWidth />
         </div>
       </div>
 

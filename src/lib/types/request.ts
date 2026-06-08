@@ -5,8 +5,7 @@ export interface RequestType {
   name: string
   email: string
   phone: string
-  message: string
-  is_contacted: boolean
+  status: string
   created_at: string
   service: {
     id: number

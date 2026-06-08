@@ -16,8 +16,8 @@ const messagesColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "name", name: "الأسم" },
   { key: "status", name: "الحالة" },
-  { key: "created_at", name: "تاريخ الرسالة" },
   { key: "service.title_ar", name: "اسم الخدمة" },
+  { key: "created_at", name: "تاريخ الرسالة" },
 ];
 
 const Requests = () => {
