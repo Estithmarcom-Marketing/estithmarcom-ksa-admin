@@ -5,7 +5,7 @@ export interface NotificationType {
   title: string
   body: string
   notifiable_id: number
-  type: "comment" | "request_service" | "contact_us" | "newsletter_subscribe"
+  type: "request_service" | "contact_us" | "newsletter_subscribe"
   created_at: string
   is_read: boolean
 }

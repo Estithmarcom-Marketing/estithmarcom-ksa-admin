@@ -8,8 +8,6 @@ export const queryKeys = {
     id ? ["services", id] : page ? ["services", { page }] : ["services"],
   faqs: (id?: string, page?: number) =>
     id ? ["faqs", id] : page ? ["faqs", { page }] : ["faqs"],
-  comments: (id?: string, page?: number) =>
-    id ? ["comments", id] : page ? ["comments", { page }] : ["comments"],
   blogs: (id?: string, page?: number) =>
     id ? ["blogs", id] : page ? ["blogs", { page }] : ["blogs"],
   freeZones: (id?: string, page?: number) =>

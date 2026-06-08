@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { MessageSquare, Wrench, Mail, Newspaper } from "lucide-react";
+import { Wrench, Mail, Newspaper } from "lucide-react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import type { NotificationType } from "@/lib/types/notification";
 import InfinitySpinner from "./infinity-spinner";
@@ -18,11 +18,6 @@ type NotificationConfig = {
 
 const notificationConfig: Record<NotificationType["type"], NotificationConfig> =
   {
-    comment: {
-      icon: <MessageSquare size={15} />,
-      getLink: (id) => `/dashboard/comments/read/${id}`,
-      label: "Comment",
-    },
     request_service: {
       icon: <Wrench size={15} />,
       getLink: (id) => `/dashboard/requests/read/${id}`,

@@ -13,7 +13,6 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   messages: { title: "رسائل التواصل", description: "تصفح رسائل التواصل" },
   settings: { title: "معلومات الموقع", description: "تحديث إعدادات الموقع" },
   profile: { title: "الملف الشخصي", description: "تعديل الملف الشخصي" },
-  comments: { title: "التعليقات", description: "تصفح تعليقات المدونة" },
   subscribes: { title: "الأشتراكات", description: "تصفح الأشتراكات" },
   categories: { title: "الأقسام", description: "اضافة, تعديل و تصفح الأقسام" },
   highlights: { title: "الإنجازات", description: "تعديل و تصفح الإنجازات" },
@@ -63,9 +62,6 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
   },
   messages: {
     read: { title: "عرض الرسالة", description: "تفاصيل الرسالة" },
-  },
-  comments: {
-    read: { title: "عرض التعليق", description: "تفاصيل التعليق" },
   },
 };
 

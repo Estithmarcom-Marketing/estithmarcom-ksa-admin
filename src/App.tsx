@@ -7,7 +7,6 @@ import Requests from "./pages/requests/requests";
 import ContactMessages from "./pages/contact-messages/contact-messages";
 import Profile from "./pages/profile";
 import Settings from "./pages/settings";
-import Comments from "./pages/comments/comments";
 import AddBlog from "./pages/blogs/add-blog";
 import Login from "./pages/login/login";
 import Admins from "./pages/admins";
@@ -22,7 +21,6 @@ import MemberActions from "./pages/team/member-actions";
 import Subscribes from "./pages/subscribes";
 import RequestActions from "./pages/requests/request-action";
 import MessageActions from "./pages/contact-messages/contact-messages-action";
-import CommentsActions from "./pages/comments/comments-action";
 import FAQs from "./pages/faqs/faqs";
 import AddFAQ from "./pages/faqs/add-faq";
 import FAQActions from "./pages/faqs/faq-actions";
@@ -171,13 +169,6 @@ const App = () => {
             <Route path="messages/:action/:id" element={<MessageActions />} />
 
             <Route path="subscribes" element={<Subscribes />} />
-
-            <Route path="comments" element={<Comments />} />
-            <Route
-              path="comments/:action"
-              element={<Navigate to="/dashboard/comments" replace />}
-            />
-            <Route path="comments/:action/:id" element={<CommentsActions />} />
           </Route>
         </Route>
       </Routes>

@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { MessageSquare, Wrench, Mail, Newspaper, X } from "lucide-react";
+import { Wrench, Mail, Newspaper, X } from "lucide-react";
 import type { NotificationType } from "@/lib/types/notification";
 
 type ToastItem = NotificationType & { toastId: string };
 
 const notificationIcon: Record<NotificationType["type"], React.ReactNode> = {
-  comment: <MessageSquare size={15} />,
   request_service: <Wrench size={15} />,
   contact_us: <Mail size={15} />,
   newsletter_subscribe: <Newspaper size={15} />,
