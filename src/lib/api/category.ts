@@ -38,7 +38,7 @@ export async function updateCategory(
   id: string | undefined,
   values: Record<string, any>
 ) {
-  return await axiosInstance.put(`/categories/${id}`, values);
+  return await axiosInstance.patch(`/categories/${id}`, values);
 }
 
 export async function deleteCategory(
