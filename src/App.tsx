@@ -20,6 +20,8 @@ import AddMember from "./pages/team/add-member";
 import MemberActions from "./pages/team/member-actions";
 import Subscribes from "./pages/subscribes";
 import RequestActions from "./pages/requests/request-action";
+import RequestResidencies from "./pages/request-residencies/request-residencies";
+import RequestResidencyActions from "./pages/request-residencies/request-residency-action";
 import MessageActions from "./pages/contact-messages/contact-messages-action";
 import FAQs from "./pages/faqs/faqs";
 import AddFAQ from "./pages/faqs/add-faq";
@@ -160,6 +162,13 @@ const App = () => {
               element={<Navigate to="/dashboard/requests" replace />}
             />
             <Route path="requests/:action/:id" element={<RequestActions />} />
+
+            <Route path="request-residencies" element={<RequestResidencies />} />
+            <Route
+              path="request-residencies/:action"
+              element={<Navigate to="/dashboard/request-residencies" replace />}
+            />
+            <Route path="request-residencies/:action/:id" element={<RequestResidencyActions />} />
 
             <Route path="messages" element={<ContactMessages />} />
             <Route

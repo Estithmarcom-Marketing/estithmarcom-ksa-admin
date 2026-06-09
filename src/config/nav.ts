@@ -16,6 +16,7 @@ import {
   Layers,
   WandSparkles,
   IdCard,
+  ClipboardList,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -47,7 +48,8 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "التواصل",
     items: [
-      { label: "الطلبات", path: "/dashboard/requests", icon: Scale },
+      { label: "طلبات الخدمات", path: "/dashboard/requests", icon: Scale },
+      { label: "طلبات الإقامات", path: "/dashboard/request-residencies", icon: ClipboardList },
       { label: "الأشتراكات", path: "/dashboard/subscribes", icon: Box },
       { label: "رسائل التواصل", path: "/dashboard/messages", icon: PhoneCall },
     ],

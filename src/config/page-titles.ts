@@ -9,7 +9,8 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
     description: "اضافة, تعديل و تصفح المناطق الحرة",
   },
   team: { title: "الفريق", description: "اضافة, تعديل و تصفح الفريق" },
-  requests: { title: "الطلبات", description: "تصفح الطلبات المرسلة" },
+  requests: { title: "طلبات الخدمات", description: "تصفح طلبات الخدمات المرسلة" },
+  "request-residencies": { title: "طلبات الإقامات", description: "تصفح طلبات الإقامات" },
   messages: { title: "رسائل التواصل", description: "تصفح رسائل التواصل" },
   settings: { title: "معلومات الموقع", description: "تحديث إعدادات الموقع" },
   profile: { title: "الملف الشخصي", description: "تعديل الملف الشخصي" },
@@ -59,6 +60,9 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
   },
   requests: {
     read: { title: "عرض الطلب", description: "تفاصيل الطلب" },
+  },
+  "request-residencies": {
+    read: { title: "عرض طلب الإقامة", description: "تفاصيل طلب الإقامة" },
   },
   messages: {
     read: { title: "عرض الرسالة", description: "تفاصيل الرسالة" },

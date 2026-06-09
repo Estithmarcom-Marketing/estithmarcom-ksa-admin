@@ -32,4 +32,6 @@ export const queryKeys = {
     id ? ["highlights", id] : page ? ["highlights", { page }] : ["highlights"],
   residencies: (id?: string, page?: number) =>
     id ? ["residencies", id] : page ? ["residencies", { page }] : ["residencies"],
+  requestResidencies: (id?: string, page?: number) =>
+    id ? ["requestResidencies", id] : page ? ["requestResidencies", { page }] : ["requestResidencies"],
 };
