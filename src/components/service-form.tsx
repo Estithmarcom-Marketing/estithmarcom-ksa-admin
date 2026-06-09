@@ -102,6 +102,7 @@ export default function ServiceForm({
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<ServiceFormValues>({
     resolver: zodResolver(serviceFormSchema),
@@ -143,6 +144,21 @@ export default function ServiceForm({
     append: appendFaq,
     remove: removeFaq,
   } = useFieldArray({ control, name: "faqs" });
+
+  const shortDescAr = watch("short_description_ar");
+  const shortDescEn = watch("short_description_en");
+  const featuresWatch = watch("features");
+
+  function CharCount({ current, max }: { current: number; max: number }) {
+    const over = current > max;
+    return (
+      <span
+        className={`text-xs font-normal ${over ? "text-destructive font-medium" : "text-muted-foreground"}`}
+      >
+        {current}/{max}
+      </span>
+    );
+  }
 
   const handleFormSubmit = (values: ServiceFormValues) => {
     onSubmit?.(toFormData(values));
@@ -256,8 +272,9 @@ export default function ServiceForm({
                 placeholder="وصف مختصر بالعربي"
                 {...register("short_description_ar")}
               />
-              <FieldDescription>
-                {errors.short_description_ar?.message}
+              <FieldDescription className="flex justify-between items-center gap-2">
+                <span>{errors.short_description_ar?.message}</span>
+                <CharCount current={shortDescAr?.length ?? 0} max={200} />
               </FieldDescription>
             </Field>
           </div>
@@ -274,8 +291,9 @@ export default function ServiceForm({
                 placeholder="Short description in English"
                 {...register("short_description_en")}
               />
-              <FieldDescription>
-                {errors.short_description_en?.message}
+              <FieldDescription className="flex justify-between items-center gap-2">
+                <span>{errors.short_description_en?.message}</span>
+                <CharCount current={shortDescEn?.length ?? 0} max={200} />
               </FieldDescription>
             </Field>
           </div>
@@ -434,8 +452,9 @@ export default function ServiceForm({
                       placeholder="وصف الميزة بالعربي"
                       {...register(`features.${index}.description_ar`)}
                     />
-                    <FieldDescription>
-                      {errors.features?.[index]?.description_ar?.message}
+                    <FieldDescription className="flex justify-between items-center gap-2">
+                      <span>{errors.features?.[index]?.description_ar?.message}</span>
+                      <CharCount current={featuresWatch?.[index]?.description_ar?.length ?? 0} max={200} />
                     </FieldDescription>
                   </Field>
                 </div>
@@ -452,8 +471,9 @@ export default function ServiceForm({
                       placeholder="Feature description in English"
                       {...register(`features.${index}.description_en`)}
                     />
-                    <FieldDescription>
-                      {errors.features?.[index]?.description_en?.message}
+                    <FieldDescription className="flex justify-between items-center gap-2">
+                      <span>{errors.features?.[index]?.description_en?.message}</span>
+                      <CharCount current={featuresWatch?.[index]?.description_en?.length ?? 0} max={200} />
                     </FieldDescription>
                   </Field>
                 </div>
