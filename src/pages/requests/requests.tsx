@@ -37,6 +37,9 @@ const Requests = () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.requests(undefined, page),
       });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.pendingRequestsCount,
+      });
       toast.success("تم حذف الطلب بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
@@ -50,6 +53,9 @@ const Requests = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.requests(undefined, page),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.pendingRequestsCount,
       });
       toast.success("تم تحديث الحالة بنجاح");
     },

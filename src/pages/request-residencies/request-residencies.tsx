@@ -38,6 +38,9 @@ const RequestResidencies = () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.requestResidencies(undefined, page),
       });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.pendingRequestResidenciesCount,
+      });
       toast.success("تم حذف الطلب بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
@@ -51,6 +54,9 @@ const RequestResidencies = () => {
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.requestResidencies(undefined, page),
+      });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.pendingRequestResidenciesCount,
       });
       toast.success("تم تحديث الحالة بنجاح");
     },

@@ -14,25 +14,25 @@ export function useCounts() {
   const { data: pendingRequests, isLoading: loading1 } = useQuery({
     queryKey: queryKeys.pendingRequestsCount,
     queryFn: () => getPendingRequestsCount(Axios),
-    refetchInterval: 30000,
+    refetchInterval: 120000,
   });
 
   const { data: pendingRequestResidencies, isLoading: loading2 } = useQuery({
     queryKey: queryKeys.pendingRequestResidenciesCount,
     queryFn: () => getPendingRequestResidenciesCount(Axios),
-    refetchInterval: 30000,
+    refetchInterval: 120000,
   });
 
   const { data: subscriptions, isLoading: loading3 } = useQuery({
     queryKey: queryKeys.subscriptionsCount,
     queryFn: () => getSubscriptionsCount(Axios),
-    refetchInterval: 30000,
+    refetchInterval: 120000,
   });
 
   const { data: uncontactedMessages, isLoading: loading4 } = useQuery({
     queryKey: queryKeys.uncontactedMessagesCount,
     queryFn: () => getUncontactedMessagesCount(Axios),
-    refetchInterval: 30000,
+    refetchInterval: 120000,
   });
 
   return {
