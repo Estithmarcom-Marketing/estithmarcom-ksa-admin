@@ -2,7 +2,7 @@ import AdminForm from "@/components/admin-form";
 import { DataTable } from "@/components/DataTable";
 import SpecialHeader from "@/components/SpecialHeader";
 import { useAdmins } from "@/lib/querykeys/admins-query";
-import { addAdmin } from "@/lib/api/admins";
+import { addAdmin, deleteAdmin, updateAdmin } from "@/lib/api/admins";
 import type { ColumnConfig } from "@/lib/types/table";
 import type { UserType } from "@/lib/types/user";
 import type { AdminFormData } from "@/lib/schema/admin-schema";
@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import useAxios from "@/hooks/use-axios";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
+import type { AxiosError } from "axios";
 
 const adminsColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
@@ -38,13 +39,39 @@ const Admins = () => {
     await addAdminMutation(data);
   };
 
+  const { mutateAsync: removeAdminMutation } = useMutation({
+    mutationFn: (id: number) => deleteAdmin(Axios, id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.admins,
+      });
+      toast.success("تم حذف المشرف بنجاح");
+    },
+    onError: (err: AxiosError<{ error: string }>) => {
+      toast.error(err.response?.data?.error || "حدث خطأ ما");
+    },
+  });
+
+  const { mutateAsync: updateAdminMutation } = useMutation({
+    mutationFn: ({ id, values }: { id: number; values: AdminFormData }) =>
+      updateAdmin(Axios, id, values),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.admins,
+      });
+      toast.success("تم تعديل المشرف بنجاح");
+    },
+    onError: (err: AxiosError<{ error: string }>) => {
+      toast.error(err.response?.data?.error || "حدث خطأ ما");
+    },
+  });
+
   const handleEdit = async (row: UserType, data: AdminFormData) => {
-    console.log("edit", row.id, data);
-    // await updateAdmin(row.id, data)
+    await updateAdminMutation({ id: row.id, values: data });
   };
 
-  const handleDelete = (rows: UserType) => {
-    console.log("delete", rows);
+  const handleDelete = async (row: UserType): Promise<void> => {
+    await removeAdminMutation(row.id);
   };
 
   const adminData = admins?.admins ?? [];

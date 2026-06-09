@@ -10,3 +10,14 @@ export async function getAdmins(axiosInstance: AxiosInstance): Promise<AdminResT
 export async function addAdmin(axiosInstance: AxiosInstance, values: AdminFormData) {
   return await axiosInstance.post("/admins", values);
 }
+
+export async function deleteAdmin(axiosInstance: AxiosInstance, id: number) {
+  return await axiosInstance.delete(`/admins/${id}`);
+}
+
+export async function updateAdmin(axiosInstance: AxiosInstance, id: number, values: AdminFormData) {
+  return await axiosInstance.post(`/admins/${id}`, {
+    ...values,
+    "_method": "patch"
+  });
+}
