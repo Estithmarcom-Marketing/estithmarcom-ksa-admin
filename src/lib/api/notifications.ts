@@ -12,13 +12,13 @@ export async function getNotifications(
 export async function markAllAsRead(
   axiosInstance: AxiosInstance,
 ) {
-  return await axiosInstance.post("/notifications");
+  return await axiosInstance.patch("/notifications/read-all");
 }
 
 export async function markItemAsRead(
   axiosInstance: AxiosInstance,
   id: number
 ) {
-  return await axiosInstance.post(`/notifications/${id}`);
+  return await axiosInstance.patch(`/notifications/${id}/read`);
 }
 

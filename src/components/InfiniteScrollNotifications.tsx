@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Wrench, Mail, Newspaper } from "lucide-react";
+import { Wrench, Mail, Newspaper, Notebook } from "lucide-react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import type { NotificationType } from "@/lib/types/notification";
 import InfinitySpinner from "./infinity-spinner";
@@ -23,12 +23,17 @@ const notificationConfig: Record<NotificationType["type"], NotificationConfig> =
       getLink: (id) => `/dashboard/requests/read/${id}`,
       label: "Service Request",
     },
+    request_residency: {
+      icon: <Notebook size={15} />,
+      getLink: (id) => `/dashboard/request-residencies/read/${id}`,
+      label: "Service Request",
+    },
     contact_us: {
       icon: <Mail size={15} />,
       getLink: (id) => `/dashboard/messages/read/${id}`,
       label: "Contact",
     },
-    newsletter_subscribe: {
+    subscription: {
       icon: <Newspaper size={15} />,
       getLink: () => `/dashboard/subscribes`,
       label: "Newsletter",
