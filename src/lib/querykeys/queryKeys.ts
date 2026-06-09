@@ -34,4 +34,8 @@ export const queryKeys = {
     id ? ["residencies", id] : page ? ["residencies", { page }] : ["residencies"],
   requestResidencies: (id?: string, page?: number) =>
     id ? ["requestResidencies", id] : page ? ["requestResidencies", { page }] : ["requestResidencies"],
+  pendingRequestsCount: ["pendingRequestsCount"] as const,
+  pendingRequestResidenciesCount: ["pendingRequestResidenciesCount"] as const,
+  subscriptionsCount: ["subscriptionsCount"] as const,
+  uncontactedMessagesCount: ["uncontactedMessagesCount"] as const,
 };

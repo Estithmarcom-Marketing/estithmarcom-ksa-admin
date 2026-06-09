@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   BookOpen,
   User,
-  Scale,
   Globe,
   PhoneCall,
   ShieldCheck,
@@ -17,6 +16,7 @@ import {
   WandSparkles,
   IdCard,
   ClipboardList,
+  ClipboardCheck,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -48,7 +48,7 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "التواصل",
     items: [
-      { label: "طلبات الخدمات", path: "/dashboard/requests", icon: Scale },
+      { label: "طلبات الخدمات", path: "/dashboard/requests", icon: ClipboardCheck },
       { label: "طلبات الإقامات", path: "/dashboard/request-residencies", icon: ClipboardList },
       { label: "الأشتراكات", path: "/dashboard/subscribes", icon: Box },
       { label: "رسائل التواصل", path: "/dashboard/messages", icon: PhoneCall },

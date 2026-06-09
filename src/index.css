@@ -60,8 +60,8 @@
 
 :root {
   --main-light-color: #f2e6ff;
-  --main-color: #44295a;
-  --main-darker-color: #331b46;
+  --main-color: #dbaf63;
+  --main-darker-color: #d09734;
   --secondary-color: #14192b;
   --radius: 0.625rem;
   --background: oklch(1 0 0);

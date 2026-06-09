@@ -23,13 +23,22 @@ import { LogoutFn } from "@/lib/api/auth";
 import type { AxiosError } from "axios";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useCurrentUser } from "@/lib/querykeys/current-user-query";
+import { useCounts } from "@/lib/querykeys/count-query";
 
 const AppSidebar = () => {
   const Axios = useAxios();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, state } = useSidebar();
   const { data: user } = useCurrentUser();
+  const counts = useCounts();
+
+  const pathCountMap: Record<string, number> = {
+    "/dashboard/requests": counts.pendingRequests,
+    "/dashboard/request-residencies": counts.pendingRequestResidencies,
+    "/dashboard/subscribes": counts.subscriptions,
+    "/dashboard/messages": counts.uncontactedMessages,
+  };
 
   const handleItemClick = () => {
     if (window.innerWidth < 768) {
@@ -69,32 +78,53 @@ const AppSidebar = () => {
           <SidebarGroup key={group.label}>
             <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
             <SidebarMenu>
-              {group.items.map(({ label, path, icon: Icon }) => (
-                <SidebarMenuItem key={path}>
-                  <NavLink to={path}>
-                    {({ isActive }) => (
-                      <SidebarMenuButton
-                        isActive={isActive}
-                        tooltip={label}
-                        className={cn("relative", isActive && "bg-main-light!")}
-                        onClick={handleItemClick}
-                      >
-                        {isActive && (
-                          <span className="absolute start-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-main rounded-e-full" />
-                        )}
-                        <Icon
-                          size={18}
-                          strokeWidth={isActive ? 2.2 : 1.8}
+              {group.items.map(({ label, path, icon: Icon }) => {
+                const count = pathCountMap[path];
+                const showBadge = group.label === "التواصل" && count > 0;
+                return (
+                  <SidebarMenuItem key={path}>
+                    <NavLink to={path}>
+                      {({ isActive }) => (
+                        <SidebarMenuButton
+                          isActive={isActive}
+                          tooltip={label}
                           className={cn(
-                            isActive ? "text-main" : "text-zinc-500",
+                            "relative",
+                            isActive && "bg-main-light! ",
                           )}
-                        />
-                        <span>{label}</span>
-                      </SidebarMenuButton>
-                    )}
-                  </NavLink>
-                </SidebarMenuItem>
-              ))}
+                          onClick={handleItemClick}
+                        >
+                          {isActive && (
+                            <span className="absolute start-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-main rounded-e-full" />
+                          )}
+                          <Icon
+                            size={18}
+                            strokeWidth={isActive ? 2.2 : 1.8}
+                            className={cn(
+                              isActive ? "text-main" : "text-zinc-500",
+                            )}
+                          />
+                          <span className="flex flex-1 justify-between items-center gap-2">
+                            {label}
+                            <span>
+                              {showBadge && state === "expanded" && (
+                                <span className="bg-main text-white text-[10px] leading-none font-bold px-1.5 py-1 rounded-full min-w-[18px] h-[18px] flex items-center justify-center">
+                                  {count > 99 ? "99+" : count}
+                                </span>
+                              )}
+                            </span>
+                          </span>
+                          {showBadge && state === "collapsed" && (
+                            <span className="absolute top-0 end-0 w-4 h-4 bg-main text-white text-[9px] leading-none font-bold rounded-full flex items-center justify-center">
+                              {count > 9 ? "9+" : count}
+                            </span>
+                          )}
+                        </SidebarMenuButton>
+                      )}
+                    </NavLink>
+                  </SidebarMenuItem>
+                );
+              })}
               {group.label === "الإعدادات" && (
                 <SidebarMenuItem>
                   <SidebarMenuButton
