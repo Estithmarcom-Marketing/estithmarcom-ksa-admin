@@ -51,6 +51,9 @@ const Messages = () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.messages(undefined, page),
       });
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.uncontactedMessagesCount,
+      });
       toast.success(
         !contacted ? "تم تفعيل التواصل بنجاح" : "تم إلغاء التواصل بنجاح",
       );
