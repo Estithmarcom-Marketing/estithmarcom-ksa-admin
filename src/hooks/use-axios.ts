@@ -17,7 +17,7 @@ export default function useAxios() {
           config.headers["Accept"] = "application/json";
         }
 
-        config.headers["Accept-Language"] = "en";
+        config.headers["Accept-Language"] = "ar";
 
         const token = Cookies.get("mithaq-admin");
         if (token) {
