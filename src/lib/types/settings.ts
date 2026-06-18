@@ -14,6 +14,7 @@ export interface MithaqLinks {
   instagram: string;
   snapchat: string;
   tiktok: string;
+  whatsapp: string;
 }
 
 export interface MithaqInfo extends MithaqContact, MithaqLinks {}

@@ -2,7 +2,7 @@ import { DataTable } from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
-import { deleteMessage, updateRequest } from "@/lib/api/contact-message";
+import { deleteRequest, updateRequest } from "@/lib/api/contact-message";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
 import { useRequests } from "@/lib/querykeys/requests-query";
 import type { RequestType } from "@/lib/types/request";
@@ -32,7 +32,7 @@ const Requests = () => {
   const requestsData = requests?.requests ?? [];
 
   const { mutateAsync: removeMessageMutation } = useMutation({
-    mutationFn: (id: number) => deleteMessage(Axios, id),
+    mutationFn: (id: number) => deleteRequest(Axios, id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: queryKeys.requests(undefined, page),

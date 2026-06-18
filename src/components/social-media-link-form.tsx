@@ -41,6 +41,11 @@ const socials: {
     label: "تيك توك",
     placeholder: "https://tiktok.com/@yourhandle",
   },
+  {
+    name: "whatsapp",
+    label: "واتساب",
+    placeholder: "https://wa.me/yournumber",
+  },
 ];
 
 export function SocialLinksForm({
