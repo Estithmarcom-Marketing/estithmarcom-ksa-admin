@@ -5,7 +5,7 @@ export interface NotificationType {
   title: string
   body: string
   notifiable_id: number
-  type: "request_service" | "contact_us" | "subscription" | "request_residency"
+  type: "request_service" | "contact_us" | "subscription" | "request_residency" | "chatbot_message"
   created_at: string
   is_read: boolean
 }
