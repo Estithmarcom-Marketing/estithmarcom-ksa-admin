@@ -43,6 +43,9 @@ import HighlightActions from "./pages/highlights/highlight-actions";
 import Residencies from "./pages/residencies/residencies";
 import AddResidency from "./pages/residencies/add-residency";
 import ResidencyActions from "./pages/residencies/residency-actions";
+import StaticPages from "./pages/static-pages/static-pages";
+import AddStaticPage from "./pages/static-pages/add-static-page";
+import StaticPageActions from "./pages/static-pages/static-page-actions";
 
 const App = () => {
   return (
@@ -130,6 +133,17 @@ const App = () => {
             <Route
               path="categories/:action/:id"
               element={<CategoryActions />}
+            />
+
+            <Route path="static-pages" element={<StaticPages />} />
+            <Route path="static-pages/new" element={<AddStaticPage />} />
+            <Route
+              path="static-pages/:action"
+              element={<Navigate to="/dashboard/static-pages" replace />}
+            />
+            <Route
+              path="static-pages/:action/:id"
+              element={<StaticPageActions />}
             />
 
             <Route path="highlights" element={<Highlights />} />

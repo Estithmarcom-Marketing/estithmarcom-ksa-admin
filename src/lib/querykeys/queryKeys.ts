@@ -30,6 +30,8 @@ export const queryKeys = {
   categoriesUnpaginated: () => ["categories-unpaginated"] as const,
   highlights: (id?: string, page?: number) =>
     id ? ["highlights", id] : page ? ["highlights", { page }] : ["highlights"],
+  staticPages: (id?: string, page?: number) =>
+    id ? ["staticPages", id] : page ? ["staticPages", { page }] : ["staticPages"],
   residencies: (id?: string, page?: number) =>
     id ? ["residencies", id] : page ? ["residencies", { page }] : ["residencies"],
   requestResidencies: (id?: string, page?: number) =>

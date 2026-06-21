@@ -17,6 +17,7 @@ import {
   IdCard,
   ClipboardList,
   ClipboardCheck,
+  FileText,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -40,6 +41,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "الأسئلة الشائعة", path: "/dashboard/faqs", icon: HelpCircle },
       { label: "المدونة", path: "/dashboard/blog", icon: BookOpen },
       { label: "الأقسام", path: "/dashboard/categories", icon: Layers },
+      { label: "الصفحات الثابتة", path: "/dashboard/static-pages", icon: FileText },
       { label: "الإنجازات", path: "/dashboard/highlights", icon: WandSparkles },
       // { label: "الفريق", path: "/dashboard/team", icon: Users },
       { label: "المشرفين", path: "/dashboard/admins", icon: ShieldCheck },

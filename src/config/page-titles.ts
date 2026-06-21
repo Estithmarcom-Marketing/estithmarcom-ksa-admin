@@ -16,6 +16,7 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   profile: { title: "الملف الشخصي", description: "تعديل الملف الشخصي" },
   subscribes: { title: "الأشتراكات", description: "تصفح الأشتراكات" },
   categories: { title: "الأقسام", description: "اضافة, تعديل و تصفح الأقسام" },
+  "static-pages": { title: "الصفحات الثابتة", description: "اضافة, تعديل و تصفح الصفحات الثابتة" },
   highlights: { title: "الإنجازات", description: "تعديل و تصفح الإنجازات" },
   residencies: { title: "الإقامات", description: "اضافة, تعديل و تصفح الإقامات" },
 };
@@ -34,6 +35,11 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
     new: { title: "إضافة قسم", description: "إضافة قسم جديد" },
     edit: { title: "تعديل قسم", description: "تعديل بيانات القسم" },
     read: { title: "عرض قسم", description: "تفاصيل القسم" },
+  },
+  "static-pages": {
+    new: { title: "إضافة صفحة ثابتة", description: "إضافة صفحة ثابتة جديدة" },
+    edit: { title: "تعديل صفحة ثابتة", description: "تعديل بيانات الصفحة الثابتة" },
+    read: { title: "عرض صفحة ثابتة", description: "تفاصيل الصفحة الثابتة" },
   },
   blog: {
     new: { title: "إضافة مدونة", description: "إضافة مدونة جديدة" },
