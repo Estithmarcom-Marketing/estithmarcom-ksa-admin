@@ -10,20 +10,12 @@ const statusLabels: Record<string, string> = {
   canceled: "ملغى",
 };
 
-const statusColors: Record<string, string> = {
-  pending: "bg-yellow-100 text-yellow-800",
-  contacted: "bg-green-100 text-green-800",
-  processing: "bg-blue-100 text-blue-800",
-  canceled: "bg-red-100 text-red-800",
-};
-
 interface ReadChatbotMessageProps {
   message: ChatbotMessageType;
 }
 
 export default function ReadChatbotMessage({ message }: ReadChatbotMessageProps) {
   const status = statusLabels[message.status] ?? message.status;
-  const statusColor = statusColors[message.status] ?? "";
 
   return (
     <div className="space-y-8">
