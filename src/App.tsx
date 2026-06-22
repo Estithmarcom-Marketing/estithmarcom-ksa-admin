@@ -20,6 +20,8 @@ import AddMember from "./pages/team/add-member";
 import MemberActions from "./pages/team/member-actions";
 import Subscribes from "./pages/subscribes";
 import RequestActions from "./pages/requests/request-action";
+import ChatbotMessages from "./pages/chatbot-messages/chatbot-messages";
+import ChatbotMessageActions from "./pages/chatbot-messages/chatbot-message-action";
 import RequestResidencies from "./pages/request-residencies/request-residencies";
 import RequestResidencyActions from "./pages/request-residencies/request-residency-action";
 import MessageActions from "./pages/contact-messages/contact-messages-action";
@@ -190,6 +192,13 @@ const App = () => {
               element={<Navigate to="/dashboard/messages" replace />}
             />
             <Route path="messages/:action/:id" element={<MessageActions />} />
+
+            <Route path="chatbot-messages" element={<ChatbotMessages />} />
+            <Route
+              path="chatbot-messages/:action"
+              element={<Navigate to="/dashboard/chatbot-messages" replace />}
+            />
+            <Route path="chatbot-messages/:action/:id" element={<ChatbotMessageActions />} />
 
             <Route path="subscribes" element={<Subscribes />} />
           </Route>

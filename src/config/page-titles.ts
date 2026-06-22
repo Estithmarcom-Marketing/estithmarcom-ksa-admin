@@ -12,6 +12,7 @@ export const PAGE_TITLES: Record<string, PageMeta> = {
   requests: { title: "طلبات الخدمات", description: "تصفح طلبات الخدمات المرسلة" },
   "request-residencies": { title: "طلبات الإقامات", description: "تصفح طلبات الإقامات" },
   messages: { title: "رسائل التواصل", description: "تصفح رسائل التواصل" },
+  "chatbot-messages": { title: "رسائل الشات بوت", description: "تصفح رسائل الشات بوت" },
   settings: { title: "معلومات الموقع", description: "تحديث إعدادات الموقع" },
   profile: { title: "الملف الشخصي", description: "تعديل الملف الشخصي" },
   subscribes: { title: "الأشتراكات", description: "تصفح الأشتراكات" },
@@ -72,6 +73,9 @@ export const SUB_TITLES: Record<string, Record<string, PageMeta>> = {
   },
   messages: {
     read: { title: "عرض الرسالة", description: "تفاصيل الرسالة" },
+  },
+  "chatbot-messages": {
+    read: { title: "عرض رسالة الشات بوت", description: "تفاصيل رسالة الشات بوت" },
   },
 };
 

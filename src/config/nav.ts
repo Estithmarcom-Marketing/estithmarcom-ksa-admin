@@ -18,6 +18,7 @@ import {
   ClipboardList,
   ClipboardCheck,
   FileText,
+  MessageSquareMore,
 } from "lucide-react";
 
 export const NAV_GROUPS: NavGroup[] = [
@@ -54,6 +55,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "طلبات الإقامات", path: "/dashboard/request-residencies", icon: ClipboardList },
       { label: "الأشتراكات", path: "/dashboard/subscribes", icon: Box },
       { label: "رسائل التواصل", path: "/dashboard/messages", icon: PhoneCall },
+      { label: "رسائل الشات بوت", path: "/dashboard/chatbot-messages", icon: MessageSquareMore },
     ],
   },
   {
