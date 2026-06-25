@@ -2,26 +2,27 @@ import { DataTable } from "@/components/DataTable";
 import Pagination from "@/components/Pagination";
 import SpecialHeader from "@/components/SpecialHeader";
 import useAxios from "@/hooks/use-axios";
-import { deleteRequest, updateRequest } from "@/lib/api/contact-message";
+import { deleteChatbotMessage, updateChatbotMessageStatus } from "@/lib/api/chatbot-message";
 import { queryKeys } from "@/lib/querykeys/queryKeys";
-import { useRequests } from "@/lib/querykeys/requests-query";
-import type { RequestType } from "@/lib/types/request";
+import { useChatbotMessages } from "@/lib/querykeys/chatbot-messages-query";
+import type { ChatbotMessageType } from "@/lib/types/chatbot-message";
 import type { ColumnConfig } from "@/lib/types/table";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
-const messagesColumns: ColumnConfig[] = [
+const columns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "name", name: "الأسم" },
+  { key: "phone", name: "رقم الهاتف" },
   { key: "status", name: "الحالة" },
-  { key: "service.title_ar", name: "اسم الخدمة" },
+  { key: "service_display", name: "الخدمة" },
   { key: "created_at", name: "تاريخ الرسالة" },
 ];
 
-const Requests = () => {
-  const { data: requests, isLoading: isLoadingRequests } = useRequests();
+const ChatbotMessages = () => {
+  const { data, isLoading } = useChatbotMessages();
   const Axios = useAxios();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
@@ -29,33 +30,30 @@ const Requests = () => {
   const pageParam = searchParams.get("page");
   const page = pageParam ? Number(pageParam) : undefined;
 
-  const requestsData = requests?.requests ?? [];
+  const rows = (data?.messages ?? []).map((msg) => ({
+    ...msg,
+    service_display: msg.service ? msg.service.join(" → ") : "",
+  }));
 
-  const { mutateAsync: removeMessageMutation } = useMutation({
-    mutationFn: (id: number) => deleteRequest(Axios, id),
+  const { mutateAsync: removeMutation } = useMutation({
+    mutationFn: (id: number) => deleteChatbotMessage(Axios, id),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.requests(undefined, page),
+        queryKey: queryKeys.chatbotMessages(undefined, page),
       });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.pendingRequestsCount,
-      });
-      toast.success("تم حذف الطلب بنجاح");
+      toast.success("تم حذف الرسالة بنجاح");
     },
     onError: (err: AxiosError<{ message: string }>) => {
       toast.error(err.response?.data?.message || "حدث خطأ ما");
     },
   });
 
-  const { mutateAsync: statusMessageMutation } = useMutation({
+  const { mutateAsync: statusMutation } = useMutation({
     mutationFn: ({ id, status }: { id: number; status: string }) =>
-      updateRequest(Axios, id, status),
+      updateChatbotMessageStatus(Axios, id, status),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.requests(undefined, page),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.pendingRequestsCount,
+        queryKey: queryKeys.chatbotMessages(undefined, page),
       });
       toast.success("تم تحديث الحالة بنجاح");
     },
@@ -64,36 +62,36 @@ const Requests = () => {
     },
   });
 
-  const handleDelete = async (row: RequestType): Promise<void> => {
-    await removeMessageMutation(row.id);
+  const handleDelete = async (row: ChatbotMessageType): Promise<void> => {
+    await removeMutation(row.id);
   };
 
   const handleStatus = async (
-    row: RequestType,
+    row: ChatbotMessageType,
     status: string,
   ): Promise<void> => {
-    await statusMessageMutation({ id: row.id, status });
+    await statusMutation({ id: row.id, status });
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <SpecialHeader title="الطلبات" />
+        <SpecialHeader title="رسائل الشات بوت" />
       </div>
 
-      <DataTable<RequestType>
-        columns={messagesColumns}
-        data={requestsData}
-        entityLabel="الطلب"
-        isLoading={isLoadingRequests}
+      <DataTable<ChatbotMessageType>
+        columns={columns}
+        data={rows}
+        entityLabel="الرسالة"
+        isLoading={isLoading}
         onDelete={handleDelete}
         popup={false}
         onStatus={handleStatus}
         allowedActions={["Read", "Remove", "Status"]}
       />
-      {requests?.meta && <Pagination meta={requests.meta} />}
+      {data?.meta && <Pagination meta={data.meta} />}
     </div>
   );
 };
 
-export default Requests;
+export default ChatbotMessages;

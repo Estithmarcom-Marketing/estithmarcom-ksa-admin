@@ -20,7 +20,6 @@ import {
   CircleX,
   PhoneCall,
   PhoneMissed,
-  MessageSquareMore,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -377,7 +376,7 @@ export function DataTable<TData extends object>({
                     }}
                     title="تغيير الحالة"
                   >
-                    <MessageSquareMore className="h-4 w-4 text-slate-600 hover:text-slate-700" />
+                    <Pencil className="h-4 w-4 text-slate-600 hover:text-slate-700" />
                   </button>
                 )}
                 {can("Remove") && (

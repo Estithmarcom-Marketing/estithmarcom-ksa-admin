@@ -39,8 +39,8 @@ const Services = () => {
       });
       toast.success("تم حذف الخدمة بنجاح");
     },
-    onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err.response?.data?.message || "حدث خطأ ما");
+    onError: (err: AxiosError<{ error: string }>) => {
+      toast.error(err.response?.data?.error || "حدث خطأ ما");
     },
   });
 

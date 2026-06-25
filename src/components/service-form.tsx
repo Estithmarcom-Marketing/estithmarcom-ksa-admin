@@ -203,7 +203,6 @@ export default function ServiceForm({
                     placeholder="اسحب صورة الخدمة هنا أو اضغط للاختيار"
                     onChange={field.onChange}
                     edit={edit}
-                    svg={true}
                   />
                 )}
               />

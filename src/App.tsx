@@ -20,6 +20,8 @@ import AddMember from "./pages/team/add-member";
 import MemberActions from "./pages/team/member-actions";
 import Subscribes from "./pages/subscribes";
 import RequestActions from "./pages/requests/request-action";
+import ChatbotMessages from "./pages/chatbot-messages/chatbot-messages";
+import ChatbotMessageActions from "./pages/chatbot-messages/chatbot-message-action";
 import RequestResidencies from "./pages/request-residencies/request-residencies";
 import RequestResidencyActions from "./pages/request-residencies/request-residency-action";
 import MessageActions from "./pages/contact-messages/contact-messages-action";
@@ -43,6 +45,9 @@ import HighlightActions from "./pages/highlights/highlight-actions";
 import Residencies from "./pages/residencies/residencies";
 import AddResidency from "./pages/residencies/add-residency";
 import ResidencyActions from "./pages/residencies/residency-actions";
+import StaticPages from "./pages/static-pages/static-pages";
+import AddStaticPage from "./pages/static-pages/add-static-page";
+import StaticPageActions from "./pages/static-pages/static-page-actions";
 
 const App = () => {
   return (
@@ -132,6 +137,17 @@ const App = () => {
               element={<CategoryActions />}
             />
 
+            <Route path="static-pages" element={<StaticPages />} />
+            <Route path="static-pages/new" element={<AddStaticPage />} />
+            <Route
+              path="static-pages/:action"
+              element={<Navigate to="/dashboard/static-pages" replace />}
+            />
+            <Route
+              path="static-pages/:action/:id"
+              element={<StaticPageActions />}
+            />
+
             <Route path="highlights" element={<Highlights />} />
             <Route
               path="highlights/:action"
@@ -176,6 +192,13 @@ const App = () => {
               element={<Navigate to="/dashboard/messages" replace />}
             />
             <Route path="messages/:action/:id" element={<MessageActions />} />
+
+            <Route path="chatbot-messages" element={<ChatbotMessages />} />
+            <Route
+              path="chatbot-messages/:action"
+              element={<Navigate to="/dashboard/chatbot-messages" replace />}
+            />
+            <Route path="chatbot-messages/:action/:id" element={<ChatbotMessageActions />} />
 
             <Route path="subscribes" element={<Subscribes />} />
           </Route>

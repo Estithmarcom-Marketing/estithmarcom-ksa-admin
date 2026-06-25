@@ -36,6 +36,7 @@ export const socialLinksSchema = z.object({
   instagram: urlValidation,
   snapchat: urlValidation,
   tiktok: urlValidation,
+  whatsapp: urlValidation,
 });
 
 export type SocialLinksValues = z.infer<typeof socialLinksSchema>;

@@ -96,6 +96,7 @@ const Settings = () => {
               instagram: info?.instagram,
               snapchat: info?.snapchat,
               tiktok: info?.tiktok,
+              whatsapp: info?.whatsapp
             }}
             isLoading={isLoadingUpdateLinks}
             onSubmit={(data) => updateLinksMutation(data)}
