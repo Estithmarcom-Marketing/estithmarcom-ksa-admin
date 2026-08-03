@@ -37,7 +37,7 @@ const Navbar = () => {
 
   useEffect(() => {
     echo
-      .private("admins.notifications")
+      .private("admin.notifications")
       .listen(".notification.created", (e: NotificationType) => {
         setLatestToastNotification(e);
 
