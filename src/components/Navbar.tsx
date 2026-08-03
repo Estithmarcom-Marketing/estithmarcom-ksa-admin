@@ -65,7 +65,7 @@ const Navbar = () => {
       });
 
     return () => {
-      echo.leave("admins.notifications");
+      echo.leave("admin.notifications");
     };
   }, []);
 

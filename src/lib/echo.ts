@@ -25,10 +25,4 @@ const echo = new Echo({
   },
 });
 
-echo
-  .private("admins.notifications")
-  .notification((notification: any) => {
-    console.log(notification);
-  });
-
 export default echo;
