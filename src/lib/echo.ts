@@ -26,7 +26,7 @@ const echo = new Echo({
 });
 
 echo
-  .private("private-admins.notifications")
+  .private("admins.notifications")
   .notification((notification: any) => {
     console.log(notification);
   });
