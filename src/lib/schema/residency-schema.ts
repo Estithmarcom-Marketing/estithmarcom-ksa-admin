@@ -14,7 +14,7 @@ export const residencyFormSchema = z.object({
     (val) => (typeof val === "string" && val.length > 0) || val instanceof File,
     { message: "الصورة مطلوبة" }
   ).nullable(),
-  country_ids: z.array(z.string()).min(1, "يجب اختيار دولة واحدة على الأقل"),
+  country_id: z.string().min(1, "يجب اختيار الدولة"),
 });
 
 export type ResidencyFormValues = z.infer<typeof residencyFormSchema>;

@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { RichTextEditor } from "./ui/rich-text-editor";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
@@ -48,9 +49,9 @@ function toFormData(values: ResidencyFormValues): FormData {
     fd.append("image", values.image);
   }
 
-  values.country_ids.forEach((id) => {
-    fd.append("country_ids[]", id);
-  });
+  if (values.country_id) {
+    fd.append("country_id", values.country_id);
+  }
 
   return fd;
 }
@@ -65,11 +66,13 @@ export default function ResidencyForm({
     useCountriesUnpaginated();
 
   // Handle both array and object for initial.country
-  const defaultCountryIds: string[] = Array.isArray(initial.country)
-    ? initial.country.map((c: { id: number }) => String(c.id))
+  const defaultCountryId: string = Array.isArray(initial.country)
+    ? initial.country.length
+      ? String(initial.country[0].id)
+      : ""
     : initial.country?.id
-    ? [String(initial.country.id)]
-    : [];
+    ? String(initial.country.id)
+    : "";
 
   const {
     register,
@@ -85,7 +88,7 @@ export default function ResidencyForm({
       description_ar: initial.description_ar ?? "",
       description_en: initial.description_en ?? "",
       published: initial.published ?? true,
-      country_ids: defaultCountryIds,
+      country_id: defaultCountryId,
       meta_title_ar: initial.meta_title_ar ?? initial.meta_title ?? "",
       meta_title_en: initial.meta_title_en ?? initial.meta_title ?? "",
       meta_description_ar: initial.meta_description_ar ?? initial.meta_description ?? "",
@@ -176,15 +179,15 @@ export default function ResidencyForm({
           </div>
 
           <div className="col-span-2">
-            <Field data-invalid={!!errors.country_ids}>
+            <Field data-invalid={!!errors.country_id}>
               <FieldLabel>الدولة</FieldLabel>
               <Controller
                 control={control}
-                name="country_ids"
+                name="country_id"
                 render={({ field }) => (
                   <Select
-                    value={field.value?.[0]}
-                    onValueChange={(val) => field.onChange([val])}
+                    value={field.value}
+                    onValueChange={field.onChange}
                   >
                     <SelectTrigger isLoading={isLoadingCountries}>
                       <SelectValue placeholder="اختر الدولة" />
@@ -199,18 +202,25 @@ export default function ResidencyForm({
                   </Select>
                 )}
               />
-              <FieldDescription>{errors.country_ids?.message}</FieldDescription>
+              <FieldDescription>{errors.country_id?.message}</FieldDescription>
             </Field>
           </div>
 
           <div className="col-span-2 sm:col-span-1">
             <Field data-invalid={!!errors.description_ar}>
-              <FieldLabel htmlFor="desc-ar">الوصف (عربي)</FieldLabel>
-              <Textarea
-                id="desc-ar"
-                aria-invalid={!!errors.description_ar}
-                placeholder="وصف الإقامة بالعربي"
-                {...register("description_ar")}
+              <FieldLabel>الوصف (عربي)</FieldLabel>
+              <Controller
+                control={control}
+                name="description_ar"
+                render={({ field }) => (
+                  <RichTextEditor
+                    dir="rtl"
+                    aria-invalid={!!errors.description_ar}
+                    placeholder="وصف الإقامة بالعربي"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
               />
               <FieldDescription>
                 {errors.description_ar?.message}
@@ -220,13 +230,19 @@ export default function ResidencyForm({
 
           <div className="col-span-2 sm:col-span-1">
             <Field data-invalid={!!errors.description_en}>
-              <FieldLabel htmlFor="desc-en">الوصف (انجليزي)</FieldLabel>
-              <Textarea
-                id="desc-en"
-                dir="ltr"
-                aria-invalid={!!errors.description_en}
-                placeholder="Residency description in English"
-                {...register("description_en")}
+              <FieldLabel>الوصف (انجليزي)</FieldLabel>
+              <Controller
+                control={control}
+                name="description_en"
+                render={({ field }) => (
+                  <RichTextEditor
+                    dir="ltr"
+                    aria-invalid={!!errors.description_en}
+                    placeholder="Residency description in English"
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
               />
               <FieldDescription>
                 {errors.description_en?.message}

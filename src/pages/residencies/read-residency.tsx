@@ -31,7 +31,7 @@ export default function ReadResidency({ residency }: ReadResidencyProps) {
           <Row label="العنوان (انجليزي)" value={residency.title_en} />
           <Row label="الوصف (عربي)" value={residency.description_ar} />
           <Row label="الوصف (انجليزي)" value={residency.description_en} />
-          <Row label="الدولة" value={residency.countries?.[0]?.name_ar ?? "غير محدد"} />
+          <Row label="الدولة" value={residency.country?.name_ar ?? "غير محدد"} />
           <Row label="تاريخ الإنشاء" value={residency.created_at} />
         </div>
       </div>
