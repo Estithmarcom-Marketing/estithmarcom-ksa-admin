@@ -14,7 +14,10 @@ const adminBaseSchema = z.object({
 
   phone_number: z
     .string()
-    .regex(/^\d+$/, "يجب أن يحتوي رقم الهاتف على أرقام فقط"),
+    .optional()
+    .refine((val) => !val || /^\d+$/.test(val), {
+      message: "يجب أن يحتوي رقم الهاتف على أرقام فقط",
+    }),
 
   password: z
     .string()
@@ -31,6 +34,7 @@ export const addAdminSchema = adminBaseSchema
   })
   .refine(
     (data) => {
+      if (!data.phone_number) return true;
       if (data.phone_country === "966") return /^5\d{8}$/.test(data.phone_number);
       if (data.phone_country === "962") return /^7\d{8}$/.test(data.phone_number);
       return false;
@@ -67,7 +71,7 @@ export type AdminPasswordValues = z.infer<typeof changeAdminPasswordSchema>;
 export interface AdminCreatePayload {
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
   password: string;
   password_confirmation: string;
 }
@@ -75,7 +79,7 @@ export interface AdminCreatePayload {
 export interface AdminUpdatePayload {
   name: string;
   email: string;
-  phone: string;
+  phone?: string;
 }
 
 export interface AdminPasswordPayload {
@@ -84,19 +88,29 @@ export interface AdminPasswordPayload {
 }
 
 export function toCreateAdminPayload(values: AdminFormValues): AdminCreatePayload {
-  return {
+  const payload: AdminCreatePayload = {
     name: values.name,
     email: values.email,
-    phone: `+${values.phone_country}${values.phone_number}`,
     password: values.password,
     password_confirmation: values.password_confirmation,
   };
+
+  if (values.phone_number) {
+    payload.phone = `+${values.phone_country}${values.phone_number}`;
+  }
+
+  return payload;
 }
 
 export function toUpdateAdminPayload(values: AdminEditValues): AdminUpdatePayload {
-  return {
+  const payload: AdminUpdatePayload = {
     name: values.name,
     email: values.email,
-    phone: `+${values.phone_country}${values.phone_number}`,
   };
+
+  if (values.phone_number) {
+    payload.phone = `+${values.phone_country}${values.phone_number}`;
+  }
+
+  return payload;
 }
