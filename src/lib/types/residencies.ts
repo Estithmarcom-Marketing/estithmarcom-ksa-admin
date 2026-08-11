@@ -13,7 +13,7 @@ export interface ResidencyType {
   meta_description_ar: string;
   meta_description_en: string;
   image: any;
-  countries: CountryType[];
+  country: CountryType;
   created_at: string;
 }
 
