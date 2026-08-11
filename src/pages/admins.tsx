@@ -18,6 +18,7 @@ const adminsColumns: ColumnConfig[] = [
   { key: "id", name: "#" },
   { key: "name", name: "الاسم" },
   { key: "email", name: "البريد الإلكتروني" },
+  { key: "phone", name: "رقم الهاتف" },
   { key: "created_at", name: "تاريخ الإنشاء" },
 ];
 
