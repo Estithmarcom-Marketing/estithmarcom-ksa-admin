@@ -20,6 +20,7 @@ import {
   CircleX,
   PhoneCall,
   PhoneMissed,
+  KeyRound,
 } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
@@ -63,6 +64,7 @@ export function DataTable<TData extends object>({
   entityLabel = "عنصر",
   formContent,
   editContent,
+  passwordContent,
   onApprove,
   onContact,
   onStatus,
@@ -79,6 +81,7 @@ export function DataTable<TData extends object>({
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<TData | null>(null);
   const [viewTarget, setViewTarget] = useState<TData | null>(null);
+  const [passwordTarget, setPasswordTarget] = useState<TData | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<TData | null>(null);
   const [approveTarget, setApproveTarget] = useState<TData | null>(null);
   const [contactTarget, setContactTarget] = useState<TData | null>(null);
@@ -94,6 +97,7 @@ export function DataTable<TData extends object>({
   const [selectedStatus, setSelectedStatus] = useState<string>("pending");
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
 
   const statusLabels: Record<string, string> = {
     pending: "معلق",
@@ -129,6 +133,11 @@ export function DataTable<TData extends object>({
   const handleViewOpenChange = (open: boolean) => {
     setViewDialogOpen(open);
     if (!open) setTimeout(() => setViewTarget(null), 300);
+  };
+
+  const handlePasswordOpenChange = (open: boolean) => {
+    setPasswordDialogOpen(open);
+    if (!open) setTimeout(() => setPasswordTarget(null), 300);
   };
 
   const handleDeleteOpenChange = (open: boolean) => {
@@ -314,6 +323,18 @@ export function DataTable<TData extends object>({
                     title="تعديل"
                   >
                     <Pencil className="h-4 w-4" />
+                  </button>
+                )}
+                {can("Password") && (
+                  <button
+                    className="text-amber-600 hover:text-amber-700 cursor-pointer"
+                    onClick={() => {
+                      setPasswordTarget(row.original);
+                      setPasswordDialogOpen(true);
+                    }}
+                    title="تغيير كلمة السر"
+                  >
+                    <KeyRound className="h-4 w-4" />
                   </button>
                 )}
                 {can("Approve") && (
@@ -585,6 +606,19 @@ export function DataTable<TData extends object>({
             (editContent
               ? editContent(editTarget, () => setEditDialogOpen(false))
               : resolveFormContent(() => setEditDialogOpen(false)))}
+        </ResponsiveModal>
+      )}
+
+      {/* Password Modal */}
+      {popup && can("Password") && (
+        <ResponsiveModal
+          open={passwordDialogOpen}
+          onOpenChange={handlePasswordOpenChange}
+          title={`تغيير كلمة السر`}
+          description="تغيير كلمة السر"
+        >
+          {passwordTarget &&
+            passwordContent?.(passwordTarget, () => setPasswordDialogOpen(false))}
         </ResponsiveModal>
       )}
 

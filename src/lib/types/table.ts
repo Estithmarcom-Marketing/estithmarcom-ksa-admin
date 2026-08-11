@@ -5,7 +5,7 @@ export interface ColumnConfig {
   name: string;
 }
 
-export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve" | "Contact" | "Status";
+export type AllowedActionType = "Add" | "Remove" | "Edit" | "Read" | "Approve" | "Contact" | "Status" | "Password";
 
 export interface DataTableProps<TData extends object> {
   columns?: ColumnConfig[];
@@ -13,6 +13,7 @@ export interface DataTableProps<TData extends object> {
   entityLabel?: string;
   formContent?: ReactNode | ((onClose: () => void) => ReactNode);
   editContent?: (row: TData, onClose: () => void) => ReactNode;
+  passwordContent?: (row: TData, onClose: () => void) => ReactNode;
   isLoading?: boolean;
   onDelete?: (rows: TData) => void;
   onApprove?: (rows: TData) => void;
