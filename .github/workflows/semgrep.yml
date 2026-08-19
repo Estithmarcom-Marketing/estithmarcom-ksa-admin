@@ -1,4 +1,4 @@
-name: Semgrep Security Scan
+name: Code Quality & Security Scan
 
 on:
   pull_request:
@@ -7,18 +7,58 @@ on:
     branches: [main]
 
 jobs:
-  semgrep:
-    name: Semgrep Scan
-    runs-on: ubuntu-latest
-    container:
-      image: semgrep/semgrep
+  scan:
+    name: Semgrep + SonarQube Scan
+    runs-on: self-hosted
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - run: semgrep scan
-          --config p/security-audit
-          --config p/secrets
-          --config p/typescript
-          --config p/react
-          --config p/owasp-top-ten
-          --error
+      - name: Run Semgrep (JSON output)
+        run: |
+          docker run --rm -v "$PWD:/src" semgrep/semgrep semgrep scan \
+            --config p/security-audit \
+            --config p/secrets \
+            --config p/typescript \
+            --config p/react \
+            --config p/owasp-top-ten \
+            --json \
+            --output /src/semgrep-results.json \
+            /src || true
+
+      - name: Convert Semgrep results to SonarQube format
+        run: |
+          jq '{
+            issues: [.results[] | {
+              engineId: "semgrep",
+              ruleId: .check_id,
+              severity: (if .extra.severity == "ERROR" then "CRITICAL"
+                         elif .extra.severity == "WARNING" then "MAJOR"
+                         else "MINOR" end),
+              type: "VULNERABILITY",
+              primaryLocation: {
+                message: .extra.message,
+                filePath: .path,
+                textRange: {
+                  startLine: .start.line,
+                  endLine: .end.line
+                }
+              }
+            }]
+          }' semgrep-results.json > sonar-external-issues.json
+
+      - name: SonarQube Scan
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          docker run --rm \
+            -e SONAR_HOST_URL="$SONAR_HOST_URL" \
+            -e SONAR_TOKEN="$SONAR_TOKEN" \
+            -v "$PWD:/usr/src" \
+            sonarsource/sonar-scanner-cli \
+            -Dsonar.projectKey=ksa-admin \
+            -Dsonar.sources=. \
+            -Dsonar.externalIssuesReportPaths=sonar-external-issues.json
