@@ -1,0 +1,24 @@
+name: Semgrep Security Scan
+
+on:
+  pull_request:
+    branches: [main, production]
+  push:
+    branches: [main]
+
+jobs:
+  semgrep:
+    name: Semgrep Scan
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: semgrep scan
+          --config p/security-audit
+          --config p/secrets
+          --config p/typescript
+          --config p/react
+          --config p/owasp-top-ten
+          --error
