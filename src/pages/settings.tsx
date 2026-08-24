@@ -66,7 +66,13 @@ const Settings = () => {
             defaultValues={{
               phone: info?.phone,
               email: info?.email,
-              address: info?.address,
+              addresses: info?.addresses?.length
+                ? info.addresses.map((a) => ({
+                    id: a.id,
+                    address_ar: a.address_ar,
+                    address_en: a.address_en,
+                  }))
+                : [{ address_ar: "", address_en: "" }],
             }}
             isLoading={isLoadingUpdateContact}
             onSubmit={(data) => updateContactMutation(data)}
@@ -96,7 +102,7 @@ const Settings = () => {
               instagram: info?.instagram,
               snapchat: info?.snapchat,
               tiktok: info?.tiktok,
-              whatsapp: info?.whatsapp
+              whatsapp: info?.whatsapp,
             }}
             isLoading={isLoadingUpdateLinks}
             onSubmit={(data) => updateLinksMutation(data)}

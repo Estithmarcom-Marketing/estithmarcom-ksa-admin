@@ -1,10 +1,16 @@
+export interface MithaqAddress {
+  id?: number;
+  address_ar: string;
+  address_en: string;
+}
+
 export interface MithaqContact {
   id: number;
   name_ar: string;
   name_en: string;
   phone: string;
   email: string;
-  address: string;
+  addresses: MithaqAddress[];
 }
 
 export interface MithaqLinks {
@@ -12,6 +18,7 @@ export interface MithaqLinks {
   x: string;
   facebook: string;
   instagram: string;
+  linkedin: string;
   snapchat: string;
   tiktok: string;
   whatsapp: string;
